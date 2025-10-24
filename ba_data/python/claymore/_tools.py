@@ -1,0 +1,60 @@
+from typing import Any, Type
+
+import bascenev1 as bs
+import inspect
+import ctypes
+import os
+
+
+def send(msg: str, condition: bool) -> None:
+    """Show a message on-screen and log it simultaneously."""
+    if condition:
+        return
+
+    i_am: str
+    try: # get a dirty string path to this script.
+        i_am = inspect.getmodule(inspect.stack()[1][0]).__name__  # type: ignore
+    except:
+        i_am = 'file'
+    i_am += '.py'
+
+    bs.screenmessage(f'{msg}')
+    print(f'[{i_am}]: {msg}')
+
+
+def obj_clone(cls) -> Type[Any]:
+    """Clone and return a pure object type with no references.
+
+    Returns:
+        Type[object]: Object to clone
+    """ """"""
+    return type(cls.__name__, cls.__bases__, dict(cls.__dict__))
+
+
+def obj_method_override(obj_to_override: object, obj_source: object) -> None:
+    """Override all of a object's methods with another one's.
+
+    Args:
+        obj_to_override (object): Object whose methods will get overriden
+        obj_source (object): Object with methods we want to override with
+    """ """"""
+    for name, v in obj_source.__dict__.items():
+        if callable(v) or isinstance(v, (staticmethod, classmethod)):
+            setattr(obj_to_override, name, v)
+
+
+def is_admin() -> bool:
+    """Check if we are running this program as administrator / with sudo.
+    Returns:
+        bool: Whether operator privileges are enabled
+    """
+    platform: str = bs.app.classic.platform  # type: ignore
+    try:
+        if platform in ['windows', 'win32']:
+            return ctypes.windll.shell32.IsUserAnAdmin() != 0
+        if platform == 'linux':
+            return os.getpid() == 0
+        # couldn't care less about mac tbh :p
+        return False
+    except Exception:  # don't crash over a failure
+        return False
