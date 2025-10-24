@@ -1,0 +1,1 @@
+"""An updater that fetches the latest available BombSquad: Claymore version and installs it."""
