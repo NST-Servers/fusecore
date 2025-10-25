@@ -8,11 +8,11 @@ import os
 
 def send(msg: str, condition: bool) -> None:
     """Show a message on-screen and log it simultaneously."""
-    if condition:
+    if not condition:
         return
 
     i_am: str
-    try: # get a dirty string path to this script.
+    try:  # get a dirty string path to this script.
         i_am = inspect.getmodule(inspect.stack()[1][0]).__name__  # type: ignore
     except:
         i_am = 'file'
