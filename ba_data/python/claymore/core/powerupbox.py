@@ -1,12 +1,12 @@
 """Custom powerups that are easier to create and manage."""
 
 from __future__ import annotations
+from dataclasses import dataclass
 from typing import Type, cast, override, Any, Sequence
 from bascenev1lib.gameutils import SharedObjects
 import bascenev1 as bs
 
 from bascenev1lib.actor import powerupbox
-from bascenev1lib.actor.powerupbox import _TouchedMessage as TouchedMessage
 from claymore.core.factory import (
     Factory,
     FactoryActor,
@@ -14,8 +14,19 @@ from claymore.core.factory import (
     FactoryMesh,
     FactorySound,
 )
+from claymore.core.powerup import SpazPowerup
 
 POWERUPBOX_SET: set[Type[PowerupBox]] = set()
+
+
+@dataclass
+class TouchedMessage: ...
+
+
+@dataclass
+class PowerupBoxMessage:
+    grants_powerup: Type[SpazPowerup] | None
+    source_node: bs.Node | None = None
 
 
 class PowerupBoxFactory(Factory):
@@ -153,27 +164,28 @@ class PowerupBoxFactory(Factory):
 
 
 class PowerupBox(FactoryActor):
-    """
-    A box-type node which gives a specific
+    """A box-type node which gives a specific
     powerup to whoever player picks it up.
 
     Category: **Gameplay Classes**
     """
 
-    factory_class = PowerupBoxFactory
-    """***Factory used by this actor. Do not change.***"""
-    groupset = POWERUPBOX_SET
-    """***Set to register this actor to. Do not change.***"""
+    my_factory = PowerupBoxFactory
+    """Factory used by this FactoryClass instance."""
+    group_set = POWERUPBOX_SET
+    """Set to register this FactoryClass under."""
 
     name: str = 'powerup box'
-    """*String* name given to this powerup box entity."""
+    """Name given to this powerup box class."""
 
     texture: str = 'cl_powerup_empty'
-    """*String* texture name. Loaded up as a *bs.Texture* in runtime."""
-
-    grants: str | None = None
+    """Texture name applied to the box.
+    
+    Transformed into 'FactoryTexture', then 'bs.Texture' in runtime.
     """
-    *String* name of the powerup this box provides.
+
+    powerup_to_grant: Type[SpazPowerup] | None = None
+    """SpazPowerup class this powerup grants when picked up.
 
     Can be set to **None** to disable powerup functionality.
     You should only ever do this if the relevant methods are contained
@@ -181,30 +193,27 @@ class PowerupBox(FactoryActor):
     """
 
     weight: float = 1.0
-    """
-    *Float* for how likely is this powerup to spawn.
+    """float number marking how likely is this powerup to spawn.
     The larger this number is, the more likely it is for it to appear.
 
-    Any number below **0** will make the box unable to spawn.
+    A value equal or under zero will make it unable to spawn.
     """
 
     @classmethod
-    def _reg_texture(cls) -> None:
-        """Register our unique texture."""
-        cls.factory_class.register_resource(
+    def _register_texture(cls) -> None:
+        """Register our texture as a 'FactoryTexture' instance."""
+        cls.my_factory.register_resource(
             f'{cls.texture}', FactoryTexture(cls.texture)
         )
 
     @classmethod
     def register(cls) -> None:
-        # Load up our unique texture and continue
-        cls._reg_texture()
+        cls._register_texture()
         return super().register()
 
     @staticmethod
     def resources() -> dict:
-        """
-        Register resources used by this bomb actor.
+        """Register resources used by this bomb actor.
         Models, sounds and textures included here are
         preloaded on game launch to prevent hiccups while
         you play!
@@ -241,12 +250,10 @@ class PowerupBox(FactoryActor):
         self.create_box()
 
     def attributes(self) -> None:
-        """Define base attributes."""
+        """Define base variables and attributes."""
         self.mesh: bs.Mesh = self.factory.fetch('mesh')
         self.tex: bs.Texture = self.factory.fetch(f'{self.texture}')
-        self.light_mesh: bs.Mesh | bool = (
-            self.factory.fetch('mesh_simple')
-        )
+        self.light_mesh: bs.Mesh | bool = self.factory.fetch('mesh_simple')
 
         self.body: str = 'box'
         self.scale: float = 1.0
@@ -315,22 +322,21 @@ class PowerupBox(FactoryActor):
             self.node.flashing = True
 
     def handle_touch(self) -> None:
-        """
-        Tell our target node to handle this powerup.
+        """Tell our target node to handle this powerup.
         Called when touched by a node.
         """
         if self.used:
             return
 
         node = bs.getcollision().opposingnode
-        # Send the signal to the node
         node.handlemessage(
-            bs.PowerupMessage(self.grants or '', sourcenode=self.node)
+            PowerupBoxMessage(
+                grants_powerup=self.powerup_to_grant, source_node=self.node
+            )
         )
 
     def handle_accept(self) -> None:
-        """
-        Play a sound and disappear.
+        """Play a sound and disappear.
         Called when processed by a node (via *handle_touch*) successfully.
         """
         assert self.node

@@ -70,10 +70,10 @@ class PlayerSpaz(playerspaz.Spaz):
                 opposingnode = collision.opposingnode
                 # opposingbody = collision.opposingbody
             except bs.NotFoundError:
-                return True  # FIXME: Troubleshoot this line?
+                return
             try:
                 if opposingnode.invincible:
-                    return True  # FIXME: Troubleshoot this line?
+                    return
             except Exception:
                 pass
             # TODO: tracking is flimsy and can go into negatives, please polish

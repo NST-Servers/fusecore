@@ -32,7 +32,7 @@ import random
 import logging
 
 BOMB_SET: set[Type[Bomb]] = set()
-FUSE_WARNING = set()
+FUSE_WARNING: set[str] = set()
 
 
 class BombFactory(Factory):
@@ -153,17 +153,16 @@ class BombFactory(Factory):
 
 
 class Bomb(FactoryActor):
-    """
-    An explosive bomb actor that blows up after 3 seconds,
+    """An explosive bomb actor that blows up after 3 seconds,
     creating a blast that damages anyone nearby.
 
     Category: **Gameplay Classes**
     """
 
-    factory_class = BombFactory
-    """***Factory used by this actor. Do not change.***"""
-    groupset = BOMB_SET
-    """***Set to register this actor to. Do not change.***"""
+    my_factory = BombFactory
+    """Factory used by this FactoryClass instance."""
+    group_set = BOMB_SET
+    """Set to register this FactoryClass under."""
 
     bomb_type = 'normal'
     """Name of this bomb. Must be unique."""
@@ -404,6 +403,7 @@ class Bomb(FactoryActor):
             self.die()
         else:
             super().handlemessage(msg)
+
 
 Bomb.register()
 
@@ -706,7 +706,7 @@ class LandMine(ImpactBomb):
             owner=self.node,
             attrs={'rate': 30, 'input_textures': intex},
         )
-        bs.timer(0.5, self.texture_sequence.delete)
+        bs.timer(0.5, self.texture_sequence.delete)  # type: ignore # intellisense issue
 
         # Make it explodable now
         bs.timer(
@@ -716,7 +716,7 @@ class LandMine(ImpactBomb):
                 self.factory.fetch('land_mine_blast_material'),
             ),
         )
-        self.texture_sequence.connectattr(
+        self.texture_sequence.connectattr(  # type: ignore # intellisense issue
             'output_texture', self.node, 'color_texture'
         )
         self.activate_sound.play(position=self.node.position)

@@ -58,8 +58,10 @@ class BlastFactory(Factory):
 class Blast(FactoryActor):
     """An explosive blast that damages and knocks entities away."""
 
-    factory_class = BlastFactory
-    groupset = BLAST_SET
+    my_factory = BlastFactory
+    """Factory used by this FactoryClass instance."""
+    group_set = BLAST_SET
+    """Set to register this FactoryClass under."""
 
     blast_type = 'normal'
     hit_type = 'explosion'
@@ -86,7 +88,7 @@ class Blast(FactoryActor):
         source_player: bs.Player | None = None,
     ) -> None:
         super().__init__()
-        self.factory: BlastFactory # Intellisense
+        self.factory: BlastFactory  # Intellisense
         # Prepping stuff
         self.shared = SharedObjects.get()
         self._source_player = source_player
@@ -108,7 +110,7 @@ class Blast(FactoryActor):
         """Define basic blast attributes."""
         # explosion attrs.
         self.magnitude: int = 2000
-        self.materials: tuple[bs.Material, ...] = ( 
+        self.materials: tuple[bs.Material, ...] = (
             self.factory.fetch('blast_material'),
             self.shared.attack_material,
         )

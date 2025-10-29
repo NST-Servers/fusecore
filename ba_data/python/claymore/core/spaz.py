@@ -1,6 +1,8 @@
 """Defines our Claypocalypse Spaz modified class."""
 
 from __future__ import annotations
+from dataclasses import dataclass
+from enum import Enum
 from typing import (
     Type,
     cast,
@@ -18,14 +20,14 @@ from claymore.core.bomb import (
     BOMB_SET,
     Bomb,
 )
-from claymore.core.powerupbox import PowerupBox, PowerupBoxFactory
 from bascenev1lib.actor import spaz
 from bascenev1lib.actor.spaz import BombDiedMessage
 
 import logging
 
 if TYPE_CHECKING:
-    from claymore.core.powerup import SpazPowerup
+    from claymore.core.powerup import SpazPowerup, PowerupSlotType
+    from claymore.core.powerupbox import PowerupBoxMessage
 
 # Clone our vanilla spaz class
 # We'll be calling this over "super()" to prevent the code
@@ -33,6 +35,78 @@ if TYPE_CHECKING:
 VanillaSpaz: Type[spaz.Spaz] = obj_clone(spaz.Spaz)
 
 POWERUP_WARNING = set()
+
+
+@dataclass
+class SpazPowerupSlot:
+
+    def __init__(self, owner: Spaz) -> None:
+        self.owner = owner
+
+        self.active_powerup: SpazPowerup | None = None
+        self.timer_warning: bs.Timer | None = None
+        self.timer_wearoff: bs.Timer | None = None
+
+    def apply_powerup(self, powerup: SpazPowerup) -> None:
+        """Give the spaz the provided powerup."""
+        if not self.owner.exists():
+            return
+
+        if self.active_powerup:  # unequip previous powerup
+            self._unequip(overwrite=True, clone=self.active_powerup is powerup)
+        self.active_powerup = powerup
+
+        self._apply_powerup()
+        self._do_spaz_billboard_slots()
+        # previous functions should never fail unless the
+        # powerup's parameters are faulty; ez troubleshooting
+        powerup.equip(self.owner)
+
+    def _apply_powerup(self) -> None:
+        """Arm this powerup's wearoff and unequip timers."""
+        if not self.active_powerup:
+            return
+
+        self.timer_warning = bs.Timer(
+            max(
+                0,
+                (
+                    self.active_powerup.duration_ms
+                    - self.owner._powerup_wearoff_time_ms
+                )
+                / 1000,
+            ),
+            bs.WeakCall(self._warn),
+        )
+        self.timer_wearoff = bs.Timer(
+            self.active_powerup.duration_ms / 1000,
+            bs.WeakCall(self._unequip),
+        )
+        self.owner._powerup_popup(self.active_powerup.texture_name)
+
+    def _do_spaz_billboard_slots(self) -> None:
+        if not self.active_powerup:
+            return
+
+        self.owner._powerup_billboard_slot(self.active_powerup)
+
+    def _warn(self) -> None:
+        if not self.active_powerup:
+            return
+
+        self.active_powerup.warning(self.owner)
+        self.owner._powerup_warn(self.active_powerup.texture_name)
+
+    def _unequip(self, overwrite: bool = False, clone: bool = False) -> None:
+        if not self.active_powerup:
+            return
+
+        self.active_powerup.unequip(
+            self.owner, overwrite=overwrite, clone=clone
+        )
+        self.active_powerup = None
+        self.timer_warning = None
+        self.timer_wearoff = None
 
 
 class Spaz(spaz.Spaz):
@@ -57,18 +131,16 @@ class Spaz(spaz.Spaz):
 
         self.damage_scale = 0.22
 
-        # Powerup class instances
-        self._powerup_1: SpazPowerup | None = None
-        self._powerup_2: SpazPowerup | None = None
-        self._powerup_3: SpazPowerup | None = None
-        # Wear-off function timers
-        self._powerup_1_timer_a: bs.Timer | None = None
-        self._powerup_2_timer_a: bs.Timer | None = None
-        self._powerup_3_timer_a: bs.Timer | None = None
-        # Warning function & visuals timers
-        self._powerup_1_timer_b: bs.Timer | None = None
-        self._powerup_2_timer_b: bs.Timer | None = None
-        self._powerup_3_timer_b: bs.Timer | None = None
+        self._powerup_wearoff_time_ms: int = 2000
+        """For how long the powerup wearoff alert is displayed for (in milliseconds.)"""
+
+        # Slots to hold powerups in
+        self._powerup_slots: dict[PowerupSlotType, SpazPowerupSlot] = {
+            PowerupSlotType.BUFF: SpazPowerupSlot(self),
+            PowerupSlotType.BOMB: SpazPowerupSlot(self),
+            PowerupSlotType.GLOVES: SpazPowerupSlot(self),
+            # ... (Append more 'PowerupSlotType' entries here!)
+        }
 
         # We callback wrap these on creation as the engine
         # clones these, so they won't be able to be updated later.
@@ -84,19 +156,22 @@ class Spaz(spaz.Spaz):
         #    if callable(v) or isinstance(v, (staticmethod, classmethod)):
         #        self._callback_wrap(name)
 
-    def get_active_ruleset(self) -> dict:
-        """Get this session's current ruleset."""
-        return {}
-
     @override
     def handlemessage(self, msg: Any) -> Any:
-        # All some extra handlers
+        # in the off-chance an external mode uses 'bs.PowerupMessage',
+        # let's add a compatibility layer to prevent from breaking.
         if isinstance(msg, bs.PowerupMessage):
-            powerup_result = self.handle_powerup_msg(msg)
-            # Tell the source node we got the powerup
-            if powerup_result and msg.sourcenode:
+            success = self.handle_powerupmsg_compat(msg)
+            if success and msg.sourcenode:
                 msg.sourcenode.handlemessage(bs.PowerupAcceptMessage())
-            return powerup_result
+            return success
+        
+        # now, the NEW powerup handle function.
+        elif isinstance(msg, PowerupBoxMessage):
+            success: bool = self.handle_powerupmsg(msg)
+            if success and msg.source_node:
+                msg.source_node.handlemessage(bs.PowerupAcceptMessage())
+            return success
 
         # return to standard handling
         return VanillaSpaz.handlemessage(self, msg)
@@ -115,9 +190,8 @@ class Spaz(spaz.Spaz):
         self.bomb_type = self.bomb_type_default
 
     @override
-    def drop_bomb(self) -> Bomb | None:
-        """
-        Tell the spaz to drop one of his bombs, and returns
+    def drop_bomb(self) -> Bomb | None:  # type: ignore # TODO: check this loser out
+        """Tell the spaz to drop one of his bombs, and returns
         the resulting bomb object.
 
         If the spaz has no bombs or is otherwise unable to
@@ -223,11 +297,10 @@ class Spaz(spaz.Spaz):
     def add_method_callback_raw(
         self, method_name: str, callback: Callable
     ) -> None:
-        """
-        Add a callback to any function.
+        """Add a callback to any function.
 
         Once the base method is executed, all callbacks will be executed.
-        Unlike *add_callback*, it will not contain additional arguments.
+        Unlike 'add_method_callback', it will not contain additional arguments.
 
         Args:
             method_name (str): Name of the method to receive the callback
@@ -246,8 +319,7 @@ class Spaz(spaz.Spaz):
     def remove_method_callback(
         self, method_name: str, callback: Callable
     ) -> None:
-        """
-        Remove a callback from any function.
+        """Remove a callback from any function.
 
         Args:
             method_name (str): Name of the method to remove the callback from
@@ -266,14 +338,13 @@ class Spaz(spaz.Spaz):
     def set_method_override(
         self, method_name: str, override_func: Callable
     ) -> None:
-        """
-        Replace a spaz method temporarily with a custom one.
+        """Replace a spaz method temporarily with a custom one.
 
         When the override function is executed, it will receive
         this spaz as an argument along with the arguments it would've
         gotten.
 
-        E.g. Overriding "*add_bomb_count(1)*" would return
+        eg. Overriding "*add_bomb_count(1)*" would return
         "*override_func(spaz, 1)*", having both spaz
         and the number as arguments.
 
@@ -334,7 +405,7 @@ class Spaz(spaz.Spaz):
                 bs.Call(call)()
 
     def _call_override(
-        self, method_name: str, method: Callable, args: list, kwargs: dict
+        self, method_name: str, method: Callable, args: tuple, kwargs: dict
     ) -> Callable:
         if self.exists():
             override_call: Callable | None = self._cb_overwrite_calls.get(
@@ -368,7 +439,7 @@ class Spaz(spaz.Spaz):
         Args:
             damage (float): Amount of damage to receive
             fatal (bool, optional): Whether the damage can kill. Defaults to True.
-        """
+        """  # TODO: update docstring
         self.on_punched(damage)
         self.hitpoints -= damage
 
@@ -379,8 +450,9 @@ class Spaz(spaz.Spaz):
 
         self.update_healthbar()
 
-    def do_damage_shield(self) -> float | None:
+    def do_damage_shield(self) -> int:
         """Apply damage to this spaz's shield. Returns spillover."""
+        return 0
 
     @overload
     def do_impulse(self, msg: bs.HitMessage) -> float: ...
@@ -429,7 +501,7 @@ class Spaz(spaz.Spaz):
         i, j, k = forcedir
 
         if vmag > 0:  # We can't use this.
-            logging.warn(
+            logging.warning(
                 'velocity_magnitude isn\'t supported yet.', stack_info=True
             )
             vmag = 0
@@ -443,183 +515,143 @@ class Spaz(spaz.Spaz):
         """Update "*self.node.hurt*" to display our current health."""
         self.node.hurt = 1.0 - float(self.hitpoints) / self.hitpoints_max
 
-    def handle_powerup_msg(self, msg: bs.PowerupMessage) -> bool:
-        """
-        Handle incoming powerup messages.
+    def handle_powerupmsg(self, msg: PowerupBoxMessage) -> bool:
+        """Handle incoming powerups.
 
-        Control importing powerups, equipping them and
-        unequipping any other powerup in the same slot.
+        Manages powerup assigning and success return.
         """
         if not self.is_alive():
             return False
 
-        from claymore.core.powerup import POWERUP_SET
+        if msg.grants_powerup:
+            # instantiate our powerup type here!
+            self.equip_powerup(msg.grants_powerup())
+            return True
 
-        powerup: SpazPowerup | None = None
-        # Assign this powerup, throw an error if we can't do so.
-        if msg.poweruptype is not None:
-            for p in POWERUP_SET:
-                if p.name == msg.poweruptype:
-                    powerup = p()
+        return False
 
-            if powerup is None:
-                # Warn our player if they're trying to get a powerup
-                # that does not exist (only do once.)
-                if not msg.poweruptype in POWERUP_WARNING:
-                    boxdel = msg.sourcenode.getdelegate(PowerupBox, None)  # type: ignore
-                    boxname = (
-                        boxdel.name
-                        if isinstance(boxdel, PowerupBox)
-                        else "An unknown powerup box"
-                    )
-                    logging.warning(
-                        f'WARNING: "{boxname}" has provided an'
-                        f' undefined powerup type "{msg.poweruptype}"',
-                        stack_info=True,
-                    )
-                    POWERUP_WARNING.add(msg.poweruptype)
+    def handle_powerupmsg_compat(self, msg: bs.PowerupMessage) -> bool:
+        """DEPRECATED handling for 'bs.PowerupMessage'."""
+        if not self.is_alive():
+            return False
 
-        # Do our powerup shenanigans
-        if powerup:
-            slot = powerup.slot
-            # Unequip previous powerup in slot if we have one
-            if self._has_powerup_in_slot(slot):
-                self._unequip_powerup(slot)
-            self._equip_powerup(powerup, slot)
+        powerup: Type[SpazPowerup] | None = None
 
-            if powerup.texture != 'empty':
-                self.node.billboard_opacity = 1.0
-                self.node.billboard_cross_out = False
-                self._flash_billboard(powerup.get_texture())
+        # FIXME: nested import of humilliation; instead of
+        # doing this, figure out something else, maybe using
+        # messages and signals and whatnot?
+        from claymore.core.powerup import (
+            TripleBombsPowerup,
+            StickyBombsPowerup,
+            IceBombsPowerup,
+            ImpactBombsPowerup,
+            LandMinesPowerup,
+            PunchPowerup,
+            ShieldPowerup,
+            HealthPowerup,
+            CursePowerup,
+        )
 
-        return True
+        match msg.poweruptype:
+            case 'triple_bombs':
+                powerup = TripleBombsPowerup
+            case 'land_mines':
+                powerup = LandMinesPowerup
+            case 'impact_bombs':
+                powerup = ImpactBombsPowerup
+            case 'sticky_bombs':
+                powerup = StickyBombsPowerup
+            case 'punch':
+                powerup = PunchPowerup
+            case 'shield':
+                powerup = ShieldPowerup
+            case 'curse':
+                powerup = CursePowerup
+            case 'ice_bombs':
+                powerup = IceBombsPowerup
+            case 'health':
+                powerup = HealthPowerup
 
-    def _has_powerup_in_slot(self, slot: int) -> bool:
-        """Return if we have a powerup in the specified slot."""
-        return getattr(self, f'_powerup_{slot}', None) is not None
+        return self.handle_powerupmsg(
+            PowerupBoxMessage(
+                grants_powerup=powerup, source_node=msg.sourcenode
+            )
+        )
 
-    def _get_powerup_slot_data(self, slot: int) -> powerup_ref_dict:
-        """Return a dict with strings referencing powerup data in that slot."""
-        # Raise an error if we receive an invalid slot
-        if not 3 >= slot >= 1:
-            raise ValueError(f'Slot {slot} does not exist.')
-
-        return {
-            'node_texture': f'mini_billboard_{slot}_texture',
-            'node_start_time': f'mini_billboard_{slot}_start_time',
-            'node_end_time': f'mini_billboard_{slot}_end_time',
-            'powerup': f'_powerup_{slot}',
-            'timer_wearoff': f'_powerup_{slot}_timer_a',
-            'timer_warning': f'_powerup_{slot}_timer_b',
-        }
-
-    def _equip_powerup(
-        self,
-        powerup: SpazPowerup,
-        slot: int,
-    ):
-        """
-        Equip a powerup in a specific slot.
+    def equip_powerup(self, powerup: SpazPowerup) -> None:
+        """Equip a powerup in a specific slot.
 
         This handles equipping as well
         as warning, wearoff timers and billboards.
         """
-        powerup.equip(self)
+        # if we have a NONE slot type, apply and forget about it
+        if powerup.slot is PowerupSlotType.NONE:
+            powerup.equip(self)
+        # else, assign our incoming powerup to a 'PowerupSlot'
+        # that holds its slot type
+        else:
+            powerup_slot: SpazPowerupSlot | None = self._powerup_slots.get(
+                powerup.slot, None
+            )
+            if (
+                powerup_slot is None
+            ):  # missing slots require special handling...
+                # ...for now, we'll fallback into creating a unique
+                # slot for these with no additional handling.
+                powerup_slot = self._powerup_slots[powerup.slot] = (
+                    SpazPowerupSlot(self)
+                )
+                # the proper way would be to create these slots as
+                # soon as we spawn, as we might create performance issues
+                # at larger scales and messier code if we create on demand.
+                logging.warning(
+                    f'"SpazPowerupSlot" created for {type(powerup.slot)} as there was '
+                    'no previous instance of one existing; please dont do this!',
+                    stack_info=True,
+                )
+            # our powerup slot will take it from here
+            powerup_slot.apply_powerup(powerup)
 
-        # We don't assign powerup to a slot if we're out of range.
-        if not 3 >= slot >= 1:
+    def _powerup_popup(self, tex: str) -> None:
+        """Billboard showing picked up powerup's icon."""
+
+    def _powerup_billboard_slot(self, powerup: SpazPowerup) -> None:
+        """Animate our powerup billboard properly."""
+        slot: int = powerup.slot.value
+        if not 3 >= slot >= 1:  # node only have 3 slots
             return
-        # Get slot data names
-        ref = self._get_powerup_slot_data(slot)
-        setattr(self, ref['powerup'], powerup)
-        setattr(
-            self,
-            ref['timer_warning'],
-            bs.Timer(
-                max(0, (powerup.duration / 1000) - 2),
-                bs.WeakCall(self._warn_powerup, slot),
-            ),
+
+        tex_name: str = powerup.texture_name
+        t_ms = int(bs.time() * 1000.0)
+
+        # don't use 'setattr' unless it is absolutely necessary, kids.
+        setattr(  # texture
+            self.node,
+            f'mini_billboard_{slot}_texture',
+            bs.gettexture(tex_name),
         )
-        setattr(
-            self,
-            ref['timer_wearoff'],
-            bs.Timer(
-                powerup.duration / 1000,
-                bs.WeakCall(self._unequip_powerup, slot, True),
-            ),
+        setattr(  # initial time
+            self.node,
+            f'mini_billboard_{slot}_start_time',
+            t_ms,
+        )
+        setattr(  # end time
+            self.node,
+            f'mini_billboard_{slot}_end_time',
+            t_ms + powerup.duration_ms,
         )
 
-        if powerup.texture != 'empty' and self.exists():
-            setattr(self.node, ref['node_texture'], powerup.get_texture())
-            t_ms = int(bs.time() * 1000.0)
-            setattr(self.node, ref['node_start_time'], t_ms)
-            setattr(self.node, ref['node_end_time'], t_ms + powerup.duration)
-
-    def _warn_powerup(self, slot: int) -> None:
-        """"""
-        # Ignore if we get an invalid slot or if we don't exist anymore
-        if not 3 >= slot >= 1 or not self.exists():
+    def _powerup_warn(self, tex: str) -> None:
+        """Billboard warning showing a powerup about to run out."""
+        if tex == 'empty':
             return
-        # Get slot data names
-        ref = self._get_powerup_slot_data(slot)
-        powerup: SpazPowerup | None = getattr(self, ref['powerup'])
-        # Don't do anything we don't have a powerup in this slot
-        if powerup is None:
-            return
-        # Run the powerup's warning function
-        powerup.warning(self)
-
-        # Don't display anything if this powerup does not have a texture
-        if powerup.texture == 'empty':
-            return
-        # Pull out the warning billboard
-        self.node.billboard_texture = powerup.get_texture()
+        self.node.billboard_texture = bs.gettexture(tex)
         self.node.billboard_opacity = 1.0
         self.node.billboard_cross_out = True
 
-    def _unequip_powerup(
-        self,
-        slot: int,
-        play_sound: bool = False,
-    ) -> None:
-        """
-        Unequip a powerup via their powerup slot.
-
-        Runs the proper unequip method and cleans up
-        leftover billboards and timers.
-        """
-        # Ignore if we get an invalid slot or if we don't exist anymore
-        if not 3 >= slot >= 1 or not self.exists():
-            return
-
-        # Get slot data names
-        ref = self._get_powerup_slot_data(slot)
-        powerup: SpazPowerup | None = getattr(self, ref['powerup'])
-        # Don't do anything we don't have a powerup in this slot
-        if powerup is None:
-            return
-
-        # Reset them variables
-        ## Node times
-        for vref in [ref['node_start_time'], ref['node_end_time']]:
-            setattr(self.node, vref, -9999)
-        ## Timers
-        for vref in [ref['timer_warning'], ref['timer_wearoff']]:
-            setattr(self, vref, None)
-        # Finally, unequip.
-        powerup.unequip(self)
-        setattr(self, ref['powerup'], None)
-        self.node.billboard_opacity = 0.0
-
-        if play_sound:
-            # Play the *blwom* sound
-            pwpfact: PowerupBoxFactory = cast(
-                PowerupBoxFactory, PowerupBoxFactory.instance()
-            )
-            pwpfact.powerdown_sound.play(position=self.node.position)
-
-    def _unequip_gloves(self) -> None:
+    def gloves_silent_unequip(self) -> None:
         """Remove gloves without doing the *blwom* sound and removing flash."""
+        # NOTE: Not sure if I should move this to the powerup file itself...
         if self._demo_mode:  # Preserve old behavior.
             self._punch_power_scale = 1.2
             self._punch_cooldown = spaz.BASE_PUNCH_COOLDOWN
@@ -635,13 +667,3 @@ class Spaz(spaz.Spaz):
 
 # Overwrite the vanilla game's spaz init with our own
 obj_method_override(spaz.Spaz, Spaz)
-
-
-# Auto-Fill badonk
-class powerup_ref_dict(TypedDict):
-    node_texture: str
-    node_start_time: str
-    node_end_time: str
-    powerup: str
-    timer_wearoff: str
-    timer_warning: str
