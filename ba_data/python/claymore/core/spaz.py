@@ -15,19 +15,22 @@ from typing import (
 )
 
 import bascenev1 as bs
+
+from bascenev1lib.actor import spaz
+from bascenev1lib.actor.spaz import BombDiedMessage
+
 from claymore._tools import obj_clone, obj_method_override
 from claymore.core.bomb import (
     BOMB_SET,
     Bomb,
 )
-from bascenev1lib.actor import spaz
-from bascenev1lib.actor.spaz import BombDiedMessage
+from claymore.core.powerupbox import PowerupBoxMessage
+from claymore.core.shared import PowerupSlotType
 
 import logging
 
 if TYPE_CHECKING:
-    from claymore.core.powerup import SpazPowerup, PowerupSlotType
-    from claymore.core.powerupbox import PowerupBoxMessage
+    from claymore.core.powerup import SpazPowerup
 
 # Clone our vanilla spaz class
 # We'll be calling this over "super()" to prevent the code
@@ -56,15 +59,15 @@ class SpazPowerupSlot:
             self._unequip(overwrite=True, clone=self.active_powerup is powerup)
         self.active_powerup = powerup
 
-        self._apply_powerup()
-        self._do_spaz_billboard_slots()
+        self._do_powerup()
+        self._do_spaz_billboard_and_animate()
         # previous functions should never fail unless the
         # powerup's parameters are faulty; ez troubleshooting
         powerup.equip(self.owner)
 
-    def _apply_powerup(self) -> None:
+    def _do_powerup(self) -> None:
         """Arm this powerup's wearoff and unequip timers."""
-        if not self.active_powerup:
+        if not self.active_powerup or not self.owner.exists():
             return
 
         self.timer_warning = bs.Timer(
@@ -76,31 +79,36 @@ class SpazPowerupSlot:
                 )
                 / 1000,
             ),
-            bs.WeakCall(self._warn),
+            self._warn,
         )
         self.timer_wearoff = bs.Timer(
             self.active_powerup.duration_ms / 1000,
-            bs.WeakCall(self._unequip),
+            self._unequip,
         )
-        self.owner._powerup_popup(self.active_powerup.texture_name)
+        if self.active_powerup.texture_name != 'empty':
+            self.owner._flash_billboard(
+                bs.gettexture(self.active_powerup.texture_name)
+            )
 
-    def _do_spaz_billboard_slots(self) -> None:
-        if not self.active_powerup:
+    def _do_spaz_billboard_and_animate(self) -> None:
+        if not self.active_powerup or not self.owner.exists():
             return
 
+        self.owner.node.handlemessage('flash')
         self.owner._powerup_billboard_slot(self.active_powerup)
 
     def _warn(self) -> None:
-        if not self.active_powerup:
+        if not self.active_powerup or not self.owner.exists():
             return
 
         self.active_powerup.warning(self.owner)
         self.owner._powerup_warn(self.active_powerup.texture_name)
 
     def _unequip(self, overwrite: bool = False, clone: bool = False) -> None:
-        if not self.active_powerup:
+        if not self.active_powerup or not self.owner.exists():
             return
 
+        self.owner._powerup_unwarn()
         self.active_powerup.unequip(
             self.owner, overwrite=overwrite, clone=clone
         )
@@ -159,13 +167,13 @@ class Spaz(spaz.Spaz):
     @override
     def handlemessage(self, msg: Any) -> Any:
         # in the off-chance an external mode uses 'bs.PowerupMessage',
-        # let's add a compatibility layer to prevent from breaking.
+        # let's add a compatibility layer to prevent us from breaking.
         if isinstance(msg, bs.PowerupMessage):
             success = self.handle_powerupmsg_compat(msg)
             if success and msg.sourcenode:
                 msg.sourcenode.handlemessage(bs.PowerupAcceptMessage())
             return success
-        
+
         # now, the NEW powerup handle function.
         elif isinstance(msg, PowerupBoxMessage):
             success: bool = self.handle_powerupmsg(msg)
@@ -230,7 +238,7 @@ class Spaz(spaz.Spaz):
         if dropping_bomb:
             self.bomb_count -= 1
             bomb.node.add_death_action(
-                bs.WeakCall(self.handlemessage, BombDiedMessage())
+                bs.WeakCallPartial(self.handlemessage, BombDiedMessage())
             )
         self._pick_up(bomb.node)
 
@@ -400,9 +408,9 @@ class Spaz(spaz.Spaz):
     def _callbacks_at_method(self, method_name: str) -> None:
         if self.exists():
             for call in self._cb_wrap_calls.get(method_name, []):
-                bs.Call(call, self)()
+                bs.CallPartial(call, self)()
             for call in self._cb_raw_wrap_calls.get(method_name, []):
-                bs.Call(call)()
+                bs.CallPartial(call)()
 
     def _call_override(
         self, method_name: str, method: Callable, args: tuple, kwargs: dict
@@ -429,8 +437,7 @@ class Spaz(spaz.Spaz):
         ignore_invincibility: bool = False,
         fatal: bool = True,
     ) -> None:
-        """
-        Make this spaz receive a determined amount of damage.
+        """Make this spaz receive a determined amount of damage.
 
         You can determine if the damage can pierce shields and directly
         go to our spaz node, and if the damage can be fatal and kill in
@@ -469,8 +476,7 @@ class Spaz(spaz.Spaz):
     ) -> float: ...
 
     def do_impulse(self, *args, **kwargs) -> float:
-        """
-        Applies a velocity impulse to this spaz.
+        """Applies a velocity impulse to this spaz.
 
         Returns the hypothetical damage this impulse would've dealt.
         """
@@ -537,9 +543,8 @@ class Spaz(spaz.Spaz):
 
         powerup: Type[SpazPowerup] | None = None
 
-        # FIXME: nested import of humilliation; instead of
-        # doing this, figure out something else, maybe using
-        # messages and signals and whatnot?
+        # nested import of humilliation
+        # curse you, deprecation!
         from claymore.core.powerup import (
             TripleBombsPowerup,
             StickyBombsPowerup,
@@ -586,7 +591,7 @@ class Spaz(spaz.Spaz):
         """
         # if we have a NONE slot type, apply and forget about it
         if powerup.slot is PowerupSlotType.NONE:
-            powerup.equip(self)
+            self._orphan_powerup(powerup)
         # else, assign our incoming powerup to a 'PowerupSlot'
         # that holds its slot type
         else:
@@ -612,8 +617,14 @@ class Spaz(spaz.Spaz):
             # our powerup slot will take it from here
             powerup_slot.apply_powerup(powerup)
 
-    def _powerup_popup(self, tex: str) -> None:
-        """Billboard showing picked up powerup's icon."""
+    def _orphan_powerup(self, powerup: SpazPowerup) -> None:
+        """Equip a powerup that does not belong in any slot."""
+        if powerup.texture_name != 'empty':
+            self._flash_billboard(
+                bs.gettexture(powerup.texture_name)
+            )
+        self.node.handlemessage('flash')
+        powerup.equip(self)
 
     def _powerup_billboard_slot(self, powerup: SpazPowerup) -> None:
         """Animate our powerup billboard properly."""
@@ -642,12 +653,21 @@ class Spaz(spaz.Spaz):
         )
 
     def _powerup_warn(self, tex: str) -> None:
-        """Billboard warning showing a powerup about to run out."""
-        if tex == 'empty':
+        """Show a billboard warning us of a powerup running out of time."""
+        if not self.node or tex == 'empty':
             return
+
         self.node.billboard_texture = bs.gettexture(tex)
         self.node.billboard_opacity = 1.0
         self.node.billboard_cross_out = True
+
+    def _powerup_unwarn(self) -> None:
+        """Hide our billboard warning."""
+        if not self.node:
+            return
+        
+        self.node.billboard_opacity = 0.0
+        self.node.billboard_cross_out = False
 
     def gloves_silent_unequip(self) -> None:
         """Remove gloves without doing the *blwom* sound and removing flash."""

@@ -6,7 +6,7 @@ import ctypes
 import os
 
 
-def send(msg: str, condition: bool) -> None:
+def send(msg: str, condition: bool = True) -> None:
     """Show a message on-screen and log it simultaneously."""
     if not condition:
         return

@@ -1,5 +1,4 @@
-"""
-Module containing factories - classes that hold all sorts of data
+"""Module containing factories -- classes that hold all sorts of data
 shared in multiple parts of code and/or used often in runtime.
 """
 

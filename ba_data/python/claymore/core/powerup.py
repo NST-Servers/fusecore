@@ -3,21 +3,17 @@ from abc import abstractmethod
 from enum import Enum
 from typing import Type, override, TYPE_CHECKING
 
+from bascenev1lib.actor.spaz import SpazFactory
+
+from claymore.core.factory import Factory, FactoryTexture, FactoryClass
+from claymore.core.shared import PowerupSlotType
+
 if TYPE_CHECKING:
     import bascenev1 as bs
-
-from claymore.core.spaz import Spaz
-from claymore.core.factory import Factory, FactoryTexture, FactoryClass
+    from claymore.core.spaz import Spaz
 
 POWERUP_SET: set[Type[SpazPowerup]] = set()
 DEFAULT_POWERUP_DURATION: int = 20000
-
-
-class PowerupSlotType(Enum):
-    NONE = 0
-    BUFF = 1
-    BOMB = 2
-    GLOVES = 3
 
 
 class PowerupFactory(Factory):
@@ -54,15 +50,15 @@ class SpazPowerup(FactoryClass):
     (Default: 20000 [20 secs.])
     """
 
-    texture_name: str = 'cl_powerup_empty'
-    """A texture (as a string) assigned to this powerup. (Default: "cl_powerup_empty")
+    texture_name: str = 'empty'
+    """A texture (as a string) assigned to this powerup. (Default: "empty")
 
     To make it invisible, set to 'empty' -- though it's not recommended to
     do this UNLESS the powerup doesn't use a slot (e.g. Shield, Curse.)
     """
 
     @classmethod
-    def _reg_texture(cls) -> None:
+    def _register_texture(cls) -> None:
         """Register our unique texture."""
         cls.my_factory.register_resource(
             f'{cls.texture_name}', FactoryTexture(cls.texture_name)
@@ -71,7 +67,7 @@ class SpazPowerup(FactoryClass):
     @classmethod
     def register(cls) -> None:
         # Load up our unique texture and continue
-        cls._reg_texture()
+        cls._register_texture()
         return super().register()
 
     @override
@@ -119,7 +115,7 @@ class TripleBombsPowerup(SpazPowerup):
 
     name = 'triple_bombs'
     slot = PowerupSlotType.BUFF
-    texture = 'powerupBomb'
+    texture_name = 'powerupBomb'
 
     def equip(self, spaz: Spaz) -> None:
         # Because "unequip()" will run each time we equip
@@ -153,7 +149,7 @@ class BombPowerup(SpazPowerup):
 class StickyBombsPowerup(BombPowerup):
     name = 'sticky_bombs'
     bomb_type = 'sticky'
-    texture = 'powerupStickyBombs'
+    texture_name = 'powerupStickyBombs'
 
 
 StickyBombsPowerup.register()
@@ -162,7 +158,7 @@ StickyBombsPowerup.register()
 class IceBombsPowerup(BombPowerup):
     name = 'ice_bombs'
     bomb_type = 'ice'
-    texture = 'powerupIceBombs'
+    texture_name = 'powerupIceBombs'
 
 
 IceBombsPowerup.register()
@@ -171,7 +167,7 @@ IceBombsPowerup.register()
 class ImpactBombsPowerup(BombPowerup):
     name = 'impact_bombs'
     bomb_type = 'impact'
-    texture = 'powerupImpactBombs'
+    texture_name = 'powerupImpactBombs'
 
 
 ImpactBombsPowerup.register()
@@ -179,7 +175,7 @@ ImpactBombsPowerup.register()
 
 class LandMinesPowerup(SpazPowerup):
     name = 'land_mines'
-    texture = 'empty'
+    texture_name = 'empty'
 
     def equip(self, spaz: Spaz) -> None:
         spaz.set_land_mine_count(min(spaz.land_mine_count + 3, 3))
@@ -193,7 +189,7 @@ class PunchPowerup(SpazPowerup):
 
     name = 'punch'
     slot = PowerupSlotType.GLOVES
-    texture = 'powerupPunch'
+    texture_name = 'powerupPunch'
 
     # This powerup has some built-in functions; don't have to do much about it.
     def equip(self, spaz: Spaz) -> None:
@@ -214,10 +210,10 @@ PunchPowerup.register()
 
 class ShieldPowerup(SpazPowerup):
     name = 'shield'
-    texture = 'empty'
+    texture_name = 'empty'
 
     def equip(self, spaz: Spaz) -> None:
-        spaz.equip_shields()
+        spaz.equip_shields(decay=SpazFactory.get().shield_decay_rate > 0)
 
 
 ShieldPowerup.register()
@@ -225,7 +221,7 @@ ShieldPowerup.register()
 
 class HealthPowerup(SpazPowerup):
     name = 'health'
-    texture = 'powerupHealth'
+    texture_name = 'powerupHealth'
 
     def equip(self, spaz: Spaz) -> None:
         spaz.heal()
@@ -236,7 +232,7 @@ HealthPowerup.register()
 
 class CursePowerup(SpazPowerup):
     name = 'curse'
-    texture = 'empty'
+    texture_name = 'empty'
 
     def equip(self, spaz: Spaz) -> None:
         spaz.curse()

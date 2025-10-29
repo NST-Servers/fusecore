@@ -311,7 +311,7 @@ class Bomb(FactoryActor):
         if self.fuse_time and self.fuse_time >= 0:
             bs.timer(
                 self.fuse_time,
-                bs.WeakCall(self.handlemessage, ExplodeMessage()),
+                bs.WeakCallPartial(self.handlemessage, ExplodeMessage()),
             )
 
     def explode(self) -> None:
@@ -356,7 +356,7 @@ class Bomb(FactoryActor):
             # Do a kaboom!
             bs.timer(
                 0.1 + random.random() * 0.1,
-                bs.WeakCall(self.handlemessage, ExplodeMessage()),
+                bs.WeakCallPartial(self.handlemessage, ExplodeMessage()),
             )
 
     def handle_impulse(self, msg: bs.HitMessage) -> None:
@@ -555,12 +555,12 @@ class ImpactBomb(Bomb):
     def create_timers(self) -> None:
         """Create some extra timers to fancify this bomb."""
         self.arm_timer = bs.Timer(
-            0.2, bs.WeakCall(self.handlemessage, ArmMessage())
+            0.2, bs.WeakCallPartial(self.handlemessage, ArmMessage())
         )
         if self.fuse_time and self.fuse_time >= 0:
             self.warn_timer = bs.Timer(
                 max(0, self.fuse_time - 1.7),
-                bs.WeakCall(self.handlemessage, WarnMessage()),
+                bs.WeakCallPartial(self.handlemessage, WarnMessage()),
             )
 
     def handle_arm(self) -> None:
@@ -581,7 +581,7 @@ class ImpactBomb(Bomb):
         # Enable our explosive material with slight delay
         bs.timer(
             0.25,
-            bs.WeakCall(
+            bs.WeakCallPartial(
                 self.add_material,
                 self.factory.fetch('land_mine_blast_material'),
             ),
@@ -632,7 +632,7 @@ class ImpactBomb(Bomb):
             # Do a kaboom!
             bs.timer(
                 0.1 + random.random() * 0.1,
-                bs.WeakCall(self.handlemessage, ExplodeMessage()),
+                bs.WeakCallPartial(self.handlemessage, ExplodeMessage()),
             )
 
     def handlemessage(self, msg: Any) -> None:
@@ -692,7 +692,7 @@ class LandMine(ImpactBomb):
         """We've been dropped!"""
         # Arm ourselves
         self.arm_timer = bs.Timer(
-            1.25, bs.WeakCall(self.handlemessage, ArmMessage())
+            1.25, bs.WeakCallPartial(self.handlemessage, ArmMessage())
         )
 
     def handle_arm(self) -> None:
@@ -711,7 +711,7 @@ class LandMine(ImpactBomb):
         # Make it explodable now
         bs.timer(
             0.25,
-            bs.WeakCall(
+            bs.WeakCallPartial(
                 self.add_material,
                 self.factory.fetch('land_mine_blast_material'),
             ),

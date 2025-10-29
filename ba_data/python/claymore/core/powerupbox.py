@@ -7,6 +7,7 @@ from bascenev1lib.gameutils import SharedObjects
 import bascenev1 as bs
 
 from bascenev1lib.actor import powerupbox
+
 from claymore.core.factory import (
     Factory,
     FactoryActor,
@@ -14,7 +15,18 @@ from claymore.core.factory import (
     FactoryMesh,
     FactorySound,
 )
-from claymore.core.powerup import SpazPowerup
+from claymore.core.powerup import (
+    SpazPowerup,
+    TripleBombsPowerup,
+    StickyBombsPowerup,
+    IceBombsPowerup,
+    ImpactBombsPowerup,
+    LandMinesPowerup,
+    PunchPowerup,
+    ShieldPowerup,
+    HealthPowerup,
+    CursePowerup,
+)
 
 POWERUPBOX_SET: set[Type[PowerupBox]] = set()
 
@@ -38,7 +50,7 @@ class PowerupBoxFactory(Factory):
     def __init__(self) -> None:
         super().__init__()
 
-        self.last_poweruptype: str | None = None
+        self.last_poweruptype: Type[PowerupBox] | None = None
 
         from bascenev1 import get_default_powerup_distribution
 
@@ -84,27 +96,19 @@ class PowerupBoxFactory(Factory):
             for _i in range(int(freq)):
                 self._powerupdist.append(powerup)
 
-    def get_powerup_box(self, name: str) -> Type[PowerupBox]:
-        """Return a powerup box type via name."""
-        finds = ([p for p in POWERUPBOX_SET if p.name == name] or [None])[0]
-        if finds is None:
-            raise ValueError(f'No PowerupBox with name "{name}" found.')
-        return finds
-
-    def get_powerup_box_distribution(self) -> dict[str, float]:
-        """
-        Return the **default** weight of all powerup boxes.
+    def get_powerup_box_distribution(self) -> dict[Type[PowerupBox], float]:
+        """Return the **default** weight of all powerup boxes.
 
         To get the *active* powerup distribution, consult rulesets.
         """
-        distribution: dict[str, float] = {}
+        distribution: dict[Type[PowerupBox], float] = {}
 
         for powerupbox in POWERUPBOX_SET:
-            distribution[powerupbox.name] = powerupbox.weight
+            distribution[powerupbox] = powerupbox.weight
         return distribution
 
     def get_random_powerup_box(
-        self, exclude: list[str] = [], weightless: bool = False
+        self, exclude: list[PowerupBox] = [], weightless: bool = False
     ) -> Type[PowerupBox]:
         """
         Return a random powerup box type.
@@ -122,42 +126,42 @@ class PowerupBoxFactory(Factory):
             viable_powerups = [
                 p
                 for p in POWERUPBOX_SET
-                if not p.name in exclude and p.weight > 0
+                if not p in exclude and p.weight > 0
             ]
             return random.choice(viable_powerups)
-        else:
-            # Special rule: if our last powerup was a curse, always
-            # follow up with a healthpack.
-            if self.last_poweruptype == CursePowerupBox.name:
-                powerup: Type[PowerupBox] = HealthPowerupBox
-                self.last_poweruptype = powerup.name
-                return powerup
-            # Do random number assignation if we use weight
-            # TODO: Would be better if we calculated the pool on each
-            # powerupbox register over every time this function runs...
-            powerup_pool: list[dict] = []
-            latest_float: float = 0.0
-            for powerup_i in [
-                p
-                for p in POWERUPBOX_SET
-                if not p.name in exclude and p.weight > 0
-            ]:
-                powerup_pool.append(
-                    {
-                        'powerup': powerup_i,
-                        'min': latest_float,
-                        'max': latest_float + powerup_i.weight,
-                    }
-                )
-                latest_float += powerup_i.weight
-            # Roll a number and pick our powerup!
-            roll = random.uniform(0, latest_float)
-            for pwpdict in powerup_pool:
-                # Check if we're within range of this powerup
-                # if true, return this one!
-                if pwpdict['max'] > roll >= pwpdict['min']:
-                    self.last_poweruptype = pwpdict['powerup'].name
-                    return pwpdict['powerup']
+        
+        # Special rule: if our last powerup was a curse, always
+        # follow up with a healthpack.
+        if self.last_poweruptype == CursePowerupBox:
+            powerup: Type[PowerupBox] = HealthPowerupBox
+            self.last_poweruptype = powerup
+            return powerup
+        # Do random number assignation if we use weight
+        # TODO: Would be better if we calculated the pool on each
+        # powerupbox register over every time this function runs...
+        powerup_pool: list[dict] = []
+        latest_float: float = 0.0
+        for powerup_i in [
+            p
+            for p in POWERUPBOX_SET
+            if not p in exclude and p.weight > 0
+        ]:
+            powerup_pool.append(
+                {
+                    'powerup': powerup_i,
+                    'min': latest_float,
+                    'max': latest_float + powerup_i.weight,
+                }
+            )
+            latest_float += powerup_i.weight
+        # Roll a number and pick our powerup!
+        roll = random.uniform(0, latest_float)
+        for pwpdict in powerup_pool:
+            # Check if we're within range of this powerup
+            # if true, return this one!
+            if pwpdict['max'] > roll >= pwpdict['min']:
+                self.last_poweruptype = pwpdict['powerup']
+                return pwpdict['powerup']
 
         # Shouldn't get here.
         raise RuntimeError('Unable to return random powerup.')
@@ -174,9 +178,6 @@ class PowerupBox(FactoryActor):
     """Factory used by this FactoryClass instance."""
     group_set = POWERUPBOX_SET
     """Set to register this FactoryClass under."""
-
-    name: str = 'powerup box'
-    """Name given to this powerup box class."""
 
     texture: str = 'cl_powerup_empty'
     """Texture name applied to the box.
@@ -309,11 +310,11 @@ class PowerupBox(FactoryActor):
         if self.time and self.time > 0.0:
             bs.timer(
                 max(0, self.time - 2.5),
-                bs.WeakCall(self.do_flash),
+                bs.WeakCallPartial(self.do_flash),
             )
             bs.timer(
                 max(0, self.time - 1.0),
-                bs.WeakCall(self.handlemessage, bs.DieMessage()),
+                bs.WeakCallPartial(self.handlemessage, bs.DieMessage()),
             )
 
     def do_flash(self) -> None:
@@ -386,9 +387,8 @@ PowerupBox._register_resources()
 
 
 class TripleBombsPowerupBox(PowerupBox):
-    name = 'triple_bombs'
-    grants = 'triple_bombs'
     texture = 'powerupBomb'
+    powerup_to_grant = TripleBombsPowerup
     weight = 3.0
 
 
@@ -397,9 +397,8 @@ TripleBombsPowerupBox.register()
 
 
 class StickyBombsPowerupBox(PowerupBox):
-    name = 'sticky_bombs'
-    grants = 'sticky_bombs'
     texture = 'powerupStickyBombs'
+    powerup_to_grant = StickyBombsPowerup
     weight = 3.0
 
 
@@ -407,9 +406,8 @@ StickyBombsPowerupBox.register()
 
 
 class IceBombsPowerupBox(PowerupBox):
-    name = 'ice_bombs'
-    grants = 'ice_bombs'
     texture = 'powerupIceBombs'
+    powerup_to_grant = IceBombsPowerup
     weight = 3.0
 
 
@@ -417,9 +415,8 @@ IceBombsPowerupBox.register()
 
 
 class ImpactBombsPowerupBox(PowerupBox):
-    name = 'impact_bombs'
-    grants = 'impact_bombs'
     texture = 'powerupImpactBombs'
+    powerup_to_grant = ImpactBombsPowerup
     weight = 3.0
 
 
@@ -427,9 +424,8 @@ ImpactBombsPowerupBox.register()
 
 
 class LandMinesPowerupBox(PowerupBox):
-    name = 'land_mines'
-    grants = 'land_mines'
     texture = 'powerupLandMines'
+    powerup_to_grant = LandMinesPowerup
     weight = 2.0
 
 
@@ -437,9 +433,8 @@ LandMinesPowerupBox.register()
 
 
 class PunchPowerupBox(PowerupBox):
-    name = 'punch'
-    grants = 'punch'
     texture = 'powerupPunch'
+    powerup_to_grant = PunchPowerup
     weight = 3.0
 
 
@@ -447,9 +442,8 @@ PunchPowerupBox.register()
 
 
 class ShieldPowerupBox(PowerupBox):
-    name = 'shield'
-    grants = 'shield'
     texture = 'powerupShield'
+    powerup_to_grant = ShieldPowerup
     weight = 2.0
 
 
@@ -457,9 +451,8 @@ ShieldPowerupBox.register()
 
 
 class HealthPowerupBox(PowerupBox):
-    name = 'health'
-    grants = 'health'
     texture = 'powerupHealth'
+    powerup_to_grant = HealthPowerup
     weight = 1.0
 
 
@@ -467,9 +460,8 @@ HealthPowerupBox.register()
 
 
 class CursePowerupBox(PowerupBox):
-    name = 'curse'
-    grants = 'curse'
     texture = 'powerupCurse'
+    powerup_to_grant = CursePowerup
     weight = 1.0
 
 
