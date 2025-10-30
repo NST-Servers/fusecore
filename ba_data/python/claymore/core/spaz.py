@@ -119,18 +119,17 @@ class SpazPowerupSlot:
 
 class Spaz(spaz.Spaz):
     """Wrapper for our actor Spaz class."""
+
     default_bomb: Type[Bomb] = Bomb
 
     @override
     def __init__(self, *args, **kwargs):
-        VanillaSpaz.__init__(
-            self, *args, **kwargs
-        ) 
+        VanillaSpaz.__init__(self, *args, **kwargs)
 
         self.hitpoints = 1000
-        
+
         self.active_bomb: Type[Bomb] = self.default_bomb
-        self._bomb_compat() # bot behavior & mod compatibility
+        self._bomb_compat()  # bot behavior & mod compatibility
 
         self._cb_wrapped_methods: set[str] = set()
         self._cb_wrap_calls: dict[str, list[Callable]] = {}
@@ -210,7 +209,7 @@ class Spaz(spaz.Spaz):
             StickyBomb,
             LandMine,
         )
-        
+
         if self.default_bomb_type != 'normal':
             bomb_type: Type[Bomb] = Bomb
             match self.default_bomb_type:
@@ -223,7 +222,7 @@ class Spaz(spaz.Spaz):
                 case 'impact':
                     bomb_type = ImpactBomb
             self.active_bomb = bomb_type
-        
+
         if self.bomb_type != 'normal':
             bomb_type: Type[Bomb] = Bomb
             match self.bomb_type:
@@ -236,7 +235,7 @@ class Spaz(spaz.Spaz):
                 case 'impact':
                     bomb_type = ImpactBomb
             self.active_bomb = bomb_type
-        
+
     @override
     def drop_bomb(self):
         """DEPRECATED drop_bomb function."""

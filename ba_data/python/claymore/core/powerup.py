@@ -38,7 +38,7 @@ class SpazPowerup(FactoryClass):
     """Factory used by this FactoryClass instance."""
     group_set = POWERUP_SET
     """Set to register this FactoryClass under."""
-    
+
     slot: PowerupSlotType = PowerupSlotType.NONE
     """Slot used by this powerup.
 
@@ -136,6 +136,7 @@ TripleBombsPowerup.register()
 
 class BombPowerup(SpazPowerup):
     """A powerup that grants the provided bomb type."""
+
     slot = PowerupSlotType.BOMB
 
     bomb_type: Type[Bomb] = Bomb
