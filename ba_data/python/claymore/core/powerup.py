@@ -7,6 +7,12 @@ from bascenev1lib.actor.spaz import SpazFactory
 
 from claymore.core.factory import Factory, FactoryTexture, FactoryClass
 from claymore.core.shared import PowerupSlotType
+from claymore.core.bomb import (
+    Bomb,
+    IceBomb,
+    StickyBomb,
+    ImpactBomb,
+)
 
 if TYPE_CHECKING:
     import bascenev1 as bs
@@ -24,18 +30,17 @@ class PowerupFactory(Factory):
 
 
 class SpazPowerup(FactoryClass):
-    """ """
+    """A powerup assigned to a Spaz class that performs
+    actions on their behalf.
+    """
 
     my_factory = PowerupFactory
     """Factory used by this FactoryClass instance."""
     group_set = POWERUP_SET
     """Set to register this FactoryClass under."""
-
-    name: str = 'powerup'
-    """Name of this powerup."""
-
+    
     slot: PowerupSlotType = PowerupSlotType.NONE
-    """Slot used by this powerup. (Default: 0)
+    """Slot used by this powerup.
 
     This can be assigned 1, 2, 3 for a powerup slot in our spaz,
     or 0 to discard the slot usage.
@@ -47,7 +52,7 @@ class SpazPowerup(FactoryClass):
 
     duration_ms: int = DEFAULT_POWERUP_DURATION
     """The integer duration of this powerup in milliseconds.
-    (Default: 20000 [20 secs.])
+    (Default: 20000ms -> 20 secs.)
     """
 
     texture_name: str = 'empty'
@@ -113,7 +118,6 @@ class SpazPowerup(FactoryClass):
 class TripleBombsPowerup(SpazPowerup):
     """A powerup that allows spazzes to throw up to three bombs."""
 
-    name = 'triple_bombs'
     slot = PowerupSlotType.BUFF
     texture_name = 'powerupBomb'
 
@@ -132,49 +136,43 @@ TripleBombsPowerup.register()
 
 class BombPowerup(SpazPowerup):
     """A powerup that grants the provided bomb type."""
-
-    name = 'empty bomb powerup'
     slot = PowerupSlotType.BOMB
 
-    bomb_type: str = 'normal'
+    bomb_type: Type[Bomb] = Bomb
     """Bomb type to assign when this powerup is picked up."""
 
     def equip(self, spaz: Spaz) -> None:
-        spaz.set_bomb_type(self.bomb_type)
+        spaz.assign_bomb_type(self.bomb_type)
 
     def unequip(self, spaz: Spaz, overwrite: bool, clone: bool) -> None:
         spaz.reset_bomb_type()
 
 
 class StickyBombsPowerup(BombPowerup):
-    name = 'sticky_bombs'
-    bomb_type = 'sticky'
     texture_name = 'powerupStickyBombs'
+    bomb_type = StickyBomb
 
 
 StickyBombsPowerup.register()
 
 
 class IceBombsPowerup(BombPowerup):
-    name = 'ice_bombs'
-    bomb_type = 'ice'
     texture_name = 'powerupIceBombs'
+    bomb_type = IceBomb
 
 
 IceBombsPowerup.register()
 
 
 class ImpactBombsPowerup(BombPowerup):
-    name = 'impact_bombs'
-    bomb_type = 'impact'
     texture_name = 'powerupImpactBombs'
+    bomb_type = ImpactBomb
 
 
 ImpactBombsPowerup.register()
 
 
 class LandMinesPowerup(SpazPowerup):
-    name = 'land_mines'
     texture_name = 'empty'
 
     def equip(self, spaz: Spaz) -> None:
@@ -187,7 +185,6 @@ LandMinesPowerup.register()
 class PunchPowerup(SpazPowerup):
     """A powerup which grants boxing gloves to a spaz."""
 
-    name = 'punch'
     slot = PowerupSlotType.GLOVES
     texture_name = 'powerupPunch'
 
@@ -209,7 +206,6 @@ PunchPowerup.register()
 
 
 class ShieldPowerup(SpazPowerup):
-    name = 'shield'
     texture_name = 'empty'
 
     def equip(self, spaz: Spaz) -> None:
@@ -220,7 +216,6 @@ ShieldPowerup.register()
 
 
 class HealthPowerup(SpazPowerup):
-    name = 'health'
     texture_name = 'powerupHealth'
 
     def equip(self, spaz: Spaz) -> None:
@@ -231,7 +226,6 @@ HealthPowerup.register()
 
 
 class CursePowerup(SpazPowerup):
-    name = 'curse'
     texture_name = 'empty'
 
     def equip(self, spaz: Spaz) -> None:

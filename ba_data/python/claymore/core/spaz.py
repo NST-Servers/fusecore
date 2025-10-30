@@ -10,7 +10,6 @@ from typing import (
     Callable,
     Any,
     TYPE_CHECKING,
-    TypedDict,
     overload,
 )
 
@@ -18,11 +17,13 @@ import bascenev1 as bs
 
 from bascenev1lib.actor import spaz
 from bascenev1lib.actor.spaz import BombDiedMessage
+from bascenev1lib.actor.bomb import Bomb as DeprecatedBomb
+
 
 from claymore._tools import obj_clone, obj_method_override
 from claymore.core.bomb import (
-    BOMB_SET,
     Bomb,
+    LandMine,
 )
 from claymore.core.powerupbox import PowerupBoxMessage
 from claymore.core.shared import PowerupSlotType
@@ -40,7 +41,6 @@ VanillaSpaz: Type[spaz.Spaz] = obj_clone(spaz.Spaz)
 POWERUP_WARNING = set()
 
 
-@dataclass
 class SpazPowerupSlot:
 
     def __init__(self, owner: Spaz) -> None:
@@ -119,18 +119,18 @@ class SpazPowerupSlot:
 
 class Spaz(spaz.Spaz):
     """Wrapper for our actor Spaz class."""
+    default_bomb: Type[Bomb] = Bomb
 
     @override
     def __init__(self, *args, **kwargs):
         VanillaSpaz.__init__(
             self, *args, **kwargs
-        )  # FIXME: Troubleshoot this line?
+        ) 
 
-        # ruleset overwrite
         self.hitpoints = 1000
-        # self.hitpoints_max = int(
-        #    clay.rulesets.get('player','health') * 10
-        # )
+        
+        self.active_bomb: Type[Bomb] = self.default_bomb
+        self._bomb_compat() # bot behavior & mod compatibility
 
         self._cb_wrapped_methods: set[str] = set()
         self._cb_wrap_calls: dict[str, list[Callable]] = {}
@@ -184,50 +184,89 @@ class Spaz(spaz.Spaz):
         # return to standard handling
         return VanillaSpaz.handlemessage(self, msg)
 
-    def set_bomb_type(self, bomb_type: str) -> None:
-        """Assign this spaz a bomb type."""
-        # Make sure a bomb with this bomb_type exists
-        any_bomb = [b for b in BOMB_SET if b.bomb_type == bomb_type]
-        if not any_bomb:
-            raise ValueError(f'No bomb with bomb_type "{bomb_type}" exists.')
+    def apply_ruleset(self) -> None:
+        ...
+        # self.hitpoints_max = int(
+        #    clay.rulesets.get('player','health') * 10
+        # )
 
-        self.bomb_type = bomb_type
+    def assign_bomb_type(self, bomb: Type[Bomb]) -> None:
+        """Set a bomb type for this spaz to use."""
+        self.active_bomb = bomb
 
     def reset_bomb_type(self) -> None:
-        """Reset this spaz's assigned bomb type."""
-        self.bomb_type = self.bomb_type_default
+        """Reset our bomb type back to our default type."""
+        self.active_bomb = self.default_bomb
 
+    def _bomb_compat(self) -> None:
+        """DEPRECATED transform our 'self.default_bomb_type'
+        into a 'self.default_bomb' class.
+        """
+        # nested import of humilliation
+        # curse you, deprecation!
+        from claymore.core.bomb import (
+            IceBomb,
+            ImpactBomb,
+            StickyBomb,
+            LandMine,
+        )
+        
+        if self.default_bomb_type != 'normal':
+            bomb_type: Type[Bomb] = Bomb
+            match self.default_bomb_type:
+                case 'ice':
+                    bomb_type = IceBomb
+                case 'land_mine':
+                    bomb_type = LandMine
+                case 'sticky':
+                    bomb_type = StickyBomb
+                case 'impact':
+                    bomb_type = ImpactBomb
+            self.active_bomb = bomb_type
+        
+        if self.bomb_type != 'normal':
+            bomb_type: Type[Bomb] = Bomb
+            match self.bomb_type:
+                case 'ice':
+                    bomb_type = IceBomb
+                case 'land_mine':
+                    bomb_type = LandMine
+                case 'sticky':
+                    bomb_type = StickyBomb
+                case 'impact':
+                    bomb_type = ImpactBomb
+            self.active_bomb = bomb_type
+        
     @override
-    def drop_bomb(self) -> Bomb | None:  # type: ignore # TODO: check this loser out
+    def drop_bomb(self):
+        """DEPRECATED drop_bomb function."""
+        # NOTE: Bombs have the same functions and calls as in vanilla, but
+        # it could cause issues in particular circumstances... Keep that in mind!
+        return cast(DeprecatedBomb, self.drop_bomb_type())
+
+    def drop_bomb_type(self) -> Bomb | None:
         """Tell the spaz to drop one of his bombs, and returns
         the resulting bomb object.
 
         If the spaz has no bombs or is otherwise unable to
         drop a bomb, returns None.
         """
-
+        # TODO: Migrate the landmine counter into a proper class for flexible usage
         if (self.land_mine_count <= 0 and self.bomb_count <= 0) or self.frozen:
             return None
         assert self.node
         pos = self.node.position_forward
         vel = self.node.velocity
 
+        bomb_type: Type[Bomb] = self.active_bomb
+        is_external = False
+        # TODO: Migrate the landmine counter into a proper class for flexible usage
         if self.land_mine_count > 0:
-            dropping_bomb = False
+            is_external = True
             self.set_land_mine_count(self.land_mine_count - 1)
-            bomb_type = 'land_mine'
-        else:
-            dropping_bomb = True
-            bomb_type = self.bomb_type
+            bomb_type = LandMine
 
-        # Get our custom bomb class type
-        bomb_classtype: Type[Bomb] | None = (
-            [b for b in BOMB_SET if b.bomb_type == bomb_type] or [None]
-        )[0]
-        if bomb_classtype is None:
-            raise ValueError(f'No bombs with bomb_type "{bomb_type}".')
-
-        bomb = bomb_classtype(
+        bomb = bomb_type(
             position=(pos[0], pos[1] - 0.0, pos[2]),
             velocity=(vel[0], vel[1], vel[2]),
             source_player=self.source_player,
@@ -235,7 +274,7 @@ class Spaz(spaz.Spaz):
         ).autoretain()
 
         assert bomb.node
-        if dropping_bomb:
+        if not is_external:
             self.bomb_count -= 1
             bomb.node.add_death_action(
                 bs.WeakCallPartial(self.handlemessage, BombDiedMessage())
@@ -271,8 +310,7 @@ class Spaz(spaz.Spaz):
         self._num_times_hit = 0
 
     def add_bomb_count(self, count: int) -> None:
-        """
-        Increase the bomb limit this Spaz has.
+        """Increase the bomb limit this Spaz has.
 
         Use responsibly -- if you're using this for a powerup, make
         sure the *unequip* method has an *add_bomb_count* that
@@ -282,8 +320,7 @@ class Spaz(spaz.Spaz):
         self.bomb_count += count
 
     def add_method_callback(self, method_name: str, callback: Callable) -> None:
-        """
-        Add a callback to any function.
+        """Add a callback to any function.
 
         Once the base method is executed, all callbacks will be
         executed, containing ourselves as an argument.
@@ -368,11 +405,8 @@ class Spaz(spaz.Spaz):
         self._cb_overwrite_calls[method_name] = override_func
 
     def reset_method_override(self, method_name: str) -> None:
-        """
-        Reset a spaz method to it's default if it's been overriden.
-
-        Args:
-            method_name (str): Name of the method to reset
+        """Remove all callable overrides on the specified
+        method (as a name), returning it to its default behavior.
         """
         method = getattr(self, method_name, None)
         if not isinstance(method, Callable):
@@ -620,9 +654,7 @@ class Spaz(spaz.Spaz):
     def _orphan_powerup(self, powerup: SpazPowerup) -> None:
         """Equip a powerup that does not belong in any slot."""
         if powerup.texture_name != 'empty':
-            self._flash_billboard(
-                bs.gettexture(powerup.texture_name)
-            )
+            self._flash_billboard(bs.gettexture(powerup.texture_name))
         self.node.handlemessage('flash')
         powerup.equip(self)
 
@@ -665,7 +697,7 @@ class Spaz(spaz.Spaz):
         """Hide our billboard warning."""
         if not self.node:
             return
-        
+
         self.node.billboard_opacity = 0.0
         self.node.billboard_cross_out = False
 

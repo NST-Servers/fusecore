@@ -124,12 +124,10 @@ class PowerupBoxFactory(Factory):
         if weightless:
             # Choose equally if we're weightless
             viable_powerups = [
-                p
-                for p in POWERUPBOX_SET
-                if not p in exclude and p.weight > 0
+                p for p in POWERUPBOX_SET if not p in exclude and p.weight > 0
             ]
             return random.choice(viable_powerups)
-        
+
         # Special rule: if our last powerup was a curse, always
         # follow up with a healthpack.
         if self.last_poweruptype == CursePowerupBox:
@@ -142,9 +140,7 @@ class PowerupBoxFactory(Factory):
         powerup_pool: list[dict] = []
         latest_float: float = 0.0
         for powerup_i in [
-            p
-            for p in POWERUPBOX_SET
-            if not p in exclude and p.weight > 0
+            p for p in POWERUPBOX_SET if not p in exclude and p.weight > 0
         ]:
             powerup_pool.append(
                 {
