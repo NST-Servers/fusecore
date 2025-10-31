@@ -37,11 +37,6 @@ import logging
 if TYPE_CHECKING:
     from claymore.core.powerup import SpazPowerup
 
-# Clone our vanilla spaz class
-# We'll be calling this over "super()" to prevent the code
-# from falling apart because the engine is like that. :p
-VanillaSpaz: Type[spaz.Spaz] = obj_clone(spaz.Spaz)
-
 
 class Spaz(spaz.Spaz):
     """Wrapper for our actor Spaz class."""
@@ -50,7 +45,7 @@ class Spaz(spaz.Spaz):
 
     @override
     def __init__(self, *args, **kwargs):
-        VanillaSpaz.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.hitpoints = 1000
         self.damage_scale = 0.22
@@ -111,7 +106,7 @@ class Spaz(spaz.Spaz):
             return success
 
         # return to standard handling
-        return VanillaSpaz.handlemessage(self, msg)
+        return super().handlemessage(msg)
 
     def _apply_components(self) -> None:
         """Give this spaz all available components."""
@@ -182,9 +177,9 @@ class Spaz(spaz.Spaz):
 
     @override
     def drop_bomb(self):
-        """DEPRECATED drop_bomb function."""
-        # NOTE: Bombs have the same functions and calls as in vanilla, but
-        # it could cause issues in particular circumstances... Keep that in mind!
+        """DEPRECATED drop_bomb function.""" 
+        # NOTE: Bombs have the same methods as the vanilla ones, but it could
+        # cause issues in particular circumstances... Keep that in mind!
         return cast(DeprecatedBomb, self.drop_bomb_type())
 
     def drop_bomb_type(self) -> Bomb | None:
@@ -508,7 +503,7 @@ class Spaz(spaz.Spaz):
 
         if msg.grants_powerup:
             # instantiate our powerup type here!
-            self.equip_powerup(msg.grants_powerup())
+            self.equip_powerup(msg.grants_powerup(self))
             return True
 
         return False
@@ -599,7 +594,7 @@ class Spaz(spaz.Spaz):
         if powerup.texture_name != 'empty':
             self._flash_billboard(bs.gettexture(powerup.texture_name))
         self.node.handlemessage('flash')
-        powerup.equip(self)
+        powerup.equip()
 
     def _powerup_billboard_slot(self, powerup: SpazPowerup) -> None:
         """Animate our powerup billboard properly."""
@@ -660,4 +655,4 @@ class Spaz(spaz.Spaz):
 
 
 # Overwrite the vanilla game's spaz init with our own
-obj_method_override(spaz.Spaz, Spaz)
+spaz.Spaz = Spaz

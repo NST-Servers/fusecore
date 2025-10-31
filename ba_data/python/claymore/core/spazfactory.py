@@ -42,7 +42,7 @@ class SpazPowerupSlot:
         self._do_spaz_billboard_and_animate()
         # previous functions should never fail unless the
         # powerup's parameters are faulty; ez troubleshooting
-        powerup.equip(self.owner)
+        powerup.equip()
 
     def _do_powerup(self) -> None:
         """Arm this powerup's wearoff and unequip timers."""
@@ -80,7 +80,7 @@ class SpazPowerupSlot:
         if not self.active_powerup or not self.owner.exists():
             return
 
-        self.active_powerup.warning(self.owner)
+        self.active_powerup.warning()
         self.owner._powerup_warn(self.active_powerup.texture_name)
 
     def _unequip(self, overwrite: bool = False, clone: bool = False) -> None:
@@ -92,7 +92,7 @@ class SpazPowerupSlot:
             position=self.owner.node.position,
         )  # TODO: replace this for a sound from OUR PowerupFactory
         self.active_powerup.unequip(
-            self.owner, overwrite=overwrite, clone=clone
+            overwrite=overwrite, clone=clone
         )
         self.active_powerup = None
         self.timer_warning = None

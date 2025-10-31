@@ -77,21 +77,22 @@ class SpazPowerup(FactoryClass):
         return super().register()
 
     @override
-    def __init__(self) -> None:
+    def __init__(self, spaz: Spaz) -> None:
         """Initialize our powerup."""
         super().__init__()
         self.factory: PowerupFactory
+        self.spaz = spaz
 
         # Adjust powerup duration to clay's ruleset system
         # TODO: todo
         self.duration_ms = self.duration_ms
 
     @abstractmethod
-    def equip(self, spaz: Spaz) -> None:
+    def equip(self) -> None:
         """Method called to spaz when this powerup is equipped."""
 
     @abstractmethod
-    def warning(self, spaz: Spaz) -> None:
+    def warning(self) -> None:
         """Method called 3 seconds before this powerup is unequipped.
 
         ### WARNING:
@@ -104,7 +105,7 @@ class SpazPowerup(FactoryClass):
         """
 
     @abstractmethod
-    def unequip(self, spaz: Spaz, overwrite: bool, clone: bool) -> None:
+    def unequip(self, overwrite: bool, clone: bool) -> None:
         """Method called when this powerup is unequipped.
 
         This includes when the powerup is overwritten by another
@@ -123,15 +124,15 @@ class TripleBombsPowerup(SpazPowerup):
     texture_name = 'powerupBomb'
 
     @override
-    def equip(self, spaz: Spaz) -> None:
+    def equip(self) -> None:
         # Because "unequip()" will run each time we equip
         # this powerup, we won't be able to stack bombs, so
         # we don't have to worry about making checks about it.
-        spaz.add_bomb_count(2)
+        self.spaz.add_bomb_count(2)
 
     @override
-    def unequip(self, spaz: Spaz, overwrite: bool, clone: bool) -> None:
-        spaz.add_bomb_count(-2)
+    def unequip(self, overwrite: bool, clone: bool) -> None:
+        self.spaz.add_bomb_count(-2)
 
 
 TripleBombsPowerup.register()
@@ -146,12 +147,12 @@ class BombPowerup(SpazPowerup):
     """Bomb type to assign when this powerup is picked up."""
 
     @override
-    def equip(self, spaz: Spaz) -> None:
-        spaz.assign_bomb_type(self.bomb_type)
+    def equip(self) -> None:
+        self.spaz.assign_bomb_type(self.bomb_type)
 
     @override
-    def unequip(self, spaz: Spaz, overwrite: bool, clone: bool) -> None:
-        spaz.reset_bomb_type()
+    def unequip(self, overwrite: bool, clone: bool) -> None:
+        self.spaz.reset_bomb_type()
 
 
 class StickyBombsPowerup(BombPowerup):
@@ -182,8 +183,8 @@ class LandMinesPowerup(SpazPowerup):
     texture_name = 'empty'
 
     @override
-    def equip(self, spaz: Spaz) -> None:
-        spaz.set_land_mine_count(min(spaz.land_mine_count + 3, 3))
+    def equip(self) -> None:
+        self.spaz.set_land_mine_count(min(self.spaz.land_mine_count + 3, 3))
 
 
 LandMinesPowerup.register()
@@ -197,19 +198,19 @@ class PunchPowerup(SpazPowerup):
 
     # This powerup has some built-in functions; don't have to do much about it.
     @override
-    def equip(self, spaz: Spaz) -> None:
-        spaz.equip_boxing_gloves()
+    def equip(self) -> None:
+        self.spaz.equip_boxing_gloves()
 
     @override
-    def warning(self, spaz: Spaz) -> None:
-        spaz.node.boxing_gloves_flashing = True
+    def warning(self) -> None:
+        self.spaz.node.boxing_gloves_flashing = True
 
     @override
-    def unequip(self, spaz: Spaz, overwrite: bool, clone: bool) -> None:
+    def unequip(self, overwrite: bool, clone: bool) -> None:
         # Custom function that removes gloves without
         # forcefully playing the "powerdown" sound and
         # sets "spaz.node.boxing_gloves_flashing" to False.
-        spaz.unequip_boxing_gloves()
+        self.spaz.unequip_boxing_gloves()
 
 
 PunchPowerup.register()
@@ -235,8 +236,8 @@ class ShieldPowerup(SpazPowerup):
     texture_name = 'empty'
 
     @override
-    def equip(self, spaz: Spaz) -> None:
-        component: ShieldComponent = spaz.get_component(ShieldComponent)
+    def equip(self) -> None:
+        component: ShieldComponent = self.spaz.get_component(ShieldComponent)
         component.activate()
 
 
@@ -248,8 +249,8 @@ class HealthPowerup(SpazPowerup):
     texture_name = 'powerupHealth'
 
     @override
-    def equip(self, spaz: Spaz) -> None:
-        spaz.heal()
+    def equip(self) -> None:
+        self.spaz.heal()
 
 
 HealthPowerup.register()
@@ -259,8 +260,8 @@ class CursePowerup(SpazPowerup):
     texture_name = 'empty'
 
     @override
-    def equip(self, spaz: Spaz) -> None:
-        spaz.curse()
+    def equip(self) -> None:
+        self.spaz.curse()
 
 
 CursePowerup.register()
