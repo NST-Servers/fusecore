@@ -1,4 +1,4 @@
-"""Defines our Claypocalypse Spaz modified class."""
+"""Defines our custom Spaz class."""
 
 from __future__ import annotations
 from dataclasses import dataclass
@@ -19,8 +19,12 @@ from bascenev1lib.actor import spaz
 from bascenev1lib.actor.spaz import BombDiedMessage
 from bascenev1lib.actor.bomb import Bomb as DeprecatedBomb
 
-
 from claymore._tools import obj_clone, obj_method_override
+from claymore.core.spazfactory import (
+    SpazPowerupSlot,
+    SpazComponent,
+    SPAZ_COMPONENTS,
+)
 from claymore.core.bomb import (
     Bomb,
     LandMine,
@@ -38,84 +42,6 @@ if TYPE_CHECKING:
 # from falling apart because the engine is like that. :p
 VanillaSpaz: Type[spaz.Spaz] = obj_clone(spaz.Spaz)
 
-POWERUP_WARNING = set()
-
-
-class SpazPowerupSlot:
-
-    def __init__(self, owner: Spaz) -> None:
-        self.owner = owner
-
-        self.active_powerup: SpazPowerup | None = None
-        self.timer_warning: bs.Timer | None = None
-        self.timer_wearoff: bs.Timer | None = None
-
-    def apply_powerup(self, powerup: SpazPowerup) -> None:
-        """Give the spaz the provided powerup."""
-        if not self.owner.exists():
-            return
-
-        if self.active_powerup:  # unequip previous powerup
-            self._unequip(overwrite=True, clone=self.active_powerup is powerup)
-        self.active_powerup = powerup
-
-        self._do_powerup()
-        self._do_spaz_billboard_and_animate()
-        # previous functions should never fail unless the
-        # powerup's parameters are faulty; ez troubleshooting
-        powerup.equip(self.owner)
-
-    def _do_powerup(self) -> None:
-        """Arm this powerup's wearoff and unequip timers."""
-        if not self.active_powerup or not self.owner.exists():
-            return
-
-        self.timer_warning = bs.Timer(
-            max(
-                0,
-                (
-                    self.active_powerup.duration_ms
-                    - self.owner._powerup_wearoff_time_ms
-                )
-                / 1000,
-            ),
-            self._warn,
-        )
-        self.timer_wearoff = bs.Timer(
-            self.active_powerup.duration_ms / 1000,
-            self._unequip,
-        )
-        if self.active_powerup.texture_name != 'empty':
-            self.owner._flash_billboard(
-                bs.gettexture(self.active_powerup.texture_name)
-            )
-
-    def _do_spaz_billboard_and_animate(self) -> None:
-        if not self.active_powerup or not self.owner.exists():
-            return
-
-        self.owner.node.handlemessage('flash')
-        self.owner._powerup_billboard_slot(self.active_powerup)
-
-    def _warn(self) -> None:
-        if not self.active_powerup or not self.owner.exists():
-            return
-
-        self.active_powerup.warning(self.owner)
-        self.owner._powerup_warn(self.active_powerup.texture_name)
-
-    def _unequip(self, overwrite: bool = False, clone: bool = False) -> None:
-        if not self.active_powerup or not self.owner.exists():
-            return
-
-        self.owner._powerup_unwarn()
-        self.active_powerup.unequip(
-            self.owner, overwrite=overwrite, clone=clone
-        )
-        self.active_powerup = None
-        self.timer_warning = None
-        self.timer_wearoff = None
-
 
 class Spaz(spaz.Spaz):
     """Wrapper for our actor Spaz class."""
@@ -127,16 +53,15 @@ class Spaz(spaz.Spaz):
         VanillaSpaz.__init__(self, *args, **kwargs)
 
         self.hitpoints = 1000
+        self.damage_scale = 0.22
+
+        self._has_set_components: bool = False
+        self.components: dict[Type[SpazComponent], SpazComponent] = {}
+        # NOTE: ^ this doesnt feel right...
+        self._apply_components()
 
         self.active_bomb: Type[Bomb] = self.default_bomb
         self._bomb_compat()  # bot behavior & mod compatibility
-
-        self._cb_wrapped_methods: set[str] = set()
-        self._cb_wrap_calls: dict[str, list[Callable]] = {}
-        self._cb_raw_wrap_calls: dict[str, list[Callable]] = {}
-        self._cb_overwrite_calls: dict[str, Callable | None] = {}
-
-        self.damage_scale = 0.22
 
         self._powerup_wearoff_time_ms: int = 2000
         """For how long the powerup wearoff alert is displayed for (in milliseconds.)"""
@@ -148,6 +73,11 @@ class Spaz(spaz.Spaz):
             PowerupSlotType.GLOVES: SpazPowerupSlot(self),
             # ... (Append more 'PowerupSlotType' entries here!)
         }
+
+        self._cb_wrapped_methods: set[str] = set()
+        self._cb_wrap_calls: dict[str, list[Callable]] = {}
+        self._cb_raw_wrap_calls: dict[str, list[Callable]] = {}
+        self._cb_overwrite_calls: dict[str, Callable | None] = {}
 
         # We callback wrap these on creation as the engine
         # clones these, so they won't be able to be updated later.
@@ -182,6 +112,20 @@ class Spaz(spaz.Spaz):
 
         # return to standard handling
         return VanillaSpaz.handlemessage(self, msg)
+
+    def _apply_components(self) -> None:
+        """Give this spaz all available components."""
+        if not self.node or self._has_set_components:
+            return
+
+        for component in SPAZ_COMPONENTS:
+            self.components[component] = component(self)
+
+        self._has_set_components = True
+
+    def get_component(self, component: Type[SpazComponent]) -> Any:
+        """Return the active component object, provided by the type."""
+        return self.components[component]
 
     def apply_ruleset(self) -> None:
         ...
@@ -700,9 +644,8 @@ class Spaz(spaz.Spaz):
         self.node.billboard_opacity = 0.0
         self.node.billboard_cross_out = False
 
-    def gloves_silent_unequip(self) -> None:
-        """Remove gloves without doing the *blwom* sound and removing flash."""
-        # NOTE: Not sure if I should move this to the powerup file itself...
+    def unequip_boxing_gloves(self) -> None:
+        """Remove gloves without doing the previously hardcoded powerdown sound."""
         if self._demo_mode:  # Preserve old behavior.
             self._punch_power_scale = 1.2
             self._punch_cooldown = spaz.BASE_PUNCH_COOLDOWN

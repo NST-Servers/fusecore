@@ -13,6 +13,7 @@ from claymore.core.bomb import (
     StickyBomb,
     ImpactBomb,
 )
+from claymore.core.spazfactory import SpazComponent
 
 if TYPE_CHECKING:
     import bascenev1 as bs
@@ -121,12 +122,14 @@ class TripleBombsPowerup(SpazPowerup):
     slot = PowerupSlotType.BUFF
     texture_name = 'powerupBomb'
 
+    @override
     def equip(self, spaz: Spaz) -> None:
         # Because "unequip()" will run each time we equip
         # this powerup, we won't be able to stack bombs, so
         # we don't have to worry about making checks about it.
         spaz.add_bomb_count(2)
 
+    @override
     def unequip(self, spaz: Spaz, overwrite: bool, clone: bool) -> None:
         spaz.add_bomb_count(-2)
 
@@ -142,9 +145,11 @@ class BombPowerup(SpazPowerup):
     bomb_type: Type[Bomb] = Bomb
     """Bomb type to assign when this powerup is picked up."""
 
+    @override
     def equip(self, spaz: Spaz) -> None:
         spaz.assign_bomb_type(self.bomb_type)
 
+    @override
     def unequip(self, spaz: Spaz, overwrite: bool, clone: bool) -> None:
         spaz.reset_bomb_type()
 
@@ -176,6 +181,7 @@ ImpactBombsPowerup.register()
 class LandMinesPowerup(SpazPowerup):
     texture_name = 'empty'
 
+    @override
     def equip(self, spaz: Spaz) -> None:
         spaz.set_land_mine_count(min(spaz.land_mine_count + 3, 3))
 
@@ -190,35 +196,58 @@ class PunchPowerup(SpazPowerup):
     texture_name = 'powerupPunch'
 
     # This powerup has some built-in functions; don't have to do much about it.
+    @override
     def equip(self, spaz: Spaz) -> None:
         spaz.equip_boxing_gloves()
 
+    @override
     def warning(self, spaz: Spaz) -> None:
         spaz.node.boxing_gloves_flashing = True
 
+    @override
     def unequip(self, spaz: Spaz, overwrite: bool, clone: bool) -> None:
-        # Custom Claypocalypse function that removes gloves without
+        # Custom function that removes gloves without
         # forcefully playing the "powerdown" sound and
         # sets "spaz.node.boxing_gloves_flashing" to False.
-        spaz.gloves_silent_unequip()
+        spaz.unequip_boxing_gloves()
 
 
 PunchPowerup.register()
 
 
+class ShieldComponent(SpazComponent):
+    """Spaz component to handle shields."""
+
+    def activate(self) -> None:
+        # i was thinking of replacing the glove & shield system over components
+        # to demonstrate how cool components are, but then i thought of the
+        # billions of incompatibilities this would cause, so now the component
+        # is a simple shield activation tunnel :p
+        self.spaz.equip_shields(decay=SpazFactory.get().shield_decay_rate > 0)
+
+    def on_damage(self) -> None: ...
+
+    def super_awesome_secret_method_that_makes_your_spaz_explode(self) -> None:
+        self.spaz.curse_explode()
+
+
 class ShieldPowerup(SpazPowerup):
     texture_name = 'empty'
 
+    @override
     def equip(self, spaz: Spaz) -> None:
-        spaz.equip_shields(decay=SpazFactory.get().shield_decay_rate > 0)
+        component: ShieldComponent = spaz.get_component(ShieldComponent)
+        component.activate()
 
 
+ShieldComponent.register()
 ShieldPowerup.register()
 
 
 class HealthPowerup(SpazPowerup):
     texture_name = 'powerupHealth'
 
+    @override
     def equip(self, spaz: Spaz) -> None:
         spaz.heal()
 
@@ -229,6 +258,7 @@ HealthPowerup.register()
 class CursePowerup(SpazPowerup):
     texture_name = 'empty'
 
+    @override
     def equip(self, spaz: Spaz) -> None:
         spaz.curse()
 

@@ -1,4 +1,4 @@
-"""Defines our Claypocalypse Spaz modified class."""
+"""Defines our custom SpazBot class."""
 
 from __future__ import annotations
 from typing import Type, override
