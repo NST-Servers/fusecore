@@ -2,4 +2,7 @@
 and does nothing else aside from asking for more info.
 """
 
-from claymore import _bootstrap
+from . import _bootstrap as b
+
+DiscordRP = b.discordrp.DiscordRPSubsystem()
+# DiscordRP.start()
