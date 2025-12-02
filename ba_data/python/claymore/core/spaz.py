@@ -177,7 +177,7 @@ class Spaz(spaz.Spaz):
 
     @override
     def drop_bomb(self):
-        """DEPRECATED drop_bomb function.""" 
+        """DEPRECATED drop_bomb function."""
         # NOTE: Bombs have the same methods as the vanilla ones, but it could
         # cause issues in particular circumstances... Keep that in mind!
         return cast(DeprecatedBomb, self.drop_bomb_type())

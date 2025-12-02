@@ -91,9 +91,7 @@ class SpazPowerupSlot:
         PowerupBoxFactory.get().powerdown_sound.play(
             position=self.owner.node.position,
         )  # TODO: replace this for a sound from OUR PowerupFactory
-        self.active_powerup.unequip(
-            overwrite=overwrite, clone=clone
-        )
+        self.active_powerup.unequip(overwrite=overwrite, clone=clone)
         self.active_powerup = None
         self.timer_warning = None
         self.timer_wearoff = None
