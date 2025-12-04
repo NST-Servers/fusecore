@@ -198,8 +198,9 @@ class CharacterPicker(PopupWindow):
         plus = bui.app.plus
         assert plus is not None
 
-        if plus.get_v1_account_state() != 'signed_in':
+        if plus.accounts.primary is None:
             show_sign_in_prompt()
+            self._transition_out()
             return
 
         if self._delegate is not None:

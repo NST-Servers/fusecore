@@ -30,6 +30,8 @@ class LeagueRankWindow(bui.MainWindow):
         plus = bui.app.plus
         assert plus is not None
 
+        self._uiopenstate = bui.UIOpenState('classicleaguerank')
+
         bui.set_analytics_screen('League Rank Window')
 
         self._league_rank_data: dict[str, Any] | None = None
@@ -1150,7 +1152,7 @@ class LeagueRankWindow(bui.MainWindow):
             widget.delete()
         self._power_ranking_score_widgets = []
 
-        scores = data['scores'] if data is not None else []
+        scores: list = data['scores'] if data is not None else []
         tally_color = (0.5, 0.6, 0.8)
         w_parent = self._subcontainer
         v2 = self._power_ranking_score_v

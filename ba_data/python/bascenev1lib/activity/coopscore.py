@@ -133,10 +133,10 @@ class CoopScoreScreen(bs.Activity[bs.Player, bs.Team]):
         assert all(isinstance(i, bs.PlayerInfo) for i in self._playerinfos)
 
         self._score: int | None = settings['score']
-        assert isinstance(self._score, (int, type(None)))
+        assert isinstance(self._score, int | None)
 
         self._fail_message: bs.Lstr | None = settings['fail_message']
-        assert isinstance(self._fail_message, (bs.Lstr, type(None)))
+        assert isinstance(self._fail_message, bs.Lstr | None)
 
         self._begin_time: float | None = None
 
@@ -345,7 +345,7 @@ class CoopScoreScreen(bs.Activity[bs.Player, bs.Team]):
         delay = 0.7 if (self._score is not None) else 0.0
 
         # If there's no players left in the game, lets not show the UI
-        # (that would allow restarting the game with zero players, etc).
+        # (it would allow restarting the game with zero players, etc).
         if not self.players:
             return
 

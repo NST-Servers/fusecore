@@ -85,7 +85,9 @@ class Permission(Enum):
 
 
 class SpecialChar(Enum):
-    """Special characters the game can print."""
+    """Special characters the engine can diplay. Note that this currently
+    needs to be manually kept in sync with bacommon.text.SpecialChar.
+    """
 
     DOWN_ARROW = 0
     UP_ARROW = 1
