@@ -29,6 +29,7 @@ MAX_PARTICLES_DEFAULT: int = 70
 
 PARTICLE_SET: set[Type[Particle]] = set()
 
+
 class ParticleLimitMode(Enum):
     # NOTE: figure out if we can find device specs to switch between these?
     # NOTE 2: pc = overcharge, android = dynamic / dismiss / overwrite
@@ -75,8 +76,8 @@ class ParticleFactory(Factory):
 
     def get_particle_material(
         self,
-        friction: float  = 1,
-        damping: float   = 0,
+        friction: float = 1,
+        damping: float = 0,
         stiffness: float = 0,
     ) -> bs.Material:
         """Return a particle material with the provided attributes.
@@ -99,7 +100,9 @@ class ParticleFactory(Factory):
         )
         return m
 
+
 class DirectorKillMessage: ...
+
 
 class ParticleDirector:
     """Class that keeps track of how many particles we spawn.
@@ -114,29 +117,29 @@ class ParticleDirector:
     def __init__(self) -> None:
         self._particle_pool: OrderedDict[int, Particle] = OrderedDict()
         self._inum: int = 0
-        
+
         self.limit_mode: ParticleLimitMode = ParticleLimitMode.OVERWRITE
         self.particle_limit: int = self._get_activity_particle_limit()
-        
+
     def _get_activity_particle_limit(self) -> int:
         """Get the proper particle limit accord to the active activity type."""
         activity = bs.getactivity()
-        
+
         for a, value in MAX_PARTICLES_ATLAS.items():
             if isinstance(activity, a):
                 return value
-            
+
         return MAX_PARTICLES_DEFAULT
-        
+
     def perform(
         self,
         particle_type: Type[Particle],
         position: tuple[float, float, float],
-        velocity: tuple[float, float, float]
+        velocity: tuple[float, float, float],
     ) -> bool:
         """Ask the director if we can spawn this particle
         in the provided position w/ velocity.
-        
+
         Returns whether we did spawn the particle or not.
         """
         if len(self._particle_pool) >= self.particle_limit:
@@ -149,10 +152,12 @@ class ParticleDirector:
                     # order oldest to die and remove
                     _, particle = self._particle_pool.popitem(last=False)
                     particle.handlemessage(DirectorKillMessage())
-                    
+
         self._inum += 1
-        
-        self._particle_pool[self._inum] = particle_type(position, velocity, self._inum)
+
+        self._particle_pool[self._inum] = particle_type(
+            position, velocity, self._inum
+        )
         return True
 
     def _remove_particle(self, did: int) -> None:
@@ -175,12 +180,13 @@ class ParticleDirector:
             activity.customdata[cls.IDENTIFIER] = factory
         assert isinstance(factory, cls)
         return factory
-    
+
     def append(self, particle: Particle) -> bool:
         """Returns whether we can spawn or not and make a
         space for our incoming particle if it is the case.
         """
         return False
+
 
 class Particle(FactoryActor):
     """A particle actor to add *custom* sass to in-game actions.
@@ -191,6 +197,7 @@ class Particle(FactoryActor):
     as standard actors, which could cause some performance
     issues when spawned in bulk; use these sparingly!
     """
+
     my_factory = ParticleFactory
     group_set = PARTICLE_SET
 
@@ -213,48 +220,48 @@ class Particle(FactoryActor):
 
     def attributes(self) -> None:
         """Define the attributes of this particle actor."""
-        self.factory: ParticleFactory # set via 'my_factory'
+        self.factory: ParticleFactory  # set via 'my_factory'
         particle_material = self.factory.get_particle_material()
-            # alternatively, you can do: 
-            # 'material = self.factory.material'
-            # if you don't care about it having custom
-            # friction, dampingand stiffness qualities.
-         
-        self.mesh: bs.Mesh                 = self.factory.fetch('mesh')
-        self.light_mesh: bs.Mesh           = self.mesh
-        self.body: str                     = 'landMine'
-            # Can be 'sphere', 'crate', 'landMine', 'box', 'capsule' or 'puck'.
-        self.body_scale: float             = 1.0
-        self.mesh_scale: float             = 1.0
-        self.shadow_size: float            = 0.3
-        self.color_texture: bs.Texture     = self.factory.fetch('tex')
-        self.reflection: str               = 'soft'
-            # Can be 'soft', 'char' or 'powerup'
-        self.reflection_scale: list[float] = [1.0]
-        self.gravity_scale: float          = 1.0
-        self.materials: list[bs.Material]  = [particle_material]
+        # alternatively, you can do:
+        # 'material = self.factory.material'
+        # if you don't care about it having custom
+        # friction, dampingand stiffness qualities.
 
-        self.t_fade_in: float  = 0.13
+        self.mesh: bs.Mesh = self.factory.fetch('mesh')
+        self.light_mesh: bs.Mesh = self.mesh
+        self.body: str = 'landMine'
+        # Can be 'sphere', 'crate', 'landMine', 'box', 'capsule' or 'puck'.
+        self.body_scale: float = 1.0
+        self.mesh_scale: float = 1.0
+        self.shadow_size: float = 0.3
+        self.color_texture: bs.Texture = self.factory.fetch('tex')
+        self.reflection: str = 'soft'
+        # Can be 'soft', 'char' or 'powerup'
+        self.reflection_scale: list[float] = [1.0]
+        self.gravity_scale: float = 1.0
+        self.materials: list[bs.Material] = [particle_material]
+
+        self.t_fade_in: float = 0.13
         self.t_fade_out: float = 0.13
-        self.lifespan: float   = 3.0
+        self.lifespan: float = 3.0
 
     def __init__(
         self,
         position: tuple[float, float, float],
         velocity: tuple[float, float, float] = (0, 0, 0),
-        director_id: int | None = None
+        director_id: int | None = None,
     ) -> None:
         super().__init__()
         self.did = director_id
-        
+
         self._ready_to_die: bool = False
         self._dying: bool = False
-        
+
         self._animation_node: bs.Node | None = None
         self._death_timer: bs.Timer | None = None
-        
+
         self.attributes()
-        
+
         self._initialize(position, velocity)
 
     def _initialize(
@@ -267,19 +274,19 @@ class Particle(FactoryActor):
             'prop',
             delegate=self,
             attrs={
-                'position':         position,
-                'velocity':         velocity,
-                'mesh':             self.mesh,
-                'light_mesh':       self.light_mesh,
-                'body':             self.body,
-                'body_scale':       self.body_scale,
-                'mesh_scale':       self.mesh_scale,
-                'shadow_size':      self.shadow_size,
-                'color_texture':    self.color_texture,
-                'reflection':       self.reflection,
+                'position': position,
+                'velocity': velocity,
+                'mesh': self.mesh,
+                'light_mesh': self.light_mesh,
+                'body': self.body,
+                'body_scale': self.body_scale,
+                'mesh_scale': self.mesh_scale,
+                'shadow_size': self.shadow_size,
+                'color_texture': self.color_texture,
+                'reflection': self.reflection,
                 'reflection_scale': self.reflection_scale,
-                'gravity_scale':    self.gravity_scale,
-                'materials':        self.materials,
+                'gravity_scale': self.gravity_scale,
+                'materials': self.materials,
             },
         )
 
@@ -294,42 +301,39 @@ class Particle(FactoryActor):
         t_in = self.t_fade_in
         t_ls = self.t_fade_in + self.lifespan
         t_total = self.t_fade_in + self.lifespan + self.t_fade_out
-        
+
         self._animation_node = bs.animate(
             self.node,
             'mesh_scale',
             {
                 0: 0,
-                t_in:    self.mesh_scale,
-                t_ls:    self.mesh_scale,
+                t_in: self.mesh_scale,
+                t_ls: self.mesh_scale,
                 t_total: 0,
             },
         )
-        self._death_timer = bs.Timer(
-            t_total,
-            self._die_gracefully
-        )
+        self._death_timer = bs.Timer(t_total, self._die_gracefully)
 
     def _die_gracefully(self) -> None:
         if self._dying or not self.node:
             return
-        
+
         self._ready_to_die = True
         self.die()
 
     def die(self) -> None:
         """Remove ourselves.
-        
+
         This function can be called directly by 'ParticleDirector' when
         clearing up particle excess, on which we'll animate a fade-out.
         """
         if self._dying or not self.node:
             return
         self._dying = True
-        
+
         if self.did is not None:
             ParticleDirector.instance()._remove_particle(self.did)
-        
+
         if not self._ready_to_die:
             # if we got this function called earlier than intended, we're
             # very likely getting cleaned away!
@@ -342,7 +346,7 @@ class Particle(FactoryActor):
                     {
                         0: self.node.mesh_scale,
                         self.t_fade_out: 0,
-                    }
+                    },
                 )
                 bs.timer(self.t_fade_out, self.node.delete)
             return
@@ -370,35 +374,38 @@ class Particle(FactoryActor):
     def summon(
         cls,
         position: tuple[float, float, float],
-        velocity: tuple[float, float, float] = (0, 0, 0)
+        velocity: tuple[float, float, float] = (0, 0, 0),
     ) -> None:
         """Spawn a preset of this particle in the current activity."""
         # If you want multiple summon presets of a single
         # particle, you can append more '@classmethod' functions
         # like this one as long as they're uniquely named.
-        
+
         # the director is in charge of managing particles, we
         # spawn them via it to mantain ourselves under the particle limit
         director: ParticleDirector = ParticleDirector.instance()
-        
+
         position_spread: float = 2.0
         velocity_spread: float = 1.25
-        
+
         for i in range(7):
             # add some randomness to our position and
             # velocity to get some visual variety going
             # TODO: implement 'vector3_spread' from 'claymore/common.py'
             #       over whatever this sludge of code is
             import random
+
             p = (
                 position[0] + (position_spread * random.uniform(-1, 1)),
                 position[1] + (position_spread * random.uniform(-1, 1)),
                 position[2] + (position_spread * random.uniform(-1, 1)),
             )
             v = vector3_multfactor(
-                velocity, # random velocity multiplier
+                velocity,  # random velocity multiplier
                 factor_min=1.0 / velocity_spread,
                 factor_max=1.0 * velocity_spread,
             )
             director.perform(cls, p, v)
+
+
 Particle.register()

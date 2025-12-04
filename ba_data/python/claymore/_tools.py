@@ -8,7 +8,7 @@ import os
 
 def send(msg: str, condition: bool = True) -> None:
     """Show a message on-screen and log it simultaneously.
-    
+
     DEPRECATED: Only keeping this here to make code rewriting
     a bit easier; use a proper logging system for more
     efficient debugging.
