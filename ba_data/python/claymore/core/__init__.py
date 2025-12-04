@@ -7,4 +7,5 @@ from . import (
     blast,
     powerup,
     powerupbox,
+    particles,
 )
