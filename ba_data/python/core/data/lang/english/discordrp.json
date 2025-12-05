@@ -1,0 +1,22 @@
+{
+    "discordrp": {
+        "session": {
+            "ffa": "Free-for-All",
+            "teams": "vs. Teams",
+            "coop": "Cooperative"
+        },
+        "state": {
+            "local": {
+                "solo": "Playing Solo",
+                "multi": "Local Multiplayer",
+                "online": "Open Party"
+
+            },
+            "party": {
+                "private": "Private Server",
+                "public": "Public Server"
+            }
+        },
+        "map": "Map: ${A}"
+    }
+}

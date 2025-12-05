@@ -1,0 +1,87 @@
+{
+    "createText": "Create",
+    "deleteText": "Delete",
+    "renameText": "Rename",
+    "editText": "Edit",
+    "cloneText": "Clone",
+    "shareText": "Share",
+    "dupeText":"Duplicate \"${A}\"?",
+    "killFeed": {
+        "leftText": "${NAME} scared ${VICTIM} to death.",
+        "leftBetrayalText": "${NAME} disappointed ${VICTIM}.",
+        "leftSuicideText": "${NAME} chickened out.",
+        "oneHitKillText": "${NAME} obliterated ${VICTIM}.",
+        "oneHitKillMeleeText": "${NAME} annihilated ${VICTIM}.",
+        "cursedText": "${NAME} took ${VICTIM} with them.",
+        "cursedSuicideText": "${NAME} succumbed to their curse.",
+        "fallText": "${NAME} yeeted ${VICTIM}.",
+        "fallSuicideText": "${NAME} didn't watch their step.",
+        "bombText":"${NAME} exploded ${VICTIM}.",
+        "bombSuicideText": "${NAME} blew themselves up.",
+        "bumpText": "${NAME} cracked ${VICTIM}'s skull.",
+        "bumpBetrayalText": "${NAME} did ${VICTIM} dirty.",
+        "bumpSuicideText": "${NAME} had a fatal concussion.",
+        "shatterText": "${NAME} shattered ${VICTIM}.",
+        "shatterSuicideText": "${NAME} practiced Cryonics... poorly."
+    },
+    "partyQueue": {
+        "status": {
+            "queue": "Queued",
+            "join": "Joining",
+            "joinTry": "Attempting to join in ${A}..."
+        },
+        "onPartyNotice": "You're hosting a party,\nqueueing to another party will\ndisconnect players from yours.\nDo you wish to proceed?"
+    },
+    "seriesLength": {
+        "titleText": "Series Length...",
+        "winRequirementText": "Win Requirement",
+        "roundsText": "Rounds",
+        "bestOfText": "Best of",
+        "firstToText": "First to"
+    },
+    "translations": {
+        "commands": {
+            "Usage:": null
+        },
+        "errorC": {
+            "You don't have permissions to run this command.": null,
+            "Unknown command.": null,
+            "Provided command does not exist.": null,
+            "A command error occured!": null,
+            "Command failed.": null,
+            "Check console for more details.": null,
+            "Tell the host to check console for more details.": null,
+            "You're not hosting a party.": null,
+            "\"${VALUE}\" isn't valid!": null,
+            "\"${VALUE}\" isn't a valid ${TYPE}!": null,
+            "Falling back to ${VALUE}.": null,
+            "Error kicking player.": null,
+            "You can't ${ACTION} ${TARGET}!": null,
+            "You got kicked!\nReason: ${REASON}": null,
+            "You got banned!\nTime: ${TIME} minutes\nReason: ${REASON}": null,
+            "Invalid map name.": null,
+            "Invalid client ID.": null,
+            "Invalid operator level.": null,
+            "Couldn't get account ID.\nYou might not be running a party!": null
+        },
+        "kick_kwd": {
+            "yourself": null,
+            "the host": null,
+            "kick": null,
+            "ban": null,
+            "None provided": null
+        },
+        "type": {
+            "number": null,
+            "key": null,
+            "class": null
+        }
+    },
+    "error": {
+        "notRunningGameActivity": "You're not running a game!",
+        "messageCantBeEmpty": "Message can't be empty.",
+        "cantUseName": "Can't use that name!",
+        "queueCancelSignOff": "Queueing canceled due to log off.",
+        "queueUnableToJoin": "Unable to join server."
+    }
+}
