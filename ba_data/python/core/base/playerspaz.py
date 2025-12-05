@@ -89,7 +89,7 @@ class PlayerSpaz(playerspaz.Spaz):
         assert not self.expired
         self.handle_messagestat(msg)
         # Do standard handling
-        return MyPlayerSpaz.handlemessage(self, msg)   # type: ignore # FIXME: huh
+        return MyPlayerSpaz.handlemessage(self, msg)  # type: ignore # FIXME: huh
 
 
 # Overwrite the vanilla game's spaz init with our own
