@@ -11,6 +11,7 @@ from core._tools import obj_method_override
 from core import (
     base,
     discordrp,
+    _cloudsafety,
 )
 
 from ._language import ExternalLanguageSubsystem, reload_language
