@@ -19,7 +19,7 @@ from claymore._language import ExternalLanguageSubsystem
 obj_method_override(babase.LanguageSubsystem, ExternalLanguageSubsystem)
 bs.app.lang.setlanguage(
     bs.app.lang.language,
-    print_change=True,
+    print_change=False,
     store_to_config=False,
     ignore_redundant=False,
 )
