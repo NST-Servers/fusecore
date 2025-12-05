@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Type, override
 
 import bascenev1 as bs
-from claymore._tools import obj_clone, obj_method_override
+from core._tools import obj_clone, obj_method_override
 import bascenev1lib.actor.spazbot as vanilla_spazbot
 
 # Clone our vanilla spaz class

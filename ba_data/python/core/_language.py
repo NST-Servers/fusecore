@@ -15,7 +15,7 @@ from babase._language import (
 )
 from babase._logging import applog
 
-from claymore.common import DATA_DIRECTORY
+from core.common import DATA_DIRECTORY
 
 LANG_FOLDERS: list[str] = [
     os.path.join(DATA_DIRECTORY, 'lang'),

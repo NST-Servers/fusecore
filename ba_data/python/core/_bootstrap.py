@@ -5,11 +5,11 @@ Loads multiple modules and prepares them for usage.
 import bascenev1 as bs
 import babase
 
-from claymore._tools import obj_method_override
+from core._tools import obj_method_override
 
 # misc. imports, possibly utilized by our '__init__' script
-from claymore import (
-    core,
+from core import (
+    base,
     discordrp,
 )
 

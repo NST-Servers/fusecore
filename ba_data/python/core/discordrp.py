@@ -16,7 +16,7 @@ from babase._appsubsystem import AppSubsystem
 from bascenev1lib.mainmenu import MainMenuActivity
 from bauiv1lib.gather.publictab import PartyEntry
 
-from claymore.libs.discordrp import Presence
+from core.libs.discordrp import Presence
 
 # General data
 APP_CLIENT_ID = "1439177584993894460"

@@ -4,7 +4,7 @@ from typing import override, Any, Sequence
 from bascenev1lib.gameutils import SharedObjects
 import bascenev1 as bs
 
-from claymore.core.factory import (
+from ..base.factory import (
     Factory,
     FactoryActor,
     FactoryTexture,

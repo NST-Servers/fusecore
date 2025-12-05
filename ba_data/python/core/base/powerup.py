@@ -5,19 +5,19 @@ from typing import Type, override, TYPE_CHECKING
 
 from bascenev1lib.actor.spaz import SpazFactory
 
-from claymore.core.factory import Factory, FactoryTexture, FactoryClass
-from claymore.core.shared import PowerupSlotType
-from claymore.core.bomb import (
+from ..base.factory import Factory, FactoryTexture, FactoryClass
+from ..base.shared import PowerupSlotType
+from ..base.bomb import (
     Bomb,
     IceBomb,
     StickyBomb,
     ImpactBomb,
 )
-from claymore.core.spazfactory import SpazComponent
+from ..base.spazfactory import SpazComponent
 
 if TYPE_CHECKING:
     import bascenev1 as bs
-    from claymore.core.spaz import Spaz
+    from core.base.spaz import Spaz
 
 POWERUP_SET: set[Type[SpazPowerup]] = set()
 DEFAULT_POWERUP_DURATION: int = 20000

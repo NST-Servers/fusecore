@@ -8,14 +8,14 @@ import bascenev1 as bs
 
 from bascenev1lib.actor import powerupbox
 
-from claymore.core.factory import (
+from ..base.factory import (
     Factory,
     FactoryActor,
     FactoryTexture,
     FactoryMesh,
     FactorySound,
 )
-from claymore.core.powerup import (
+from ..base.powerup import (
     SpazPowerup,
     TripleBombsPowerup,
     StickyBombsPowerup,

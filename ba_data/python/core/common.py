@@ -8,11 +8,11 @@ import _babase  # type: ignore
 
 ENV_DIRECTORY: str = _babase.app.env.data_directory
 """Full environment path."""
-MOD_FOLDER_NAME: str = 'claymore'
+CORE_FOLDER_NAME: str = 'core'
 
 PYTHON_MOD_DIRECTORY: str = os.path.join(
     bs.app.env.python_directory_app,
-    MOD_FOLDER_NAME,
+    CORE_FOLDER_NAME,
 )
 """Path to our mod's python folder."""
 

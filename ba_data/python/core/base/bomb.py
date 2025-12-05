@@ -12,7 +12,7 @@ from bascenev1lib.actor.bomb import (
     ArmMessage,
     WarnMessage,
 )
-from claymore.core.blast import (
+from ..base.blast import (
     Blast,
     IceBlast,
     ImpactBlast,
@@ -20,7 +20,7 @@ from claymore.core.blast import (
     LandMineBlast,
     TNTBlast,
 )
-from claymore.core.factory import (
+from ..base.factory import (
     Factory,
     FactoryActor,
     FactoryTexture,

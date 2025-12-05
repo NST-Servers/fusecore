@@ -7,7 +7,7 @@ import bascenev1 as bs
 from bascenev1lib.actor import spazfactory
 
 from bascenev1lib.actor.powerupbox import PowerupBoxFactory
-from claymore._tools import obj_clone, obj_method_override, send
+from core._tools import obj_clone, obj_method_override, send
 
 # clone original to use functions later on
 VanillaSpazFactory: Type[spazfactory.SpazFactory] = obj_clone(
@@ -15,7 +15,7 @@ VanillaSpazFactory: Type[spazfactory.SpazFactory] = obj_clone(
 )
 
 if TYPE_CHECKING:
-    from claymore.core.spaz import Spaz, SpazPowerup
+    from ..base.spaz import Spaz, SpazPowerup
 
 VERBOSE: bool = False
 

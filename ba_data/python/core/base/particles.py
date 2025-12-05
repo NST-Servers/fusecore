@@ -18,7 +18,7 @@ from .factory import (
     FactorySound,
 )
 
-from claymore.common import vector3_multfactor
+from core.common import vector3_multfactor
 
 MAX_PARTICLES_ATLAS: dict[Type[bs.Activity], int] = {
     MainMenuActivity: 90,
@@ -391,7 +391,7 @@ class Particle(FactoryActor):
         for i in range(7):
             # add some randomness to our position and
             # velocity to get some visual variety going
-            # TODO: implement 'vector3_spread' from 'claymore/common.py'
+            # TODO: implement 'vector3_spread' from 'core/common.py'
             #       over whatever this sludge of code is
             import random
 

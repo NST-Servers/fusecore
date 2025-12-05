@@ -19,23 +19,23 @@ from bascenev1lib.actor import spaz
 from bascenev1lib.actor.spaz import BombDiedMessage
 from bascenev1lib.actor.bomb import Bomb as DeprecatedBomb
 
-from claymore._tools import obj_clone, obj_method_override
-from claymore.core.spazfactory import (
+from core._tools import obj_clone, obj_method_override
+from ..base.spazfactory import (
     SpazPowerupSlot,
     SpazComponent,
     SPAZ_COMPONENTS,
 )
-from claymore.core.bomb import (
+from ..base.bomb import (
     Bomb,
     LandMine,
 )
-from claymore.core.powerupbox import PowerupBoxMessage
-from claymore.core.shared import PowerupSlotType
+from ..base.powerupbox import PowerupBoxMessage
+from ..base.shared import PowerupSlotType
 
 import logging
 
 if TYPE_CHECKING:
-    from claymore.core.powerup import SpazPowerup
+    from ..base.powerup import SpazPowerup
 
 
 class Spaz(spaz.Spaz):
@@ -142,7 +142,7 @@ class Spaz(spaz.Spaz):
         """
         # nested import of humilliation
         # curse you, deprecation!
-        from claymore.core.bomb import (
+        from core.base.bomb import (
             IceBomb,
             ImpactBomb,
             StickyBomb,
@@ -517,7 +517,7 @@ class Spaz(spaz.Spaz):
 
         # nested import of humilliation
         # curse you, deprecation!
-        from claymore.core.powerup import (
+        from core.base.powerup import (
             TripleBombsPowerup,
             StickyBombsPowerup,
             IceBombsPowerup,

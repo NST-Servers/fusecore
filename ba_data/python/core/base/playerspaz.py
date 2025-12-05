@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Any, override, Type
 
 import bascenev1 as bs
-from claymore._tools import obj_clone, obj_method_override
+from core._tools import obj_clone, obj_method_override
 from bascenev1lib.actor import playerspaz
 from bascenev1lib.actor.spaz import (
     PickupMessage,

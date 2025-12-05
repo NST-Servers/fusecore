@@ -7,7 +7,7 @@ from abc import abstractmethod
 from typing import Any, Dict, Callable, Self, Type
 
 import bascenev1 as bs
-from claymore._tools import send
+from core._tools import send
 
 FACTORY_ATLAS: dict[str, Dict[str, Any]] = {}
 VERBOSE = False
