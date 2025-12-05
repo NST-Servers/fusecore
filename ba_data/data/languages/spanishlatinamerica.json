@@ -9,7 +9,7 @@
     "createAnAccountText": "Crea una Cuenta",
     "customName": "Nombre Personalizado",
     "deleteAccountText": "Borrar Cuenta",
-    "googlePlayGamesAccountSwitchText": "Si Queres Usar una Cuenta diferente, usa la d Google Play Juegos para cambiarla.\n(NOTA: Ya No c si funciona)",
+    "googlePlayGamesAccountSwitchText": "Si Quieres Usar una Cuenta diferente,\nusa la de Google Play Juegos para cambiarla.",
     "linkAccountsEnterCodeText": "Ingresar Código",
     "linkAccountsGenerateCodeText": "Generar Código",
     "linkAccountsInfoText": "(comparte tu progreso con diferentes plataformas)",
@@ -63,13 +63,13 @@
     "Dual Wielding": {
       "descriptionFull": "Conecta 2 controles (de hardware o aplicación)",
       "descriptionFullComplete": "Conectó 2 controles (de hardware o aplicación)",
-      "name": "Doble Empuñadura"
+      "name": "Empuñadura Doble"
     },
     "Flawless Victory": {
       "description": "Gana sin ser lastimado",
       "descriptionComplete": "Ganó sin ser lastimado",
       "descriptionFull": "Gana ${LEVEL} sin ser lastimado",
-      "descriptionFullComplete": "Ganó ${LEVEL} sin ser golpeado",
+      "descriptionFullComplete": "Ganó ${LEVEL} sin ser lastimado",
       "name": "Victoria Impecable"
     },
     "Free Loader": {
@@ -129,7 +129,7 @@
       "descriptionComplete": "Arrojó a 3 chicos malos fuera del mapa",
       "descriptionFull": "Arroja a 3 chicos malos fuera del mapa en ${LEVEL}",
       "descriptionFullComplete": "Arrojó a 3 chicos malos fuera del mapa en ${LEVEL}",
-      "name": "Te Vas Abajo Entonces"
+      "name": "¡Buen viaje!"
     },
     "Onslaught God": {
       "description": "Anota 5000 puntos",
@@ -246,14 +246,14 @@
     "Sharing is Caring": {
       "descriptionFull": "Comparte exitosamente el juego con un amigo",
       "descriptionFullComplete": "Compartió exitosamente el juego con un amigo",
-      "name": "Compartir es querer."
+      "name": "¡Compartir es Amar!"
     },
     "Stayin' Alive": {
       "description": "Gana sin morir",
       "descriptionComplete": "Ganó sin morir",
       "descriptionFull": "Gana ${LEVEL} sin morir",
       "descriptionFullComplete": "Ganó ${LEVEL} sin morir",
-      "name": "Sobreviviendo"
+      "name": "\"Stayin' Alive\""
     },
     "Super Mega Punch": {
       "description": "Inflige 100% de daño con un solo golpe",
@@ -462,6 +462,7 @@
   "configureDeviceInSystemSettingsText": "${DEVICE} se puede configurar en la aplicación Configuración del Sistema.",
   "configureItNowText": "Configurar ahora?",
   "configureText": "Configurar",
+  "confirmText": "Confirmar",
   "connectMobileDevicesWindow": {
     "amazonText": "Tienda de Amazon (Appstore)",
     "appStoreText": "App Store",
@@ -969,6 +970,8 @@
     "vrOrientationResetText": "Orientación de RV reiniciada.",
     "willTimeOutText": "(caducará si está inactivo)"
   },
+  "inventoryOnlyAvailableOnlineText": "El inventario completo solo está disponible en línea.",
+  "inventoryOnlyAvailableSignedInText": "El inventario completo solo está disponible al iniciar sesión.",
   "inventoryText": "Inventario",
   "jumpBoldText": "SALTAR",
   "jumpText": "Saltar",
@@ -992,7 +995,7 @@
   "killsText": "Asesinatos",
   "kioskWindow": {
     "easyText": "Fácil",
-    "epicModeText": "Modo Lento",
+    "epicModeText": "Modo Épico",
     "fullMenuText": "Menú Completo",
     "hardText": "Difícil",
     "mediumText": "Medio",
@@ -1030,6 +1033,7 @@
   "livesBonusText": "Bono de Vidas",
   "loadingText": "cargando",
   "loadingTryAgainText": "Cargando; vuelve a intentarlo en un momento...",
+  "lovinglyHandcraftedByText": "Hecho a mano y con amor por:",
   "macControllerSubsystemBothText": "Ambos (no recomendado)",
   "macControllerSubsystemClassicText": "Clásico",
   "macControllerSubsystemDescriptionText": "(intenta cambiar esto si tus controles no están funcionando)",
@@ -1346,7 +1350,7 @@
     "Chosen One": "El Elegido",
     "Epic": "Juegos en Modo Épico",
     "Epic Race": "Carrera Épica",
-    "FlagCatcher": "Captura la Bandera",
+    "FlagCatcher": "Captura de Banderas",
     "Flying": "Pensamientos Felices",
     "Football": "Fútbol",
     "ForwardMarch": "Asalto",
@@ -1368,16 +1372,17 @@
   "stopRemindingMeText": "Deja de recordarmelo",
   "storagePermissionAccessText": "Esto requiere acceso de almacenamiento",
   "store": {
-    "alreadyOwnText": "¡Ya tienes ${NAME}!",
+    "alreadyOwnText": "¡${NAME} ya es de tu propiedad!",
     "bombSquadProNameText": "${APP_NAME} Pro",
     "bombSquadProNewDescriptionText": "• Quita los anuncios y las pantallas molestas\n• Desbloquea más ajustes del juego\n• También incluye:",
     "buyText": "Comprar",
     "charactersText": "Personajes",
     "comingSoonText": "Próximamente...",
     "extrasText": "Extras",
+    "featuredText": "Destacado",
     "holidaySpecialText": "¡Especial de Temporada!",
     "howToSwitchCharactersText": "(ve a \"${SETTINGS} -> ${PLAYER_PROFILES}\" para asignar y personalizar los personajes)",
-    "howToUseIconsText": "(crea perfiles globales de jugador (en la ventana de cuenta) para usarlos)",
+    "howToUseIconsText": "(Crea perfiles de jugador globales (en la ventana de inventario) para usar estos)",
     "howToUseMapsText": "(usa estos mapas en tus listas de juegos por equipos y todos contra todos)",
     "iconsText": "Iconos",
     "loadErrorText": "No se pudo cargar la página.\nRevisa tu conexión a internet.",
@@ -1394,11 +1399,16 @@
     "salePercentText": "(${PERCENT}% menos)",
     "saleText": "OFERTA",
     "searchText": "Buscar",
+    "starterPackText": "Paquete inicial",
     "teamsFreeForAllGamesText": "Juegos de Equipos / Todos contra Todos",
     "totalWorthText": "*** ¡${TOTAL_WORTH} de valor! ***",
     "upgradeQuestionText": "¿Mejorar?",
     "winterSpecialText": "Especial de Invierno",
-    "youOwnThisText": "- ya posees esto -"
+    "youOwnThisText": "- ya posees esto -",
+    "yourCharactersText": "Tus Personajes",
+    "yourIconsText": "Tus Iconos",
+    "yourMapsText": "Tus Mapas",
+    "yourMiniGamesText": "Tus Minijuegos"
   },
   "storeDescriptionText": "¡Juego de locura de a 8 Jugadores!\n\n¡Revienta a tus amigos (o a la computadora) en un torneo de mini-juegos explosivos como Captura la Bandera, Hockey-Bomba y Combate Mortal Épico en cámara lenta!\n\nControles sencillos y un amplio soporte de controles hacen que sea fácil que 8 personas entren en la acción; ¡incluso puedes usar tus dispositivos móviles como controles a través de la aplicación gratuita de 'Control Remoto BombSquad'!\n\n¡Fuera Bombas!\n\nEcha un vistazo en: www.froemling.net/bombsquad para más información.",
   "storeDescriptions": {
@@ -1444,7 +1454,7 @@
     "tokenPack2Text": "Paquete de Fichas Mediana",
     "tokenPack3Text": "Paquete de Fichas Grande",
     "tokenPack4Text": "Paquete de Fichas Jumbo",
-    "tokensDescriptionText": "Los tokens son usados para acelerar el desbloqueo de\ncofres entre otras funciones del juego y la cuenta.\n\nPuedes ganar fichas en el juego o comprarlas\nen paquetes. O comprar el Pase de Oro para tokens \ninfinitos y nunca más escuchar de ellos de nuevo.",
+    "tokensDescriptionText": "Las fichas son usadas para acelerar el desbloqueo de\ncofres entre otras funciones del juego y la cuenta.\n\nPuedes ganar fichas en el juego o comprarlas\nen paquetes. O comprar el Pase de Oro para tener fichas\ninfinitas y nunca más escuchar de ellas de nuevo.",
     "youHaveGoldPassText": "Tienes un Pase de Oro.\nTodas las compras de fichas son gratis.\nDisfruta!"
   },
   "topFriendsText": "Mejores Amigos",
@@ -1477,6 +1487,7 @@
       "Mel": "Mel",
       "Middle-Man": "Hombre Intermedio",
       "Minimus": "Minimus",
+      "OldLady": "Betty",
       "Pascal": "Pascal",
       "Pixel": "Pixel",
       "Sammy Slam": "Sammy Slam",
@@ -1508,7 +1519,7 @@
       "Uber Runaround": "Evasiva Ultra"
     },
     "displayItemNames": {
-      "${C} Tickets": "${C} Boletos",
+      "${C} Tickets": "${C} Tickets",
       "${C} Tokens": "${C} Ficha(s)",
       "Chest": "Cofre",
       "L1 Chest": "Cofre N1",
@@ -1526,9 +1537,9 @@
       "Carry the flag for a set length of time.": "Carga la bandera por un determinado tiempo.",
       "Crush ${ARG1} of your enemies.": "Elimina ${ARG1} de tus enemigos.",
       "Defeat all enemies.": "Acaba con todo lo que se mueva.",
-      "Dodge the falling bombs.": "Esquiva las bombas.",
+      "Dodge the falling bombs.": "Esquiva las bombas y corre por tu vida.",
       "Final glorious epic slow motion battle to the death.": "Gloriosa batalla final en épica cámara lenta hasta la muerte.",
-      "Gather eggs!": "¡Recolecta huevos!",
+      "Gather eggs!": "¡Recolecta huevos! ¡Solo eso!",
       "Get the flag to the enemy end zone.": "Lleva la bandera enemiga a tu zona.",
       "How fast can you defeat the ninjas?": "¿Cuán rápido puedes derrotar a los ninjas?",
       "Kill a set number of enemies to win.": "Mata a un número determinado de enemigos para ganar.",
@@ -1689,6 +1700,7 @@
       "Account unlinking successful!": "¡Desvinculación de cuenta exitosa!",
       "Accounts are already linked.": "Las cuentas ya están vinculadas.",
       "Ad view could not be verified.\nPlease be sure you are running an official and up-to-date version of the game.": "No se pudo verificar la vista del anuncio. \nPor favor asegúrese de estar ejecutando una versión oficial y actualizada del juego.",
+      "An error has occurred.": "Ha ocurrido un error, lo sentimos.",
       "An error has occurred; (${ERROR})": "Un error ha ocurrido; (${ERROR})",
       "An error has occurred; please contact support. (${ERROR})": "Un error ha ocurrido; por favor contacte al soporte. (${ERROR})",
       "An error has occurred; please contact support@froemling.net.": "Un error ha ocurrido; por favor contacta a support@froemling.net.",
@@ -1702,7 +1714,9 @@
       "Could not establish a secure connection.": "No se pudo establecer una conexión segura.",
       "Daily maximum reached.": "Máximo diario conseguido.",
       "Daily sign-in reward": "Recompensa por iniciar sesión diariamente",
+      "Down for maintenance - check back soon.": "Estamos en mantenimiento, Vuelve a intentarlo pronto.",
       "Entering tournament...": "Entrando al torneo...",
+      "Error talking to server.": "Ocurrió un error al comunicarse con el servidor",
       "Invalid code.": "Código inválido.",
       "Invalid payment; purchase canceled.": "Pago inválido; compra cancelada.",
       "Invalid promo code.": "Código promocional inválido.",
@@ -1740,6 +1754,7 @@
       "This requires version ${VERSION} or newer.": "Esto requiere la versión ${VERSION} o una más reciente.",
       "Tournaments disabled due to rooted device.": "Los torneos han sido deshabilitados debido a que tú dispositivo esta rooteado.",
       "Tournaments require ${VERSION} or newer": "Los torneos requieren la versión ${VERSION} o más nueva",
+      "Under construction - check back soon.": "En construccion-vuelva a consultar pronto",
       "Unlink ${ACCOUNT} from this account?\nAll data on ${ACCOUNT} will be reset.\n(except for achievements in some cases)": "¿Desvincular ${ACCOUNT} de esta cuenta?\nTodos los datos en ${ACCOUNT} se reiniciarán.\n(excepto los logros en algunos casos)",
       "WARNING: complaints of hacking have been issued against your account.\nAccounts found to be hacking will be banned.  Please play fair.": "ADVERTENCIA: Se han emitido reclamaciones de hackeos contra tu cuenta.\nLas cuentas que se encuentren hackeando serán baneadas. Por favor juega limpio.",
       "Wait reduced!": "Espera reducida!",
@@ -1823,7 +1838,7 @@
     "tips": {
       "A perfectly timed running-jumping-spin-punch can kill in a single hit\nand earn you lifelong respect from your friends.": "Un corre-salta-gira-golpea perfecto puede destrozar de un solo impacto\ny ganarte el respeto de tus amigos para toda la vida.",
       "Always remember to floss.": "Siempre acuérdate de cepillar tus dientes.",
-      "Create player profiles for yourself and your friends with\nyour preferred names and appearances instead of using random ones.": "Crea perfiles para \ntu y tus amigos \ncon \ntus nombres preferidos y\napariencias en vez de usar unos aleatorios.",
+      "Create player profiles for yourself and your friends with\nyour preferred names and appearances instead of using random ones.": "Crea perfiles para ti y tus amigos con \ntus nombres preferidos y apariencias en vez de usar unos aleatorios.",
       "Curse boxes turn you into a ticking time bomb.\nThe only cure is to quickly grab a health-pack.": "Las cajas de maldición te convierten en una bomba de tiempo.\nLa única cura es agarrar rápidamente un botiquín.",
       "Despite their looks, all characters' abilities are identical,\nso just pick whichever one you most closely resemble.": "A pesar de sus apariencias, las habilidades de todos los personajes\nson idénticas, así que escoge el que más te guste a ti.",
       "Don't get too cocky with that energy shield; you can still get yourself thrown off a cliff.": "No eres invencible con ese electro-escudo; todavía puedes caerte de un acantilado.",
@@ -1838,10 +1853,10 @@
       "If you kill an enemy in one hit you get double points for it.": "Si matas a un enemigo de un solo golpe obtendrás puntos dobles.",
       "If you pick up a curse, your only hope for survival is to\nfind a health powerup in the next few seconds.": "Si tomaste una maldición, tu única esperanza es\nencontrar un botiquín en tus últimos segundos.",
       "If you stay in one place, you're toast. Run and dodge to survive..": "Si te quedas quieto, estás frito. Corre y esquiva para sobrevivir...",
-      "If you've got lots of players coming and going, turn on 'auto-kick-idle-players'\nunder settings in case anyone forgets to leave the game.": "Si tienes muchos jugadores yendo y viniendo, activa 'expulsar jugadores inactivos'\nen ajustes en caso de que alguien se olvide de abandonar el juego.",
+      "If you've got lots of players coming and going, turn on 'auto-kick-idle-players'\nunder settings in case anyone forgets to leave the game.": "Si tienes muchos jugadores yendo y viniendo, activa 'expulsar jugadores inactivos'\nen ajustes>avanzado en caso de que alguien se olvide de abandonar el juego.",
       "If your device gets too warm or you'd like to conserve battery power,\nturn down \"Visuals\" or \"Resolution\" in Settings->Graphics": "Si tu dispositivo se pone caliente o te gustaría conservar batería,\nbaja los \"Visuales\" o la \"Resolución\" en Ajustes->Gráficos",
       "If your framerate is choppy, try turning down resolution\nor visuals in the game's graphics settings.": "Si la imagen va lenta, intenta reducir la resolución\no los visuales en los ajustes gráficos del juego.",
-      "In Capture-the-Flag, your own flag must be at your base to score, If the other\nteam is about to score, stealing their flag can be a good way to stop them.": "En Captura la Bandera, la bandera tuya debe estar en tu base para que anotes.\nSi el otro equipo está a punto de anotar, robar su bandera evitará que anoten.",
+      "In Capture-the-Flag, your own flag must be at your base to score, If the other\nteam is about to score, stealing their flag can be a good way to stop them.": "En Captura de Banderas, la bandera de tu equipo debe estar en tu base para que anotes.\nSi el otro equipo está a punto de anotar, robar su bandera evitará que anoten.",
       "In hockey, you'll maintain more speed if you turn gradually.": "En hockey, mantendrás tu impulso si giras gradualmente.",
       "It's easier to win with a friend or two helping.": "Es más fácil ganar con un amigo o dos ayudando.",
       "Jump just as you're throwing to get bombs up to the highest levels.": "Salta antes de tirar una bomba para que alcance lugares altos.",
@@ -1886,7 +1901,7 @@
     "phrase11Text": "Mantén pulsado CUALQUIER botón para correr.",
     "phrase12Text": "Para golpes extra-asombrosos, intenta correr Y girar.",
     "phrase13Text": "Ups; lo siento por eso ${NAME}.",
-    "phrase14Text": "Puedes recoger y lanzar cosas como banderas.. o ${NAME}.",
+    "phrase14Text": "Puedes recoger y lanzar cosas como banderas.. o a ${NAME}.",
     "phrase15Text": "Por último, hay bombas.",
     "phrase16Text": "Lanzar bombas requiere práctica.",
     "phrase17Text": "¡Auch! Ese no fue un buen tiro.",
