@@ -1,6 +1,4 @@
 {
-    "name": "BombSquad Project: Claypocalypse",
-    "subname": "Project: Claypocalypse",
     "createText": "Create",
     "deleteText": "Delete",
     "renameText": "Rename",
@@ -8,14 +6,6 @@
     "cloneText": "Clone",
     "shareText": "Share",
     "dupeText":"Duplicate \"${A}\"?",
-    "resetMappingText": "Are you sure you want to reset your button mapping?",
-    "resetMappingAlsoText": "This will also reset your advanced mappings\nand secondary controller button mappings.",
-    "pressIntro": {
-        "KeyText": "Press any key",
-        "ButtonText": "Press any button",
-        "ScreenText": "Press anywhere",
-        "tuco": " to start"
-    },
     "killFeed": {
         "leftText": "${NAME} scared ${VICTIM} to death.",
         "leftBetrayalText": "${NAME} disappointed ${VICTIM}.",
@@ -42,23 +32,6 @@
         },
         "onPartyNotice": "You're hosting a party,\nqueueing to another party will\ndisconnect players from yours.\nDo you wish to proceed?"
     },
-    "rulesets": {
-        "titleText": "Rulesets",
-        "rulesetText": "Game Rulesets",
-        "tabs": {
-            "preset": "Presets",
-            "custom": "Customize..."
-        },
-        "createText": "Create",
-        "editText": "Modify",
-        "deleteText": "Delete",
-        "__default__": "Claypocalypse",
-        "__default__list": "Project: Claypocalypse Ruleset",
-        "__default__desc": "A fresh and hasty way to experience the game.",
-        "__vanilla__": "Vanilla",
-        "__vanilla__list": "BombSquad Ruleset",
-        "__vanilla__desc": "Classic, unmodified, pure BombSquad gameplay."
-    },
     "seriesLength": {
         "titleText": "Series Length...",
         "winRequirementText": "Win Requirement",
@@ -67,65 +40,6 @@
         "firstToText": "First to"
     },
     "translations": {
-        "gameNames": {
-            "The Hundredth Loop": null,
-            "Classic PCP Onslaught": null
-        },
-        "gameDescriptions": {
-            "Fight your way on a classy BombSquad arena.": null
-        },
-        "tips": {
-            "Take your time! It's gonna be\nlengthy whether you rush or not.": null,
-            "You didn't read that wrong!\n100 levels, just for you!": null,
-            "This is the definitive\nMarathon if you ask me.": null,
-            "Any reference to any other\nBombSquad mod is purely a coincidence.": null
-        },
-        "rulesets": {
-            "Health": null,
-            "Max Health": null,
-            "Shield Health": null,
-            "Shield Max Health": null,
-            "Shield Decay Damage": null,
-            "Shield Decay Rate": null,
-            "Shield Color Inheritance": null,
-            "Shield Color": null,
-            "Shield Scale": null,
-            "Punch Power Scale": null,
-            "Punch Cooldown": null,
-            "Super Punch Power Scale": null,
-            "Super Power Cooldown": null,
-            "Jump Cooldown": null,
-            "Grab Cooldown": null,
-            "Bomb Cooldown": null,
-            "Default Bomb": null,
-            "Default Bomb Count": null,
-            "Default Gloves": null,
-            "Default Shield": null,
-            "Powerup Duration": null,
-            "Curse Duration": null,
-            "Curse Damage Threshold": null,
-            "Impact Scale": null,
-            "Self-Harm Damage Scale": null,
-            "Self-Harm Stun Time Scale": null,
-            "Respawn Immunity Time": null,
-            "Can Celebrate at Will": null,
-            "Celebration Hold Time": null,
-            "Can Spin-out": null,
-            "Can Wavedash": null
-        },
-        "THL": {
-            "The Loop": null,
-            "You'll get used to it": null,
-            "The Weak Loop": null,
-            "Might be a bit wack": null
-        },
-        "chat": {
-            "Run \"/help [number]\" to switch pages": null,
-            "or \"/help [command]\" to show it's usage.": null,
-            "Chat cleared!": null,
-            "(locally)": null,
-            "Access granted!": null
-        },
         "commands": {
             "Usage:": null
         },
@@ -163,19 +77,11 @@
             "class": null
         }
     },
-    "warning": {
-        "devToolsFirstShow": "WARNING: These tools are meant\nto be used for testing only!\n\nProceed if you know what you're doing.",
-        "wickedNeedAdmin": "You need to run the game as administrator to do this.",
-        "wickedSettingsFalse": "You've unlocked quite a collection of settings...",
-        "wickedSettingsTrue": "...And they've vanished just like so."
-    },
     "error": {
         "notRunningGameActivity": "You're not running a game!",
-        "rulesetLoadFail": "Error loading user rulesets.\nCheck console for more information.",
         "messageCantBeEmpty": "Message can't be empty.",
         "cantUseName": "Can't use that name!",
         "queueCancelSignOff": "Queueing canceled due to log off.",
-        "queueUnableToJoin": "Unable to join server.",
-        "proLimited": "A \"Pro Unlocker\" plugin has been detected, some functions have been blocked.\nPlease, disable your unlocker plugin if you want to access all of Project: Claypocalypse."
+        "queueUnableToJoin": "Unable to join server."
     }
 }

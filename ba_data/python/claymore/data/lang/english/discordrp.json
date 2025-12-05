@@ -1,34 +1,22 @@
 {
     "discordrp": {
         "session": {
-            "coop": {
-                "Default": "Campaign",
-                "Easy": "Easy Campaign",
-                "Challenges": "Practice",
-                "Extra Challenges": "Extra Challenges"
-            },
             "ffa": "Free-for-All",
-            "teams": "Team Versus",
-            "private": "Private Game",
-            "other": "In-game"
+            "teams": "vs. Teams",
+            "coop": "Cooperative"
         },
-        "players": {
-            "solo": "Solo",
-            "coop": "Local Co-op",
-            "multi": "Local Multiplayer",
-            "private": "Private Party",
-            "public": "Public Party",
-            "online": "Online Party",
-            "wait": "Waiting for players..."
+        "state": {
+            "local": {
+                "solo": "Playing Solo",
+                "multi": "Local Multiplayer",
+                "online": "Open Party"
+
+            },
+            "party": {
+                "private": "Private Server",
+                "public": "Public Server"
+            }
         },
-        "idle": "Idle",
-        "spectate": "Spectating",
-        "navigate": "Navigating",
-        "watch": "Watching carefully",
-        "wait": "Waiting...",
-        "play": "Playing",
-        "replay": "Watching a replay",
-        "menu": "Main Menu",
-        "lobby": "Lobby"
+        "map": "Map: ${A}"
     }
 }
