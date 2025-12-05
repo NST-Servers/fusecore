@@ -17,7 +17,9 @@ from babase._logging import applog
 
 from claymore.common import DATA_DIRECTORY
 
-LANG_DIRECTORY = os.path.join(DATA_DIRECTORY, 'lang')
+LANG_FOLDERS: list[str] = [
+    os.path.join(DATA_DIRECTORY, 'lang'),
+]
 
 
 def _log() -> logging.Logger:
@@ -31,15 +33,16 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
     to a language and stack its language data to it.
     """
 
-    def _get_custom_language_files_list(self, folder_path: str, language: str) -> list:
+    def _get_custom_language_files_list(
+        self, folder_path: str, language: str
+    ) -> list:
         """Fetch our custom '.json' language files via language name."""
         if not os.path.exists(folder_path):
             _log().warning(
-                "Provided folder path does not exist!\n"
-                f"'{folder_path}'\n"
+                "Provided folder path does not exist!\n" f"'{folder_path}'\n"
             )
             return []
-        
+
         path = os.path.join(folder_path, language)
 
         if not os.path.exists(path):
@@ -59,32 +62,40 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
         with open(file_path, encoding='utf-8') as infile:
             return json.loads(infile.read())
 
-    def read_custom_language_files(self, lang_folder_path: str, language: str) -> list[dict | Any]:
+    def read_custom_language_files(
+        self, lang_folder_path: list | str, language: str
+    ) -> list[dict | Any]:
         """Read custom '.json' files from a language folder.
-        
+
         'lang_folder_path' should contain a subfolder named as the provided language, and
         said subfolder should contain '.json' files to be scanned.
-        
+
         Returns output, usually desired to be a list containing dicts only.
         """
         outcome: list[Any] = []
-        
-        for langfile in self._get_custom_language_files_list(lang_folder_path, language):
-            path = os.path.join(LANG_DIRECTORY, language, langfile)
-            with open(path) as langfile:
-                out: Any = {}
-                try:
-                    out = json.loads(langfile.read())
-                    outcome.append(out)
-                except json.JSONDecodeError:
-                    # in case the json is malformed or empty, we don't want
-                    # to halt loading our other jsons, so log and dismiss it
-                    warning_text = (
-                        f"Malformed '.json' file @ '{langfile.name}'"
-                    )
-                    _log().warning(warning_text)
-                    # NOTE: we should keep track of the files do and dont load...
-                    continue
+
+        if type(lang_folder_path) == str:
+            lang_folder_path = [lang_folder_path]
+
+        for folder in lang_folder_path:
+            for langfile in self._get_custom_language_files_list(
+                folder, language
+            ):
+                path = os.path.join(folder, language, langfile)
+                with open(path) as langfile:
+                    out: Any = {}
+                    try:
+                        out = json.loads(langfile.read())
+                        outcome.append(out)
+                    except json.JSONDecodeError:
+                        # in case the json is malformed or empty, we don't want
+                        # to halt loading our other jsons, so log and dismiss it
+                        warning_text = (
+                            f"Malformed '.json' file @ '{langfile.name}'"
+                        )
+                        _log().warning(warning_text)
+                        # NOTE: we should keep track of the files do and dont load...
+                        continue
         return outcome
 
     @override
@@ -122,11 +133,9 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
         # import our language data
         lenglishvalues = self.read_language_file(english_langfile_path)
         lenglishcoutput = self.read_custom_language_files(
-            LANG_DIRECTORY,
-            'english'
+            LANG_FOLDERS, 'english'
         )
         lmodcoutput = []
-        
 
         # Special case - passing a complete dict for testing.
         if isinstance(language, dict):
@@ -167,7 +176,7 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
                     lmodvalues = self.read_language_file(lmodfile)
 
                     lmodcoutput = self.read_custom_language_files(
-                        LANG_DIRECTORY,
+                        LANG_FOLDERS,
                         language.lower(),
                     )
 
@@ -192,9 +201,7 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
         )
         # our customs!
         for v in lmodcoutput:
-            _add_to_attr_dict(
-                langtarget, v
-            )
+            _add_to_attr_dict(langtarget, v)
 
         # Create an attrdict of our target language overlaid on our base
         # (english).
@@ -207,9 +214,7 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
         self._language_merged = lfull
         # our customs!
         for v in lenglishcoutput:
-            _add_to_attr_dict(
-                lfull, v
-            )
+            _add_to_attr_dict(lfull, v)
 
         # Pass some keys/values in for low level code to use; start with
         # everything in their 'internal' section.
@@ -238,7 +243,7 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
         ]
         random_names = [n for n in random_names if n != '']
         _babase.set_internal_language_keys(internal_vals, random_names)
-        
+
         if switched and print_change:
             assert isinstance(language, str)
             _babase.screenmessage(
@@ -250,3 +255,12 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
                 ),
                 color=(0, 1, 0),
             )
+
+
+def reload_language() -> None:
+    bs.app.lang.setlanguage(
+        bs.app.lang.language,
+        print_change=False,
+        store_to_config=False,
+        ignore_redundant=False,
+    )

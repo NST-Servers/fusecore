@@ -13,13 +13,8 @@ from claymore import (
     discordrp,
 )
 
-from claymore._language import ExternalLanguageSubsystem
+from ._language import ExternalLanguageSubsystem, reload_language
 
 # patch our language class and re-set our language to execute our changes.
 obj_method_override(babase.LanguageSubsystem, ExternalLanguageSubsystem)
-bs.app.lang.setlanguage(
-    bs.app.lang.language,
-    print_change=False,
-    store_to_config=False,
-    ignore_redundant=False,
-)
+reload_language()
