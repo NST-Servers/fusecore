@@ -27,7 +27,7 @@ class PlayerSpaz(playerspaz.Spaz):
     @override
     def __init__(self, *args, **kwargs):
         MyPlayerSpaz.__init__(
-            self, *args, **kwargs
+            self, *args, **kwargs  # type: ignore
         )  # FIXME: troubleshoot this line?
         # Stat tracking variables
         self._has_landed_punch: bool = False
@@ -89,7 +89,7 @@ class PlayerSpaz(playerspaz.Spaz):
         assert not self.expired
         self.handle_messagestat(msg)
         # Do standard handling
-        return MyPlayerSpaz.handlemessage(self, msg)  # FIXME: huh
+        return MyPlayerSpaz.handlemessage(self, msg)   # type: ignore # FIXME: huh
 
 
 # Overwrite the vanilla game's spaz init with our own
