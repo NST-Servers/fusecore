@@ -527,8 +527,7 @@ class DiscordRPSubsystem(AppSubsystem):
                 )
 
     def stop(self, retry: bool = False) -> None:
-        """
-        Stop our Rich Presence process and subsystem.
+        """Stop our Rich Presence process and subsystem.
         If specified to retry, attempt to reboot our DRPProcess.
         """
         self._process_stop()

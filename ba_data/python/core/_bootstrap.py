@@ -14,6 +14,10 @@ from core import (
     _cloudsafety,
 )
 
+from core._tools import toolsTab, add_devconsole_tab
+
+add_devconsole_tab('Core Tools', toolsTab)
+
 from ._language import ExternalLanguageSubsystem, reload_language
 
 # patch our language class and re-set our language to execute our changes.
