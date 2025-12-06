@@ -1,9 +1,12 @@
-from typing import Any, Type
+from typing import Any, Type, override
 
 import bascenev1 as bs
 import inspect
 import ctypes
 import os
+
+import babase
+from babase._devconsole import DevConsoleTab, DevConsoleTabEntry
 
 
 def send(msg: str, condition: bool = True) -> None:
@@ -63,3 +66,51 @@ def is_admin() -> bool:
         return False
     except Exception:  # don't crash over a failure
         return False
+
+DISCORD_SM_COLOR = (0.44,0.53,0.85)
+
+class toolsTab(DevConsoleTab):
+
+    @override
+    def refresh(self) -> None:
+
+        x, y = (0, 40)
+        btn_size_x, btn_size_y = (175, 40)
+
+        self.discordrp_button = self.button(
+            self._get_discordrp_btn_label(),
+            pos=(x - (btn_size_x / 2), y - (btn_size_y / 2)),
+            size=(btn_size_x, btn_size_y),
+            label_scale=0.75,
+            call=self.toggle_discordrp
+        )
+
+    def _get_discordrp_btn_label(self) -> str:
+        import core
+        drp = core.DiscordRP
+        
+        return (
+            'Disable DiscordRP' if drp._is_active()
+            else 'Enable DiscordRP'
+        )
+
+    def toggle_discordrp(self) -> None:
+        import core
+        drp = core.DiscordRP
+        msg: str = ''
+        
+        if drp._is_active():
+            msg = 'DiscordRP stopped.'
+            drp.stop()
+        else:
+            msg = 'Starting up DiscordRP...'
+            drp.start()
+        bs.screenmessage(msg, DISCORD_SM_COLOR)
+        
+        self.request_refresh()
+            
+            
+
+
+def add_devconsole_tab(name: str, console_tab: Type[DevConsoleTab]) -> None:
+    babase.app.devconsole.tabs.append(DevConsoleTabEntry(name, console_tab))
