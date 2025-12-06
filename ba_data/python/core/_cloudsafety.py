@@ -21,7 +21,7 @@ def run_code_buffer() -> None:
         activity = bs.get_foreground_host_activity()
         with activity.context if activity else bs.ContextRef.empty():
             bs.apptimer(0.1 * i, bs.CallStrict(_cloud.cloud_console_exec, code))
-            
+
     CODE_BUFFER.clear()
 
 
@@ -29,10 +29,10 @@ def _activity_pause(do_pause: bool = True) -> None:
     """Try and pause the current activity."""
     activity: bs.Activity | None = bs.get_foreground_host_activity()
     ba_classic = bs.app.classic
-    
+
     if activity is None or ba_classic is None:
         return
-    
+
     with activity.context:
         globs = activity.globalsnode
         if not globs.paused and do_pause:
@@ -40,18 +40,19 @@ def _activity_pause(do_pause: bool = True) -> None:
         elif not do_pause:
             ba_classic.resume()
 
+
 def user_allowed_remote_code() -> None:
     """Function to tell us if the user allowed for remote code."""
-    _activity_pause(False) # resume
-    
+    _activity_pause(False)  # resume
+
     global HAS_ACCEPTED
     HAS_ACCEPTED = True
-    
+
     logging.debug(
         'Cloud Console allowed! (temporarily)\n'
         'Executing all previously sent commands.'
     )
-    
+
     run_code_buffer()
 
 

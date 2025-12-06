@@ -44,7 +44,7 @@ def launch_replay_from_list(replay_path_list: list[str]) -> None:
     """
     if len(replay_path_list) < 1:
         return
-    
+
     path = random.choice(replay_path_list)
 
     def do_it() -> None:  # efro code :]
@@ -63,6 +63,3 @@ def launch_replay_from_list(replay_path_list: list[str]) -> None:
             bs.new_host_session(mainmenu.MainMenuSession)
 
     bui.fade_screen(False, endcall=bui.CallStrict(bui.pushcall, do_it))
-
-
-# from core import demoviewer as d; d.launch_replay_from_pool(d.get_user_replays()+d.get_demo_replays())
