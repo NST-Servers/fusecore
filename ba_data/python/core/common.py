@@ -10,17 +10,17 @@ ENV_DIRECTORY: str = _babase.app.env.data_directory
 """Full environment path."""
 CORE_FOLDER_NAME: str = 'core'
 
-PYTHON_MOD_DIRECTORY: str = os.path.join(
+PYTHON_CORE_DIRECTORY: str = os.path.join(
     bs.app.env.python_directory_app,
     CORE_FOLDER_NAME,
 )
-"""Path to our mod's python folder."""
+"""Path to our modded core python folder."""
 
-DATA_DIRECTORY: str = os.path.join(PYTHON_MOD_DIRECTORY, 'data')
-"""Path to our mod's data folder."""
+DATA_DIRECTORY: str = os.path.join(PYTHON_CORE_DIRECTORY, 'data')
+"""Path to our modded core data folder."""
 
-LIBS_DIRECTORY: str = os.path.join(PYTHON_MOD_DIRECTORY, 'libs')
-"""Path to our mod's libraries folder."""
+LIBS_DIRECTORY: str = os.path.join(PYTHON_CORE_DIRECTORY, 'libs')
+"""Path to our modded core libraries folder."""
 
 
 def vector3_spread(
