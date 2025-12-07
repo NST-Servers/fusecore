@@ -4,3 +4,4 @@
 
 # ba_meta require api 9
 import core
+import claymore
