@@ -67,7 +67,9 @@ def is_admin() -> bool:
     except Exception:  # don't crash over a failure
         return False
 
-DISCORD_SM_COLOR = (0.44,0.53,0.85)
+
+DISCORD_SM_COLOR = (0.44, 0.53, 0.85)
+
 
 class toolsTab(DevConsoleTab):
 
@@ -82,23 +84,22 @@ class toolsTab(DevConsoleTab):
             pos=(x - (btn_size_x / 2), y - (btn_size_y / 2)),
             size=(btn_size_x, btn_size_y),
             label_scale=0.75,
-            call=self.toggle_discordrp
+            call=self.toggle_discordrp,
         )
 
     def _get_discordrp_btn_label(self) -> str:
         import core
+
         drp = core.DiscordRP
-        
-        return (
-            'Disable DiscordRP' if drp._is_active()
-            else 'Enable DiscordRP'
-        )
+
+        return 'Disable DiscordRP' if drp._is_active() else 'Enable DiscordRP'
 
     def toggle_discordrp(self) -> None:
         import core
+
         drp = core.DiscordRP
         msg: str = ''
-        
+
         if drp._is_active():
             msg = 'DiscordRP stopped.'
             drp.stop()
@@ -106,10 +107,8 @@ class toolsTab(DevConsoleTab):
             msg = 'Starting up DiscordRP...'
             drp.start()
         bs.screenmessage(msg, DISCORD_SM_COLOR)
-        
+
         self.request_refresh()
-            
-            
 
 
 def add_devconsole_tab(name: str, console_tab: Type[DevConsoleTab]) -> None:

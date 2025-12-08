@@ -16,5 +16,5 @@ PYTHON_MOD_DIRECTORY: str = os.path.join(
 DATA_DIRECTORY: str = os.path.join(PYTHON_MOD_DIRECTORY, 'data')
 """Path to our mod's data folder."""
 
-#LIBS_DIRECTORY: str = os.path.join(PYTHON_MOD_DIRECTORY, 'libs')
-#"""Path to our mod's libraries folder."""
+# LIBS_DIRECTORY: str = os.path.join(PYTHON_MOD_DIRECTORY, 'libs')
+# """Path to our mod's libraries folder."""
