@@ -1,8 +1,6 @@
 """Defines our custom Spaz class."""
 
 from __future__ import annotations
-from dataclasses import dataclass
-from enum import Enum
 from typing import (
     Type,
     cast,
@@ -19,7 +17,6 @@ from bascenev1lib.actor import spaz
 from bascenev1lib.actor.spaz import BombDiedMessage
 from bascenev1lib.actor.bomb import Bomb as DeprecatedBomb
 
-from core._tools import obj_clone, obj_method_override
 from ..base.spazfactory import (
     SpazPowerupSlot,
     SpazComponent,
