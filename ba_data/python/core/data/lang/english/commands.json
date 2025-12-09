@@ -1,0 +1,7 @@
+{
+    "commands": {
+        "error": "An error occurred while executing this command.",
+        "serveronly": "Command \"${CMD}\" is server-sided and can only be executed while hosting.",
+        "notfound": "Command \"${CMD}\" not found."
+    }
+}

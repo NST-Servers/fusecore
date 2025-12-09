@@ -7,12 +7,14 @@ import babase
 
 from core._tools import obj_method_override
 
-# misc. imports, possibly utilized by our '__init__' script
 from core import (
     base,
     discordrp,
     _cloudsafety,
 )
+
+from . import chat as _
+from .chat import commands as _
 
 from core._tools import toolsTab, add_devconsole_tab
 

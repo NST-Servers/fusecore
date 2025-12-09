@@ -68,6 +68,31 @@ def is_admin() -> bool:
         return False
 
 
+PLAYLIST_NAME_BLACKLIST = ['__default__', '__playlist_create__']
+
+
+def playlist_cleanse() -> None:
+    """Check for and remove any playlists with troublesome names."""
+    if bs.app.plus is None:
+        return
+
+    # Check all available playlist lists.
+    for group in ['Free-for-All', 'Team Tournament']:
+        for name, _ in bs.app.config.get(f'{group} Playlists', {}).items():
+            # If a playlist name is in the list of
+            # faulty names, remove it.
+            if name in PLAYLIST_NAME_BLACKLIST:
+                bs.app.plus.add_v1_account_transaction(
+                    {
+                        'type': 'REMOVE_PLAYLIST',
+                        'playlistType': group,
+                        'playlistName': name,
+                    }
+                )
+    # Run all transactions.
+    bs.app.plus.run_v1_account_transactions()
+
+
 DISCORD_SM_COLOR = (0.44, 0.53, 0.85)
 
 
