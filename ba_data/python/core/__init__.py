@@ -2,7 +2,8 @@
 and does nothing else aside from asking for more info.
 """
 
-from . import _bootstrap as b
+from . import _bootstrap as _
+from . import discordrp
 
-DiscordRP = b.discordrp.DiscordRPSubsystem()
+DiscordRP = discordrp.DiscordRPSubsystem()
 # DiscordRP.start()
