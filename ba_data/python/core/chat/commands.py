@@ -35,7 +35,7 @@ class CommandIntercept(ChatIntercept):
     ) -> bool:
         """Match our message to an existing command and
         run it's 'execute' function.
-        
+
         Returns success.
         """
         message = msg.split(' ')
@@ -67,7 +67,9 @@ class CommandIntercept(ChatIntercept):
                     # there is a chance a command could work for both clients
                     # and servers (such as '/help').
                     # let's make an exception for those.
-                    return run_command(lambda: command().execute(msg, client_id))
+                    return run_command(
+                        lambda: command().execute(msg, client_id)
+                    )
                 # elif not are_we_host() and command in COMMAND_ALTAS_CLIENT:
                 #     return False
                 else:
@@ -102,7 +104,8 @@ class CommandIntercept(ChatIntercept):
             broadcast_message_to_client(
                 client_id,
                 bs.Lstr(
-                    resource='commands.notfound', subs=[("${CMD}", command_entry)]
+                    resource='commands.notfound',
+                    subs=[("${CMD}", command_entry)],
                 ),
                 (1, 0.1, 0.1),
             )
@@ -142,12 +145,12 @@ class HelpCommand(ChatCommand):
     @override
     def execute(self, msg: str, client_id: int) -> None:
         del msg  # not needed
-        
+
         def host_send_custom_chatmessage(t: str):
             if are_we_host():
                 send_custom_chatmessage(t)
-        
-        bar = '- '*18
+
+        bar = '- ' * 18
         text: str = f'- {bar} Command List (0/0) {bar}-\n'
 
         host_send_custom_chatmessage(text)
