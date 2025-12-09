@@ -1049,6 +1049,7 @@
   "livesBonusText": "Bonus ng Buhay",
   "loadingText": "saglit lang...",
   "loadingTryAgainText": "Naglo-load; subukan muli sa isang saglit…",
+  "lovinglyHandcraftedByText": "Tunay na pagawa ni:",
   "macControllerSubsystemBothText": "Pareho (hindi inirerekomenda)",
   "macControllerSubsystemClassicText": "Klasiko",
   "macControllerSubsystemDescriptionText": "(subukang baguhin ito kung ang iyong mga controllers ay hindi gumagana)",
@@ -1427,6 +1428,7 @@
     "youOwnThisText": "- nabilhin mo na ito -",
     "yourCharactersText": "Iyong Mga Karakter",
     "yourIconsText": "Iyong Mga Tatak",
+    "yourItemsText": "Iyong Bagay",
     "yourMapsText": "Iyong Mga Mapa",
     "yourMiniGamesText": "Iyong Mga Palaruan"
   },
@@ -1507,6 +1509,7 @@
       "Mel": "Malagkitang Pagluto",
       "Middle-Man": "Astig Na Lalaki",
       "Minimus": "Minimus",
+      "OldLady": "Beatriz",
       "Pascal": "Ibong Lamig",
       "Pixel": "Diwata",
       "Sammy Slam": "Mambubuno",
@@ -1538,6 +1541,7 @@
       "Uber Runaround": "Kasukdulang Bantayan"
     },
     "displayItemNames": {
+      "${C} Purple Tickets": "${C} Lilang Tiket",
       "${C} Tickets": "${C} Tickets",
       "${C} Tokens": "${C} Tokens",
       "Chest": "Chest",

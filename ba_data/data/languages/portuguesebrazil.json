@@ -3,7 +3,7 @@
     "accountNameRules": "O seu nome não pode conter emojis ou outros caracteres especiais",
     "accountsText": "Contas",
     "achievementProgressText": "Conquistas: ${COUNT} de ${TOTAL}",
-    "campaignProgressText": "Progresso da Campanha Difícil: ${PROGRESS}",
+    "campaignProgressText": "Progresso da Campanha (Difícil): ${PROGRESS}",
     "changeOncePerSeason": "Você só pode mudar isso uma vez por temporada.",
     "changeOncePerSeasonError": "Você deve esperar até a próxima temporada para mudar isso novamente (${NUM} dias)",
     "createAnAccountText": "Crie uma conta",
@@ -48,9 +48,9 @@
   "achievements": {
     "Boom Goes the Dynamite": {
       "description": "Mate 3 inimigos com TNT",
-      "descriptionComplete": "Você matou 3 inimigos com TNT",
+      "descriptionComplete": "Matou 3 inimigos com TNT",
       "descriptionFull": "Mate 3 inimigos com TNT no ${LEVEL}",
-      "descriptionFullComplete": "Você matou 3 inimigos com TNT no ${LEVEL}",
+      "descriptionFullComplete": "Matou 3 inimigos com TNT no ${LEVEL}",
       "name": "Quem brinca com fogo, sai queimado"
     },
     "Boxer": {
@@ -189,7 +189,7 @@
     },
     "Pro Onslaught Victory": {
       "description": "Derrote todas as ondas",
-      "descriptionComplete": "Todas as ondas derrotadas",
+      "descriptionComplete": "Derrotou todas as ondas",
       "descriptionFull": "Derrote todas as ondas no ${LEVEL}",
       "descriptionFullComplete": "Todas as ondas do ${LEVEL} derrotadas",
       "name": "Vitória no ${LEVEL}"
@@ -217,9 +217,9 @@
     },
     "Rookie Onslaught Victory": {
       "description": "Derrote todas as ondas",
-      "descriptionComplete": "Todas as ondas derrotadas",
+      "descriptionComplete": "Derrotou todas as ondas",
       "descriptionFull": "Derrote todas as ondas no ${LEVEL}",
-      "descriptionFullComplete": "Todas as ondas no ${LEVEL} derrotadas",
+      "descriptionFullComplete": "Derrotou todas as ondas no ${LEVEL}",
       "name": "Vitória no ${LEVEL}"
     },
     "Runaround God": {
@@ -260,14 +260,14 @@
       "descriptionComplete": "Causou 100% de dano com um soco",
       "descriptionFull": "Cause 100% de dano com um soco no ${LEVEL}",
       "descriptionFullComplete": "Causou 100% de dano com um soco no ${LEVEL}",
-      "name": "Super mega soco"
+      "name": "Super Mega Soco"
     },
     "Super Punch": {
       "description": "Cause 50% de dano com um soco",
       "descriptionComplete": "Causou 50% de dano com um soco",
       "descriptionFull": "Cause 50% de dano com um soco no ${LEVEL}",
       "descriptionFullComplete": "Causou 50% de dano com um soco no ${LEVEL}",
-      "name": "Supersoco"
+      "name": "Super Soco"
     },
     "TNT Terror": {
       "description": "Mate 6 inimigos com TNT",
@@ -1033,6 +1033,7 @@
   "livesBonusText": "Bônus de Vida",
   "loadingText": "carregando",
   "loadingTryAgainText": "Carregando; tente novamente daqui a pouco...",
+  "lovinglyHandcraftedByText": "Confeccionado com muito amor por:",
   "macControllerSubsystemBothText": "Ambos (não recomendado)",
   "macControllerSubsystemClassicText": "Clássico",
   "macControllerSubsystemDescriptionText": "Tente ativar isso se os controles não estiverem funcionando",
@@ -1368,22 +1369,26 @@
   },
   "spaceKeyText": "espaço",
   "statsText": "Estatísticas",
-  "stopRemindingMeText": "Pare de me lembrar",
+  "stopRemindingMeText": "Pare de Me Lembrar",
   "storagePermissionAccessText": "É necessário acesso ao armazenamento",
   "store": {
     "alreadyOwnText": "Você já possui ${NAME}!",
     "bombSquadProNameText": "${APP_NAME} Pro",
     "bombSquadProNewDescriptionText": "• Remove anúncios no jogo\n• Desbloqueia mais opções do jogo\n• E também inclui:",
     "buyText": "Comprar",
+    "charactersPremiumText": "Personagens Premium",
     "charactersText": "Personagens",
-    "comingSoonText": "Em breve...",
+    "comingSoonText": "Em Breve...",
     "extrasText": "Extras",
-    "featuredText": "Apresentou",
-    "holidaySpecialText": "Especial de feriado",
+    "featuredText": "Destaques",
+    "holidaySpecialText": "Especial de Feriado",
     "howToSwitchCharactersText": "(vá para \"${SETTINGS} -> ${PLAYER_PROFILES}\" para atribuir e personalizar personagens)",
     "howToUseIconsText": "(crie perfis globais (na janela de inventário) para usar esses)",
     "howToUseMapsText": "(use estes mapas em suas próprias playlist de equipes/todos contra todos)",
+    "iconsFlagText": "Ícones de Bandeira",
+    "iconsPremiumText": "Ícones Premium",
     "iconsText": "Ícones",
+    "itemsText": "Itens",
     "loadErrorText": "Não foi possível carregar a página.\nVerifique a sua conexão com a internet.",
     "loadingText": "carregando",
     "mapsText": "Mapas",
@@ -1393,19 +1398,20 @@
     "purchaseConfirmText": "Comprar ${ITEM}?",
     "purchaseNotValidError": "A compra não é valida.\nEntre em contato com ${EMAIL} se isso foi um erro.",
     "purchaseText": "Comprar",
-    "saleBundleText": "Venda de pacotes!",
+    "saleBundleText": "Venda de Pacotes!",
     "saleExclaimText": "Promoção!",
     "salePercentText": "(${PERCENT}% de desconto)",
     "saleText": "PROMOÇÃO",
     "searchText": "Buscar",
     "starterPackText": "Pacote de Iniciante",
-    "teamsFreeForAllGamesText": "Jogos em equipes / Todos contra todos",
+    "teamsFreeForAllGamesText": "Jogos em Equipes / Todos Contra Todos",
     "totalWorthText": "*** Apenas ${TOTAL_WORTH}! ***",
     "upgradeQuestionText": "Aprimorar?",
     "winterSpecialText": "Especial de Inverno",
     "youOwnThisText": "- você tem isso -",
     "yourCharactersText": "Seus Personagens",
     "yourIconsText": "Seus Ícones",
+    "yourItemsText": "Seus Itens",
     "yourMapsText": "Seus Mapas",
     "yourMiniGamesText": "Seus Minijogos"
   },
@@ -1420,7 +1426,7 @@
   },
   "storeText": "Loja",
   "submitText": "Enviar",
-  "submittingPromoCodeText": "Enviando código promocional...",
+  "submittingPromoCodeText": "Enviando Código...",
   "successText": "Sucesso!",
   "supportEmailText": "Se estiver passando por problemas com o aplicativo, \nenvie um e-mail para ${EMAIL}.",
   "teamNamesColorText": "Nome/Cores das Equipes...",
@@ -1486,6 +1492,7 @@
       "Mel": "Mel",
       "Middle-Man": "Homenzinho",
       "Minimus": "Minimus",
+      "OldLady": "Betty",
       "Pascal": "Pascal",
       "Pixel": "Pixel",
       "Sammy Slam": "Sammy Slam",
@@ -1517,6 +1524,7 @@
       "Uber Runaround": "Evasiva Elite"
     },
     "displayItemNames": {
+      "${C} Purple Tickets": "${C} Bilhetes Roxos",
       "${C} Tickets": "${C} Bilhetes",
       "${C} Tokens": "${C} Tokens",
       "Chest": "Baú",

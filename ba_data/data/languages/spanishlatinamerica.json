@@ -1376,6 +1376,7 @@
     "bombSquadProNameText": "${APP_NAME} Pro",
     "bombSquadProNewDescriptionText": "• Quita los anuncios y las pantallas molestas\n• Desbloquea más ajustes del juego\n• También incluye:",
     "buyText": "Comprar",
+    "charactersPremiumText": "Personajes premium",
     "charactersText": "Personajes",
     "comingSoonText": "Próximamente...",
     "extrasText": "Extras",
@@ -1384,7 +1385,10 @@
     "howToSwitchCharactersText": "(ve a \"${SETTINGS} -> ${PLAYER_PROFILES}\" para asignar y personalizar los personajes)",
     "howToUseIconsText": "(Crea perfiles de jugador globales (en la ventana de inventario) para usar estos)",
     "howToUseMapsText": "(usa estos mapas en tus listas de juegos por equipos y todos contra todos)",
+    "iconsFlagText": "Iconos de bandera",
+    "iconsPremiumText": "Iconos premium",
     "iconsText": "Iconos",
+    "itemsText": "Objetos",
     "loadErrorText": "No se pudo cargar la página.\nRevisa tu conexión a internet.",
     "loadingText": "cargando",
     "mapsText": "Mapas",
@@ -1407,6 +1411,7 @@
     "youOwnThisText": "- ya posees esto -",
     "yourCharactersText": "Tus Personajes",
     "yourIconsText": "Tus Iconos",
+    "yourItemsText": "Tus Objetos",
     "yourMapsText": "Tus Mapas",
     "yourMiniGamesText": "Tus Minijuegos"
   },
@@ -1519,6 +1524,7 @@
       "Uber Runaround": "Evasiva Ultra"
     },
     "displayItemNames": {
+      "${C} Purple Tickets": "${C} Tickets Morados",
       "${C} Tickets": "${C} Tickets",
       "${C} Tokens": "${C} Ficha(s)",
       "Chest": "Cofre",

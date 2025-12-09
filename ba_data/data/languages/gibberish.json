@@ -1502,6 +1502,7 @@
     "bombSquadProNameText": "${APP_NAME} Prz",
     "bombSquadProNewDescriptionText": "• OWjoc owejfowef dfwefwefwef\n• Woijc wefjweocjjcw fjweofijwef\n• wocje fowiejf:",
     "buyText": "Bzy",
+    "charactersPremiumText": "Pwoer chweo rwijfdf",
     "charactersText": "Czharggczzls",
     "comingSoonText": "Cmzngl Snznlsz...",
     "extrasText": "Extrrfz",
@@ -1513,7 +1514,10 @@
     "howToSwitchCharactersText": "(gz tz ${SETTINGS} -> ${PLAYER_PROFILES} tz wfoiejf coijwoicoijwf)",
     "howToUseIconsText": "(croijoj oaf japocj paowejf owef\"(in thc accdj f enfo)\" otj acoiejf w)",
     "howToUseMapsText": "(usf thwemc woeifj aojco wefjo wjaocj paowfj woeifjos)",
+    "iconsFlagText": "Flwef cowiejref",
+    "iconsPremiumText": "Peocw Icwoerjwfd",
     "iconsText": "Icnofjf",
+    "itemsText": "JItowef",
     "loadErrorText": "Unzlblf to zlfl bpgong.\nChlzl yrlzn intnlzfnl cnnfncsz.",
     "loadingText": "lzdng",
     "mapsText": "Mzpz",
@@ -1536,6 +1540,7 @@
     "youOwnThisText": "- yz wnfz thz -",
     "yourCharactersText": "Ywe coweo woeif",
     "yourIconsText": "Ycwoe c woei",
+    "yourItemsText": "Yrzz Fjowefdf",
     "yourMapsText": "Yow cwefmdwf",
     "yourMiniGamesText": "Ywou cwoeir wdof"
   },
@@ -1684,6 +1689,7 @@
       "Uber Runaround": "Ubúr Runáround"
     },
     "displayItemNames": {
+      "${C} Purple Tickets": "${C} Pwoejr Rwcwerdf",
       "${C} Tickets": "${C} Towfijwezz",
       "${C} Tokens": "${C} Tjowefjdfzzz",
       "Chest": "Cjoziejr",

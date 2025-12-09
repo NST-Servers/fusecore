@@ -1388,6 +1388,7 @@
     "bombSquadProNameText": "${APP_NAME} Pro",
     "bombSquadProNewDescriptionText": "• Removes in-game ads and nag-screens\n• Unlocks more game settings\n• Also includes:",
     "buyText": "Buy",
+    "charactersPremiumText": "Premium Characters",
     "charactersText": "Characters",
     "comingSoonText": "Coming Soon...",
     "extrasText": "Extras",
@@ -1396,7 +1397,10 @@
     "howToSwitchCharactersText": "(go to \"${SETTINGS} -> ${PLAYER_PROFILES}\" to assign & customize characters)",
     "howToUseIconsText": "(create global player profiles (in the inventory window) to use these)",
     "howToUseMapsText": "(use these maps in your own teams/free-for-all playlists)",
+    "iconsFlagText": "Flag Icons",
+    "iconsPremiumText": "Premium Icons",
     "iconsText": "Icons",
+    "itemsText": "Items",
     "loadErrorText": "Unable to load page.\nCheck your internet connection.",
     "loadingText": "loading",
     "mapsText": "Maps",
@@ -1419,6 +1423,7 @@
     "youOwnThisText": "- you own this -",
     "yourCharactersText": "Your Characters",
     "yourIconsText": "Your Icons",
+    "yourItemsText": "Your Items",
     "yourMapsText": "Your Maps",
     "yourMiniGamesText": "Your MiniGames"
   },
@@ -1531,6 +1536,7 @@
       "Uber Runaround": null
     },
     "displayItemNames": {
+      "${C} Purple Tickets": null,
       "${C} Tickets": null,
       "${C} Tokens": null,
       "Chest": null,

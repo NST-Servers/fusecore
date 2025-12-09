@@ -1424,6 +1424,7 @@
     "youOwnThisText": "- ye own this here -",
     "yourCharactersText": "Yer pirates",
     "yourIconsText": "Yer icons",
+    "yourItemsText": "Yer Stuff",
     "yourMapsText": "Yer Maps",
     "yourMiniGamesText": "Yer MiniGames"
   },
@@ -1535,6 +1536,7 @@
       "Uber Runaround": "Old Salt Ship Defense"
     },
     "displayItemNames": {
+      "${C} Purple Tickets": "${C} Purple playing cards",
       "${C} Tickets": "${C} Tickets (or playing cards)",
       "${C} Tokens": "${C} Coins (arr)",
       "Chest": "Treasure Chest",
