@@ -1,3 +1,4 @@
+"""Load-up module."""
 from . import (
     spaz,
     spazfactory,

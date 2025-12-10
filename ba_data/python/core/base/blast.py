@@ -1,8 +1,12 @@
 """Custom explosions that are easier to create and manage."""
 
+from dataclasses import dataclass
 from typing import override, Any, Sequence
-from bascenev1lib.gameutils import SharedObjects
+
+import random
+
 import bascenev1 as bs
+from bascenev1lib.gameutils import SharedObjects
 
 from ..base.factory import (
     Factory,
@@ -12,11 +16,10 @@ from ..base.factory import (
     FactorySound,
 )
 
-import random
 
 BLAST_SET = set()
 
-
+@dataclass
 class ExplodeHitMessage:
     """Tell an object it was hit by an explosion."""
 
@@ -211,6 +214,7 @@ class Blast(FactoryActor):
 
     def create_scorch(self) -> None:
         """Create a scorch mark that fades over time."""
+        # pylint: disable=attribute-defined-outside-init
         self.scorch = bs.newnode(
             'scorch',
             attrs={

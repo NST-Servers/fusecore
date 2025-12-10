@@ -1,6 +1,7 @@
+"""Customizable powerups from core."""
+
 from __future__ import annotations
 from abc import abstractmethod
-from enum import Enum
 from typing import Type, override, TYPE_CHECKING
 
 from bascenev1lib.actor.spaz import SpazFactory
@@ -22,6 +23,9 @@ if TYPE_CHECKING:
 POWERUP_SET: set[Type[SpazPowerup]] = set()
 DEFAULT_POWERUP_DURATION: int = 20000
 
+# These classes don't require much explanation, I think...
+# pylint: disable=missing-class-docstring
+# pylint: disable=too-few-public-methods
 
 class PowerupFactory(Factory):
     """Library class containing shared powerup
@@ -83,15 +87,12 @@ class SpazPowerup(FactoryClass):
         self.factory: PowerupFactory
         self.spaz = spaz
 
-        # Adjust powerup duration to clay's ruleset system
-        # TODO: todo
         self.duration_ms = self.duration_ms
 
     @abstractmethod
     def equip(self) -> None:
         """Method called to spaz when this powerup is equipped."""
 
-    @abstractmethod
     def warning(self) -> None:
         """Method called 3 seconds before this powerup is unequipped.
 
@@ -104,13 +105,14 @@ class SpazPowerup(FactoryClass):
         logic such as visual indicators or effects.
         """
 
-    @abstractmethod
     def unequip(self, overwrite: bool, clone: bool) -> None:
         """Method called when this powerup is unequipped.
 
         This includes when the powerup is overwritten by another
         powerup, including the same type.
         """
+        del overwrite
+        del clone
 
     def get_texture(self) -> bs.Texture:
         """Return the factory texture of this powerup."""
@@ -220,15 +222,19 @@ class ShieldComponent(SpazComponent):
     """Spaz component to handle shields."""
 
     def activate(self) -> None:
+        """Grant this spaz a shield."""
         # i was thinking of replacing the glove & shield system over components
         # to demonstrate how cool components are, but then i thought of the
         # billions of incompatibilities this would cause, so now the component
         # is a simple shield activation tunnel :p
         self.spaz.equip_shields(decay=SpazFactory.get().shield_decay_rate > 0)
 
-    def on_damage(self) -> None: ...
+    def on_damage(self) -> None:
+        """Handle our damage function."""
+        # unused as per stated above...
 
     def super_awesome_secret_method_that_makes_your_spaz_explode(self) -> None:
+        "funny."
         self.spaz.curse_explode()
 
 

@@ -4,52 +4,72 @@ shared in multiple parts of code and/or used often in runtime.
 
 from __future__ import annotations
 from abc import abstractmethod
+from dataclasses import dataclass
 from typing import Any, Dict, Callable, Self, Type
 
+import logging
+
 import bascenev1 as bs
-from core._tools import send
 
 FACTORY_ATLAS: dict[str, Dict[str, Any]] = {}
 VERBOSE = False
 
 
+@dataclass
 class Empty:
-    """Connotates emptiness. Used as a placeholder for typechecking if 'None' is an acceptable outcome."""
+    """Connotates emptiness.
+    Used as a placeholder for typechecking if 'None' is an acceptable outcome.
+    """
+
+
+def _log() -> logging.Logger:
+    return logging.getLogger(__name__)
 
 
 class Resource:
     """Resource instanced to be stored in a factory."""
 
-    def __init__(self, arg: str) -> None:
-        self.call: Callable = lambda: None
-        self.arg = arg
+    _call: Callable | None = None
+
+    def __init__(self, *args) -> None:
+        self._args: tuple[Any, ...] = args
 
     def get(self) -> Any:
-        return self.call(self.arg)
+        """Return our executed call."""
+        if self._call is not None:
+            return self._call(*self._args)
+        if len(self._args) > 1:
+            return self._args
+        if len(self._args) == 1:
+            return self._args[0]
+        return None
 
 
 class FactoryTexture(Resource):
     """A texture-type factory resource."""
 
-    def __init__(self, arg: str) -> None:
-        super().__init__(arg)
-        self.call = bs.gettexture
+    _call = bs.gettexture
+
+    def __init__(self, texture_name: str) -> None:
+        super().__init__(texture_name)
 
 
 class FactoryMesh(Resource):
     """A mesh-type factory resource."""
 
-    def __init__(self, arg: str) -> None:
-        super().__init__(arg)
-        self.call = bs.getmesh
+    _call = bs.getmesh
+
+    def __init__(self, mesh_name: str) -> None:
+        super().__init__(mesh_name)
 
 
 class FactorySound(Resource):
     """A sound-type factory resource."""
 
-    def __init__(self, arg: str) -> None:
-        super().__init__(arg)
-        self.call = bs.getsound
+    _call = bs.getsound
+
+    def __init__(self, sound_name: str) -> None:
+        super().__init__(sound_name)
 
 
 class Factory:
@@ -81,10 +101,12 @@ class Factory:
     @classmethod
     def register_resource(cls, name, res: Resource) -> None:
         """Append a resource to this factory."""
-        send(
-            f'Creating attribute "{name}" in "{cls}" via "{res}".'
-            f'{" (overwrite)" if cls.does_resource_exists(name) else ""}',
-            VERBOSE,
+        _log().debug(
+            'Creating attribute "%s" in "%s" via "%s"%s.',
+            name,
+            cls,
+            res,
+            ' as overwrite' if cls.does_resource_exists(name) else '',
         )
         FACTORY_ATLAS.setdefault(cls.IDENTIFIER, {})[name] = res
         # If we have an active instance, immediately load this resource
@@ -92,7 +114,7 @@ class Factory:
             instance = cls.instance()
             print(cls)
             print(instance)
-            setattr(instance, name, instance._load_resource(res))
+            setattr(instance, name, instance.load_resource(res))
 
     @classmethod
     def instance(cls) -> Self:
@@ -122,31 +144,24 @@ class Factory:
         references into object pointers for usage.
         """
         for name, res in self._get_factory_dict().items():
-            send(f'"{self}" preparing "{name}, {res}".', VERBOSE)
+            _log().debug('"%s" preparing "%s, %s".', self, name, res)
             setattr(
                 self,
                 name,
                 (
-                    self._load_resource(res)
+                    self.load_resource(res)
                     if isinstance(res, Resource)
                     # if we're preparing a non-resource, store it's raw input
                     else res
                 ),
             )
 
-    def _load_resource(self, res: Resource) -> Any:
+    def load_resource(self, res: Resource) -> Any:
         """'Activate' the resource provided for usage."""
-        result = res.arg
         # resources with an assigned call (eg. Textures
         # with 'bs.gettexture', meshes with 'bs.getmesh'...)
         # are to be processed before returning their pointer.
-        if res.call:
-            try:
-                result = res.get()
-            except Exception as exc:
-                send(f'An error occurred: {exc}', VERBOSE)
-                return None
-        return result
+        return res.get()
 
     def fetch(self, name: str) -> Any:
         """Get a resource from this factory."""
@@ -154,7 +169,7 @@ class Factory:
         if v is Empty:  # fetched resource doesn't exist...
             raise ValueError(f'"{name}" does not exist in "{self}".')
 
-        send(f'Fetching "{name}" from "{self}".', VERBOSE)
+        _log().debug('Fetching "%s" from "%s".', name, self)
         return v
 
 
@@ -167,7 +182,7 @@ class FactoryClass:
     """Set to register this FactoryClass under."""
 
     @classmethod
-    def _register_resources(cls) -> None:
+    def register_resources(cls) -> None:
         """Register resources used by this actor."""
         ls = cls.resources() or {}
         for name, resource in ls.items():
@@ -181,18 +196,17 @@ class FactoryClass:
                 f"invalid groupset:{cls.group_set}\nshould be 'set' or 'None'."
             )
         # Add our resources and append to our group list.
-        send(
-            f'Registering "{cls.__qualname__}"'
-            f' with factory "{cls.my_factory}"'
-            f' ({"contains" if cls.group_set is not None else "no"} group)',
-            VERBOSE,
+        _log().debug(
+            'Registering "%s" with factory "%s" %s',
+            {cls.__qualname__},
+            {cls.my_factory},
+            'with group' if cls.group_set is not None else 'no group',
         )
-        cls._register_resources()
+        cls.register_resources()
         if cls.group_set is not None:
             cls.group_set.add(cls)
 
     @staticmethod
-    @abstractmethod
     def resources() -> dict:
         """
         Register resources used by this class.
@@ -202,7 +216,7 @@ class FactoryClass:
         FactoryTexture respectively for the factory to be
         able to call assets in runtime properly.
         """
-        # function has to be overriden by subclasses.
+        raise RuntimeError("'resources()' has to be overwriten.")
 
     def __init__(self) -> None:
         """Instance our factory."""
@@ -212,3 +226,8 @@ class FactoryClass:
 
 class FactoryActor(FactoryClass, bs.Actor):
     """A 'bs.Actor' inheriting from 'FactoryClass' and its functions."""
+
+    @staticmethod
+    @abstractmethod
+    def resources() -> dict:
+        raise RuntimeError("'resources()' has to be overwriten.")

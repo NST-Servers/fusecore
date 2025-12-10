@@ -1,10 +1,13 @@
-"""Custom bombs that are easier to create and manage."""
+"""Customizable bombs from core."""
 
 from __future__ import annotations
 from typing import override, Any, Sequence, Callable, Type
-from bascenev1lib.gameutils import SharedObjects
-import bascenev1 as bs
 
+import random
+import logging
+
+import bascenev1 as bs
+from bascenev1lib.gameutils import SharedObjects
 from bascenev1lib.actor.bomb import (
     SplatMessage,
     ExplodeMessage,
@@ -12,6 +15,7 @@ from bascenev1lib.actor.bomb import (
     ArmMessage,
     WarnMessage,
 )
+
 from ..base.blast import (
     Blast,
     IceBlast,
@@ -28,8 +32,8 @@ from ..base.factory import (
     FactorySound,
 )
 
-import random
-import logging
+# pylint: disable=attribute-defined-outside-init
+# caused by 'attributes()' function
 
 BOMB_SET: set[Type[Bomb]] = set()
 FUSE_WARNING: set[str] = set()
@@ -290,13 +294,13 @@ class Bomb(FactoryActor):
             return
 
         # Light the fuse! (if assigned)
-        if self.body and not self.visible_fuse in [1, False]:
+        if self.body and self.visible_fuse not in [1, False]:
             # prop-type bombs can't have fuses
-            global FUSE_WARNING
             if not self.bomb_type in FUSE_WARNING:
                 logging.warning(
                     'WARNING: Bombs that a body attribute'
-                    f' assigned cannot have a fuse. ("{self.bomb_type}")',
+                    ' assigned cannot have a fuse. ("%s")',
+                    self.bomb_type,
                     stack_info=True,
                 )
                 FUSE_WARNING.add(self.bomb_type)
@@ -440,7 +444,7 @@ class StickyBomb(Bomb):
         self.blast_class = StickyBlast
 
         # Some more attributes
-        self._last_sticky_sound_time = -9999
+        self._last_sticky_sound_time: int = -9999
 
     def handle_dropped(self) -> None:
         """We've been dropped!"""
