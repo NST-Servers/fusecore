@@ -1,12 +1,19 @@
 """Custom powerups that are easier to create and manage."""
 
 from __future__ import annotations
+from typing import Type, override, Any, Sequence
 from dataclasses import dataclass
-from typing import Type, cast, override, Any, Sequence
-from bascenev1lib.gameutils import SharedObjects
+
+import random
+
 import bascenev1 as bs
 
+from bascenev1lib.gameutils import SharedObjects
 from bascenev1lib.actor import powerupbox
+
+# These classes don't require much explanation, I think...
+# pylint: disable=missing-class-docstring
+# pylint: disable=too-few-public-methods
 
 from ..base.factory import (
     Factory,
@@ -52,6 +59,7 @@ class PowerupBoxFactory(Factory):
 
         self.last_poweruptype: Type[PowerupBox] | None = None
 
+        # pylint: disable=import-outside-toplevel
         from bascenev1 import get_default_powerup_distribution
 
         self.drop_sound = bs.getsound('boxDrop')
@@ -62,11 +70,13 @@ class PowerupBoxFactory(Factory):
         self.powerup_material = bs.Material()
 
         # Material for anyone wanting to accept powerups.
-        # TODO: We shouldn't do this...
-        from bascenev1lib.actor.powerupbox import PowerupBoxFactory
+        # pylint: disable=import-outside-toplevel
+        from bascenev1lib.actor.powerupbox import (
+            PowerupBoxFactory as VanillaBoxFactory,
+        )
 
         self.powerup_accept_material = (
-            PowerupBoxFactory.get().powerup_accept_material
+            VanillaBoxFactory.get().powerup_accept_material
         )
 
         # Pass a powerup-touched message to applicable stuff.
@@ -103,12 +113,12 @@ class PowerupBoxFactory(Factory):
         """
         distribution: dict[Type[PowerupBox], float] = {}
 
-        for powerupbox in POWERUPBOX_SET:
-            distribution[powerupbox] = powerupbox.weight
+        for pwpbox in POWERUPBOX_SET:
+            distribution[pwpbox] = pwpbox.weight
         return distribution
 
     def get_random_powerup_box(
-        self, exclude: list[PowerupBox] = [], weightless: bool = False
+        self, exclude: list[PowerupBox] | None = None, weightless: bool = False
     ) -> Type[PowerupBox]:
         """
         Return a random powerup box type.
@@ -119,7 +129,8 @@ class PowerupBoxFactory(Factory):
         This uses PowerupBoxes' *weight* value to calculate chance.
         To disable this, set *weightless* to *True*.
         """
-        import random
+        if exclude is None:
+            exclude = []
 
         if weightless:
             # Choose equally if we're weightless
@@ -135,8 +146,7 @@ class PowerupBoxFactory(Factory):
             self.last_poweruptype = powerup
             return powerup
         # Do random number assignation if we use weight
-        # TODO: Would be better if we calculated the pool on each
-        # powerupbox register over every time this function runs...
+        # TODO: rework this pooling & weight system pls!
         powerup_pool: list[dict] = []
         latest_float: float = 0.0
         for powerup_i in [
@@ -175,7 +185,7 @@ class PowerupBox(FactoryActor):
     group_set = POWERUPBOX_SET
     """Set to register this FactoryClass under."""
 
-    texture: str = 'cl_powerup_empty'
+    texture_name: str = 'bar'
     """Texture name applied to the box.
     
     Transformed into 'FactoryTexture', then 'bs.Texture' in runtime.
@@ -200,7 +210,7 @@ class PowerupBox(FactoryActor):
     def _register_texture(cls) -> None:
         """Register our texture as a 'FactoryTexture' instance."""
         cls.my_factory.register_resource(
-            f'{cls.texture}', FactoryTexture(cls.texture)
+            f'{cls.texture_name}', FactoryTexture(cls.texture_name)
         )
 
     @classmethod
@@ -242,6 +252,7 @@ class PowerupBox(FactoryActor):
         self.initial_position = position
         self.initial_velocity = velocity
 
+        self.used: bool
         # Proceed with our powerupa
         self.attributes()
         self.create_box()
@@ -249,7 +260,7 @@ class PowerupBox(FactoryActor):
     def attributes(self) -> None:
         """Define base variables and attributes."""
         self.mesh: bs.Mesh = self.factory.fetch('mesh')
-        self.tex: bs.Texture = self.factory.fetch(f'{self.texture}')
+        self.tex: bs.Texture = self.factory.fetch(f'{self.texture_name}')
         self.light_mesh: bs.Mesh | bool = self.factory.fetch('mesh_simple')
 
         self.body: str = 'box'
@@ -266,7 +277,6 @@ class PowerupBox(FactoryActor):
         self.sticky: bool = False
 
         self.used: bool = False
-        # TODO: Make box time auto-adjust to rulesets
         self.time: float = -1 if not self._expire else 8.0
 
     def create_box(self) -> None:
@@ -379,11 +389,11 @@ class PowerupBox(FactoryActor):
 
 # We don't want to register the base as an actor, but we
 # do wanna register the resources it occupies for instancing.
-PowerupBox._register_resources()
+PowerupBox.register_resources()
 
 
 class TripleBombsPowerupBox(PowerupBox):
-    texture = 'powerupBomb'
+    texture_name = 'powerupBomb'
     powerup_to_grant = TripleBombsPowerup
     weight = 3.0
 
@@ -393,7 +403,7 @@ TripleBombsPowerupBox.register()
 
 
 class StickyBombsPowerupBox(PowerupBox):
-    texture = 'powerupStickyBombs'
+    texture_name = 'powerupStickyBombs'
     powerup_to_grant = StickyBombsPowerup
     weight = 3.0
 
@@ -402,7 +412,7 @@ StickyBombsPowerupBox.register()
 
 
 class IceBombsPowerupBox(PowerupBox):
-    texture = 'powerupIceBombs'
+    texture_name = 'powerupIceBombs'
     powerup_to_grant = IceBombsPowerup
     weight = 3.0
 
@@ -411,7 +421,7 @@ IceBombsPowerupBox.register()
 
 
 class ImpactBombsPowerupBox(PowerupBox):
-    texture = 'powerupImpactBombs'
+    texture_name = 'powerupImpactBombs'
     powerup_to_grant = ImpactBombsPowerup
     weight = 3.0
 
@@ -420,7 +430,7 @@ ImpactBombsPowerupBox.register()
 
 
 class LandMinesPowerupBox(PowerupBox):
-    texture = 'powerupLandMines'
+    texture_name = 'powerupLandMines'
     powerup_to_grant = LandMinesPowerup
     weight = 2.0
 
@@ -429,7 +439,7 @@ LandMinesPowerupBox.register()
 
 
 class PunchPowerupBox(PowerupBox):
-    texture = 'powerupPunch'
+    texture_name = 'powerupPunch'
     powerup_to_grant = PunchPowerup
     weight = 3.0
 
@@ -438,7 +448,7 @@ PunchPowerupBox.register()
 
 
 class ShieldPowerupBox(PowerupBox):
-    texture = 'powerupShield'
+    texture_name = 'powerupShield'
     powerup_to_grant = ShieldPowerup
     weight = 2.0
 
@@ -447,7 +457,7 @@ ShieldPowerupBox.register()
 
 
 class HealthPowerupBox(PowerupBox):
-    texture = 'powerupHealth'
+    texture_name = 'powerupHealth'
     powerup_to_grant = HealthPowerup
     weight = 1.0
 
@@ -456,7 +466,7 @@ HealthPowerupBox.register()
 
 
 class CursePowerupBox(PowerupBox):
-    texture = 'powerupCurse'
+    texture_name = 'powerupCurse'
     powerup_to_grant = CursePowerup
     weight = 1.0
 
@@ -473,8 +483,9 @@ def _retro_translate_args(
     return {'position': position, 'velocity': (0, 0, 0), 'expire': expire}
 
 
-# TODO: This is not working for co-op modes and it's making me cry please help
-def PowerupWrap(powerup_classtype: Type[powerupbox.PowerupBox]):
+# NOTE: is this still not working for co-op modes or
+#       am I out of touch with this snippet?
+def _powerup_method_wrap(powerup_classtype: Type[powerupbox.PowerupBox]):
     """Wrapper to keep old PowerupBox code working."""
 
     def wrapper(*args, **kwargs):
@@ -511,4 +522,4 @@ def PowerupWrap(powerup_classtype: Type[powerupbox.PowerupBox]):
     return wrapper
 
 
-powerupbox.PowerupBox = PowerupWrap(powerupbox.PowerupBox)
+powerupbox.PowerupBox = _powerup_method_wrap(powerupbox.PowerupBox)

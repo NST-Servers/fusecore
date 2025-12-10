@@ -11,6 +11,8 @@ from typing import (
     overload,
 )
 
+import logging
+
 import bascenev1 as bs
 
 from bascenev1lib.actor import spaz
@@ -24,12 +26,13 @@ from ..base.spazfactory import (
 )
 from ..base.bomb import (
     Bomb,
+    IceBomb,
+    ImpactBomb,
+    StickyBomb,
     LandMine,
 )
 from ..base.powerupbox import PowerupBoxMessage
 from ..base.shared import PowerupSlotType
-
-import logging
 
 if TYPE_CHECKING:
     from ..base.powerup import SpazPowerup
@@ -137,15 +140,6 @@ class Spaz(spaz.Spaz):
         """DEPRECATED transform our 'self.default_bomb_type'
         into a 'self.default_bomb' class.
         """
-        # nested import of humilliation
-        # curse you, deprecation!
-        from core.base.bomb import (
-            IceBomb,
-            ImpactBomb,
-            StickyBomb,
-            LandMine,
-        )
-
         if self.default_bomb_type != 'normal':
             bomb_type: Type[Bomb] = Bomb
             match self.default_bomb_type:
@@ -415,7 +409,7 @@ class Spaz(spaz.Spaz):
         Args:
             damage (float): Amount of damage to receive
             fatal (bool, optional): Whether the damage can kill. Defaults to True.
-        """  # TODO: update docstring
+        """  # TODO: Finish this....
         self.on_punched(damage)
         self.hitpoints -= damage
 
@@ -512,9 +506,9 @@ class Spaz(spaz.Spaz):
 
         powerup: Type[SpazPowerup] | None = None
 
-        # nested import of humilliation
+        # FIXME: nested import of humilliation
         # curse you, deprecation!
-        from core.base.powerup import (
+        from core.base.powerup import ( # pylint: disable=import-outside-toplevel
             TripleBombsPowerup,
             StickyBombsPowerup,
             IceBombsPowerup,
@@ -579,8 +573,9 @@ class Spaz(spaz.Spaz):
                 # soon as we spawn, as we might create performance issues
                 # at larger scales and messier code if we create on demand.
                 logging.warning(
-                    f'"SpazPowerupSlot" created for {type(powerup.slot)} as there was '
+                    '"SpazPowerupSlot" created for %s as there was '
                     'no previous instance of one existing; please dont do this!',
+                    type(powerup.slot),
                     stack_info=True,
                 )
             # our powerup slot will take it from here
@@ -593,7 +588,7 @@ class Spaz(spaz.Spaz):
         self.node.handlemessage('flash')
         powerup.equip()
 
-    def _powerup_billboard_slot(self, powerup: SpazPowerup) -> None:
+    def powerup_billboard_slot(self, powerup: SpazPowerup) -> None:
         """Animate our powerup billboard properly."""
         slot: int = powerup.slot.value
         if not 3 >= slot >= 1:  # node only have 3 slots
@@ -619,7 +614,7 @@ class Spaz(spaz.Spaz):
             t_ms + powerup.duration_ms,
         )
 
-    def _powerup_warn(self, tex: str) -> None:
+    def powerup_warn(self, tex: str) -> None:
         """Show a billboard warning us of a powerup running out of time."""
         if not self.node or tex == 'empty':
             return
@@ -628,7 +623,7 @@ class Spaz(spaz.Spaz):
         self.node.billboard_opacity = 1.0
         self.node.billboard_cross_out = True
 
-    def _powerup_unwarn(self) -> None:
+    def powerup_unwarn(self) -> None:
         """Hide our billboard warning."""
         if not self.node:
             return

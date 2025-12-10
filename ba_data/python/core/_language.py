@@ -1,3 +1,4 @@
+"""Custom language manager for easier langfile entry insertion."""
 from __future__ import annotations
 
 import os
@@ -6,7 +7,7 @@ import json
 from typing import Any, override
 
 import bascenev1 as bs
-import _babase  # type: ignore
+import _babase  # type: ignore # pylint: disable=import-error
 from babase._language import (
     LanguageSubsystem,
     Lstr,
@@ -39,7 +40,7 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
         """Fetch our custom '.json' language files via language name."""
         if not os.path.exists(folder_path):
             _log().warning(
-                "Provided folder path does not exist!\n" f"'{folder_path}'\n"
+                "Provided folder path does not exist!\n'%s'", folder_path
             )
             return []
 
@@ -48,8 +49,9 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
         if not os.path.exists(path):
             _log().info(
                 "Provided language does not have a lang folder!\n"
-                f"({language} @ '{path}')\n"
-                f"Support for this language is limited and will fallback to English."
+                "(%s @ '%s')\n"
+                "Support for this language is limited and will fallback to English.",
+                language, path
             )
             return []
 
@@ -74,7 +76,7 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
         """
         outcome: list[Any] = []
 
-        if type(lang_folder_path) == str:
+        if isinstance(lang_folder_path, str):
             lang_folder_path = [lang_folder_path]
 
         for folder in lang_folder_path:
@@ -82,7 +84,7 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
                 folder, language
             ):
                 path = os.path.join(folder, language, langfile)
-                with open(path) as langfile:
+                with open(path, encoding='utf-8') as langfile:
                     out: Any = {}
                     try:
                         out = json.loads(langfile.read())
@@ -180,7 +182,7 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
                         language.lower(),
                     )
 
-            except Exception:
+            except Exception: # pylint: disable=broad-exception-caught
                 applog.exception("Error importing language '%s'.", language)
                 _babase.screenmessage(
                     f"Error setting language to '{language}';"
@@ -258,6 +260,7 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
 
 
 def reload_language() -> None:
+    """Reloads the active language."""
     bs.app.lang.setlanguage(
         bs.app.lang.language,
         print_change=False,

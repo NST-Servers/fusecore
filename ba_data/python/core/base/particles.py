@@ -1,24 +1,26 @@
-""""""
+"""System for custom particles and particle management."""
 
 from __future__ import annotations
+
 from collections import OrderedDict
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Self, Type, override
 
+import random
+
 import bascenev1 as bs
 from bascenev1lib.gameutils import SharedObjects
 from bascenev1lib.mainmenu import MainMenuActivity
+
+from core.common import vector3_multfactor
 
 from .factory import (
     Factory,
     FactoryActor,
     FactoryTexture,
     FactoryMesh,
-    FactorySound,
 )
-
-from core.common import vector3_multfactor
 
 MAX_PARTICLES_ATLAS: dict[Type[bs.Activity], int] = {
     MainMenuActivity: 90,
@@ -31,6 +33,8 @@ PARTICLE_SET: set[Type[Particle]] = set()
 
 
 class ParticleLimitMode(Enum):
+    """Ways to handle having too many particles."""
+
     # NOTE: figure out if we can find device specs to switch between these?
     # NOTE 2: pc = overcharge, android = dynamic / dismiss / overwrite
     DISABLED = -1
@@ -101,7 +105,9 @@ class ParticleFactory(Factory):
         return m
 
 
-class DirectorKillMessage: ...
+@dataclass
+class DirectorKillMessage:
+    """A message from our 'ParticleDirector' telling a particle to die."""
 
 
 class ParticleDirector:
@@ -160,7 +166,8 @@ class ParticleDirector:
         )
         return True
 
-    def _remove_particle(self, did: int) -> None:
+    def remove_particle(self, did: int) -> None:
+        """Removes a particle from our particle pool using their ID."""
         try:
             self._particle_pool.pop(did)
         except KeyError:
@@ -180,12 +187,6 @@ class ParticleDirector:
             activity.customdata[cls.IDENTIFIER] = factory
         assert isinstance(factory, cls)
         return factory
-
-    def append(self, particle: Particle) -> bool:
-        """Returns whether we can spawn or not and make a
-        space for our incoming particle if it is the case.
-        """
-        return False
 
 
 class Particle(FactoryActor):
@@ -332,7 +333,7 @@ class Particle(FactoryActor):
         self._dying = True
 
         if self.did is not None:
-            ParticleDirector.instance()._remove_particle(self.did)
+            ParticleDirector.instance().remove_particle(self.did)
 
         if not self._ready_to_die:
             # if we got this function called earlier than intended, we're
@@ -388,12 +389,11 @@ class Particle(FactoryActor):
         position_spread: float = 2.0
         velocity_spread: float = 1.25
 
-        for i in range(7):
+        for _ in range(7):
             # add some randomness to our position and
             # velocity to get some visual variety going
             # TODO: implement 'vector3_spread' from 'core/common.py'
             #       over whatever this sludge of code is
-            import random
 
             p = (
                 position[0] + (position_spread * random.uniform(-1, 1)),

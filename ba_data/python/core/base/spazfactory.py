@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING, Type, override
 import bascenev1 as bs
 from bascenev1lib.actor import spazfactory
 
-from bascenev1lib.actor.powerupbox import PowerupBoxFactory
-from core._tools import obj_clone, obj_method_override, send
+from core.base.powerupbox import PowerupBoxFactory
+from core._tools import obj_clone, obj_method_override
 
 # clone original to use functions later on
 VanillaSpazFactory: Type[spazfactory.SpazFactory] = obj_clone(
@@ -17,10 +17,15 @@ VanillaSpazFactory: Type[spazfactory.SpazFactory] = obj_clone(
 if TYPE_CHECKING:
     from ..base.spaz import Spaz, SpazPowerup
 
-VERBOSE: bool = False
+# We're gonna commit a couple of crimes with these ones...
+# pylint: disable=protected-access
 
 
 class SpazPowerupSlot:
+    """A powerup slot for spaz.
+
+    Stores and applies a powerup to the owner spaz.
+    """
 
     def __init__(self, owner: Spaz) -> None:
         self.owner = owner
@@ -74,23 +79,23 @@ class SpazPowerupSlot:
             return
 
         self.owner.node.handlemessage('flash')
-        self.owner._powerup_billboard_slot(self.active_powerup)
+        self.owner.powerup_billboard_slot(self.active_powerup)
 
     def _warn(self) -> None:
         if not self.active_powerup or not self.owner.exists():
             return
 
         self.active_powerup.warning()
-        self.owner._powerup_warn(self.active_powerup.texture_name)
+        self.owner.powerup_warn(self.active_powerup.texture_name)
 
     def _unequip(self, overwrite: bool = False, clone: bool = False) -> None:
         if not self.active_powerup or not self.owner.exists():
             return
 
-        self.owner._powerup_unwarn()
-        PowerupBoxFactory.get().powerdown_sound.play(
+        self.owner.powerup_unwarn()
+        PowerupBoxFactory.instance().powerdown_sound.play(
             position=self.owner.node.position,
-        )  # TODO: replace this for a sound from OUR PowerupFactory
+        )
         self.active_powerup.unequip(overwrite=overwrite, clone=clone)
         self.active_powerup = None
         self.timer_warning = None
@@ -119,6 +124,9 @@ class SpazComponent:
 
 class SpazFactory(spazfactory.SpazFactory):
     """New SpazFactory that replaces some files."""
+
+    # pylint: disable=non-parent-init-called
+    # pylint: disable=super-init-not-called
 
     @override
     def __init__(self, *args, **kwargs):
