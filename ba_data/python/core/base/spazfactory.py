@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Type, override
 import bascenev1 as bs
 from bascenev1lib.actor import spazfactory
 
-from core.base.powerupbox import PowerupBoxFactory
 from core._tools import obj_clone, obj_method_override
 
 # clone original to use functions later on
@@ -91,6 +90,8 @@ class SpazPowerupSlot:
     def _unequip(self, overwrite: bool = False, clone: bool = False) -> None:
         if not self.active_powerup or not self.owner.exists():
             return
+
+        from core.base.powerupbox import PowerupBoxFactory # pylint: disable=import-outside-toplevel
 
         self.owner.powerup_unwarn()
         PowerupBoxFactory.instance().powerdown_sound.play(

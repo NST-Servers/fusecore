@@ -216,7 +216,7 @@ class FactoryClass:
         FactoryTexture respectively for the factory to be
         able to call assets in runtime properly.
         """
-        raise RuntimeError("'resources()' has to be overwriten.")
+        return {}
 
     def __init__(self) -> None:
         """Instance our factory."""
@@ -230,4 +230,4 @@ class FactoryActor(FactoryClass, bs.Actor):
     @staticmethod
     @abstractmethod
     def resources() -> dict:
-        raise RuntimeError("'resources()' has to be overwriten.")
+        return {}
