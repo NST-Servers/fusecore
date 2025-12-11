@@ -3,9 +3,9 @@
 #         for core to load us automatically.
 import os
 
+from core import _language
 from .common import DATA_DIRECTORY
 
-from core import _language
 
 # append our language dir and reload lang to apply changes
 _language.LANG_FOLDERS.append(

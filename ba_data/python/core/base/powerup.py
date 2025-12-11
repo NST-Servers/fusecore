@@ -27,6 +27,7 @@ DEFAULT_POWERUP_DURATION: int = 20000
 # pylint: disable=missing-class-docstring
 # pylint: disable=too-few-public-methods
 
+
 class PowerupFactory(Factory):
     """Library class containing shared powerup
     data to prevent gameplay hiccups."""

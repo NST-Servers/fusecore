@@ -228,6 +228,5 @@ class FactoryActor(FactoryClass, bs.Actor):
     """A 'bs.Actor' inheriting from 'FactoryClass' and its functions."""
 
     @staticmethod
-    @abstractmethod
     def resources() -> dict:
         return {}

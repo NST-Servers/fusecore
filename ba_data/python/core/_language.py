@@ -1,4 +1,5 @@
 """Custom language manager for easier langfile entry insertion."""
+
 from __future__ import annotations
 
 import os
@@ -51,7 +52,8 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
                 "Provided language does not have a lang folder!\n"
                 "(%s @ '%s')\n"
                 "Support for this language is limited and will fallback to English.",
-                language, path
+                language,
+                path,
             )
             return []
 
@@ -182,7 +184,7 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
                         language.lower(),
                     )
 
-            except Exception: # pylint: disable=broad-exception-caught
+            except Exception:  # pylint: disable=broad-exception-caught
                 applog.exception("Error importing language '%s'.", language)
                 _babase.screenmessage(
                     f"Error setting language to '{language}';"

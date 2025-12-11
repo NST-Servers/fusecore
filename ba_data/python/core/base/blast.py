@@ -19,6 +19,7 @@ from ..base.factory import (
 
 BLAST_SET = set()
 
+
 @dataclass
 class ExplodeHitMessage:
     """Tell an object it was hit by an explosion."""

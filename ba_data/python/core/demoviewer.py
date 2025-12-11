@@ -1,3 +1,5 @@
+"""Module for loading and playing replays from set directories."""
+
 import os
 import random
 import logging
@@ -15,7 +17,7 @@ def _get_replays_dir_from_path(path: str) -> list[str]:
     output: list[str] = []
 
     if not (os.path.exists(path) and os.path.isdir(path)):
-        raise Exception(f"invalid path: '{path}'")
+        raise FileNotFoundError(f"invalid path: '{path}'")
 
     for filename in os.listdir(path):
         if os.path.splitext(filename)[1].lower() == ".brp":
@@ -53,12 +55,14 @@ def launch_replay_from_list(replay_path_list: list[str]) -> None:
             bs.set_replay_speed_exponent(0)
             bui.fade_screen(True)
             bs.new_replay_session(path)
-        except Exception:
+        except RuntimeError:
             logging.exception('Error running replay session.')
 
             # Drop back into a fresh main menu session
             # in case we half-launched or something.
-            from bascenev1lib import mainmenu
+            from bascenev1lib import (
+                mainmenu,
+            )  # pylint: disable=import-outside-toplevel
 
             bs.new_host_session(mainmenu.MainMenuSession)
 
