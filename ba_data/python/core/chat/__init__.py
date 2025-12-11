@@ -1,5 +1,8 @@
+"""Chat interceptors allowing for message reading and function executing."""
+
 from __future__ import annotations
 
+from abc import abstractmethod
 from typing import Type
 
 import bascenev1 as bs
@@ -15,8 +18,10 @@ class ChatIntercept:
 
     @classmethod
     def register(cls) -> None:
+        """Register this class into our intercepts set."""
         CHAT_INTERCEPTS_SET.add(cls)
 
+    @abstractmethod
     def intercept(self, msg: str, client_id: int) -> bool:
         """returns whether we want to deliver this message."""
         raise RuntimeError("'interception' function has to be overriden.")
@@ -38,7 +43,7 @@ def broadcast_message_to_client(
     message: str | bs.Lstr,
     color: tuple[float, float, float] = (1, 1, 1),
 ) -> None:
-    import bascenev1 as bs
+    """Send a broadcast message to a specific client."""
 
     bs.broadcastmessage(
         message,
@@ -49,8 +54,7 @@ def broadcast_message_to_client(
 
 
 def get_players_from_client_id(client_id: int) -> list[bs.Player]:
-    import bascenev1 as bs
-
+    """Get all in-game 'PlayerSpaz'es linked to the provided 'client_id'."""
     activity: bs.Activity | None = bs.get_foreground_host_activity()
     if activity is None:
         return []

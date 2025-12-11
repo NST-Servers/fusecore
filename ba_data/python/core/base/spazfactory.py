@@ -91,7 +91,9 @@ class SpazPowerupSlot:
         if not self.active_powerup or not self.owner.exists():
             return
 
-        from core.base.powerupbox import PowerupBoxFactory # pylint: disable=import-outside-toplevel
+        from core.base.powerupbox import (
+            PowerupBoxFactory,
+        )  # pylint: disable=import-outside-toplevel
 
         self.owner.powerup_unwarn()
         PowerupBoxFactory.instance().powerdown_sound.play(
