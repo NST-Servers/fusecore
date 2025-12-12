@@ -1010,6 +1010,7 @@
     "allTimeText": "Todos os Tempos",
     "currentSeasonText": "Temporada atual (${NUMBER})",
     "leagueFullText": "Liga ${NAME}",
+    "leaguePresidentText": "Presidente da Liga",
     "leagueRankText": "Classificação da liga",
     "leagueText": "Liga",
     "rankInLeagueText": "#${RANK}, ${NAME} Liga${SUFFIX}",

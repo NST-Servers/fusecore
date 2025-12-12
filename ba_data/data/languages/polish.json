@@ -1455,6 +1455,7 @@
     "bombSquadProNameText": "${APP_NAME} Pro",
     "bombSquadProNewDescriptionText": "• Usuwa reklamy i wyskakujące okienka\n• Odblokowuje również więcej opcji\n• Zawiera także:",
     "buyText": "Kup",
+    "charactersPremiumText": "Postacie Wyższej Klasy",
     "charactersText": "Postacie",
     "comingSoonText": "Wkrótce...",
     "extrasText": "Dodatki",
@@ -1466,7 +1467,10 @@
     "howToSwitchCharactersText": "(idź do \"${SETTINGS} -> ${PLAYER_PROFILES}\" aby przypisać i dostosować postacie)",
     "howToUseIconsText": "(Stwórz profil globalny (w ekwipunku) aby tego użyć)",
     "howToUseMapsText": "(użyj tych plansz w twoich listach gier free-for-all/drużynowych)",
+    "iconsFlagText": "Ikony Flag",
+    "iconsPremiumText": "Ikonki Wyższej Klasy",
     "iconsText": "Ikonki",
+    "itemsText": "Przedmioty",
     "loadErrorText": "Nie można załadować strony.\nSprawdź połączenie internetowe.",
     "loadingText": "ładowanie",
     "mapsText": "Mapy",
@@ -1489,6 +1493,7 @@
     "youOwnThisText": "- zdobyłeś już to -",
     "yourCharactersText": "Twoje Postacie",
     "yourIconsText": "Twoje Ikonki",
+    "yourItemsText": "Twoje Przedmioty",
     "yourMapsText": "Twoje Mapy",
     "yourMiniGamesText": "Twoje Mini-Gry"
   },
@@ -1620,6 +1625,7 @@
       "Uber Runaround": "Super Otaczanie"
     },
     "displayItemNames": {
+      "${C} Purple Tickets": "${C} Fioletowych Kuponów",
       "${C} Tickets": "${C} Kuponów",
       "${C} Tokens": "${C} Żetonów",
       "Chest": "Skrzynka",
