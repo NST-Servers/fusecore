@@ -6,3 +6,6 @@ __pycache__/
 ~*.*
 ~*/
 $*.*
+
+# bombsquad dev source files
+BombSquadGeneric.pdb
