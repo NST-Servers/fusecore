@@ -60,7 +60,7 @@ StickerIntercept.register()
 class ChatSticker:
     """A sticker that can be triggered via chat messages."""
 
-    name: str
+    name: str = "Sticker Name"
     """Name of this sticker.
     
     This name is not used when checking for pseudos and
@@ -74,7 +74,7 @@ class ChatSticker:
     sound_name: str | None = None
     """Name of the sound effect to play when using the sticker."""
 
-    duration_ms: int = 5000
+    duration_ms: int = 3000
     spaz_billboard_animation_dict: dict[float, float] = {}
 
     @classmethod
