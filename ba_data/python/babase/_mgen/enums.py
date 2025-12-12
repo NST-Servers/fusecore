@@ -187,3 +187,4 @@ class SpecialChar(Enum):
     MIKIROG = 95
     V2_LOGO = 96
     CLOSE = 97
+    SANTA_HAT = 98
