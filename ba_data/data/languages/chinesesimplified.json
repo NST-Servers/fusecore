@@ -1010,6 +1010,7 @@
     "allTimeText": "所有时间",
     "currentSeasonText": "当前赛季(${NUMBER})",
     "leagueFullText": "${NAME}联赛",
+    "leaguePresidentText": "联盟主席",
     "leagueRankText": "联赛排名",
     "leagueText": "联赛",
     "rankInLeagueText": "#${RANK}、${NAME}联赛${SUFFIX}",
@@ -1126,6 +1127,7 @@
   "otherText": "其他。。。",
   "outOfText": "（在${ALL}名玩家中位列#${RANK}）",
   "ownFlagAtYourBaseWarning": "你的旗帜必须在\n你自己的基地上才能得分！",
+  "pageRefreshingTryAgainText": "页面正在刷新，请稍后再试。",
   "partyWindow": {
     "chatMessageText": "聊天消息",
     "emptyText": "你的派对为空",

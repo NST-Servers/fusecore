@@ -1,6 +1,6 @@
 {
   "accountSettingsWindow": {
-    "accountNameRules": "El Tag d La cuenta no puede contener emojis ni caracteres especiales",
+    "accountNameRules": "El nombre de la cuenta no puede contener emojis ni caracteres especiales",
     "accountsText": "Cuentas",
     "achievementProgressText": "Logros: ${COUNT} de ${TOTAL}",
     "campaignProgressText": "Progreso de la Campaña [Difícil]: ${PROGRESS}",
@@ -9,7 +9,7 @@
     "createAnAccountText": "Crea una Cuenta",
     "customName": "Nombre Personalizado",
     "deleteAccountText": "Borrar Cuenta",
-    "googlePlayGamesAccountSwitchText": "Si Quieres Usar una Cuenta diferente,\nusa la de Google Play Juegos para cambiarla.",
+    "googlePlayGamesAccountSwitchText": "Si quieres usar una cuenta diferente,\nusa la de Google Play Juegos para cambiarla.",
     "linkAccountsEnterCodeText": "Ingresar Código",
     "linkAccountsGenerateCodeText": "Generar Código",
     "linkAccountsInfoText": "(comparte tu progreso con diferentes plataformas)",
@@ -1127,6 +1127,7 @@
   "otherText": "Otros...",
   "outOfText": "(#${RANK} de ${ALL})",
   "ownFlagAtYourBaseWarning": "¡Su propia bandera debe estar\nen su base para anotar!",
+  "pageRefreshingTryAgainText": "La página se está refrescando - reinténtalo en un momento.",
   "partyWindow": {
     "chatMessageText": "Mensaje del Chat",
     "emptyText": "Tu partida está vacía",

@@ -1137,6 +1137,7 @@
   "otherText": "Other...",
   "outOfText": "(#${RANK} out of ${ALL})",
   "ownFlagAtYourBaseWarning": "Your own flag must be\nat your base to score!",
+  "pageRefreshingTryAgainText": "Page is refreshing - try again in a moment.",
   "partyWindow": {
     "chatMessageText": "Chat Message",
     "emptyText": "Your party is empty",

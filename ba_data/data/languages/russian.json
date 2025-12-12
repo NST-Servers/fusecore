@@ -1070,6 +1070,7 @@
     "allTimeText": "Абсолютные",
     "currentSeasonText": "Текущий сезон (${NUMBER})",
     "leagueFullText": "Лига ${NAME}",
+    "leaguePresidentText": "Президент Лиги",
     "leagueRankText": "Ранг лиги",
     "leagueText": "Лига",
     "rankInLeagueText": "#${RANK}, ${NAME} League${SUFFIX}",
@@ -1192,6 +1193,7 @@
   "outOfText": "(${RANK} из ${ALL})",
   "ownFlagAtYourBaseWarning": "Чтобы набрать очки, ваш собственный\nфлаг должен быть на вашей базе!",
   "packageModsEnabledErrorText": "Сетевая игра запрещена, когда включены моды локального пакета (см. Настройки->Дополнительно)",
+  "pageRefreshingTryAgainText": "Страница обновляется - попробуйте чуть позже.",
   "partyWindow": {
     "chatMessageText": "Сообщение чата",
     "emptyText": "Ваше лобби пустое",

@@ -1065,6 +1065,7 @@
     "allTimeText": "Całość",
     "currentSeasonText": "Obecny Sezon (${NUMBER})",
     "leagueFullText": "${NAME} Liga",
+    "leaguePresidentText": "Szef Ligi",
     "leagueRankText": "Pozycja w Lidze",
     "leagueText": "Liga",
     "rankInLeagueText": "#${RANK}, ${NAME} Liga ${SUFFIX}",
@@ -1187,6 +1188,7 @@
   "outOfText": "(#${RANK} na ${ALL})",
   "ownFlagAtYourBaseWarning": "Twoja flaga musi być w\nTwojej bazie aby zapunktować!",
   "packageModsEnabledErrorText": "Gra sieciowa nie jest dozwolona kiedy są włączone lokalne pakiety modów (zobacz Ustawienia->Zaawansowane)",
+  "pageRefreshingTryAgainText": "Strona się odświeża - spróbuj ponownie później.",
   "partyWindow": {
     "chatMessageText": "Wiadomość",
     "emptyText": "Twoja impreza nie ma gości",

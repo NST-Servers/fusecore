@@ -414,6 +414,7 @@ class DocUIController:
         win: DocUIWindow,
         *,
         last_response: DocUIResponse | None,
+        has_had_response: bool,
     ) -> DocUIWindow:
         """Restore a window from previous state.
 
@@ -462,10 +463,9 @@ class DocUIController:
                 scroll_width=win.scroll_width,
                 scroll_height=win.scroll_height,
                 idprefix=win.main_window_id_prefix,
-                # If we're restoring an old response, snap it in
-                # immediately. If we're doing a fresh fetch, allow a
-                # transition to hide delays.
-                immediate=last_response is not None,
+                # If this window has had a response already, snap things
+                # in immediately with no transitions.
+                immediate=has_had_response,
                 explicit_error=explicit_error,
                 explicit_response=explicit_response,
             )
@@ -557,9 +557,12 @@ class DocUIController:
 
         assert bui.in_logic_thread()
 
-        # If locked, just beep.
+        # If locked, been and tell them to try again.
         if window.locked:
             bui.getsound('error').play()
+            bui.screenmessage(
+                bui.Lstr(resource='pageRefreshingTryAgainText'), color=(1, 0, 0)
+            )
             return
 
         widget: bui.Widget | None
@@ -576,9 +579,10 @@ class DocUIController:
         else:
             widget = None
 
-        # Buttons with no actions assigned.
+        # Play error beeps on buttons with no actions assigned to let
+        # the user know nothing is supposed to happen.
         if action is None:
-            bui.getsound('click01').play()
+            bui.getsound('error').play()
             return
 
         action_type = action.get_type_id()

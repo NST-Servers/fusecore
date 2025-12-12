@@ -1026,6 +1026,7 @@
     "allTimeText": "Lahat Ng Oras",
     "currentSeasonText": "Kasalukuyang Season (${NUMBER})",
     "leagueFullText": "Ligang ${NAME}.",
+    "leaguePresidentText": "Pangulo ng Liga",
     "leagueRankText": "Ranggo ng Liga",
     "leagueText": "Liga",
     "rankInLeagueText": "#${RANK}, ${NAME} ${SUFFIX} na Liga",

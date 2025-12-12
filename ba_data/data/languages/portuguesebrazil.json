@@ -1127,6 +1127,7 @@
   "otherText": "Outro...",
   "outOfText": "(#${RANK} de ${ALL})",
   "ownFlagAtYourBaseWarning": "Sua própria bandeira deve estar\nem sua base para fazer um ponto!",
+  "pageRefreshingTryAgainText": "A página está recarregando - tente novamente em um momento.",
   "partyWindow": {
     "chatMessageText": "Mensagem do Chat",
     "emptyText": "Seu grupo está vazio",
