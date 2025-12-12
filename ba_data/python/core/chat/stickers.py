@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Type, cast, override
 
 import bascenev1 as bs
@@ -46,10 +47,7 @@ class StickerIntercept(ChatIntercept):
             return False
 
         for sticker in STICKER_ATLAS:
-            if (
-                sticker_entry == sticker.name
-                or sticker_entry in sticker.pseudos
-            ):
+            if sticker_entry in sticker.pseudos:
                 run_sticker(client_id, sticker)
                 return True
 
@@ -63,10 +61,18 @@ class ChatSticker:
     """A sticker that can be triggered via chat messages."""
 
     name: str
+    """Name of this sticker.
+    
+    This name is not used when checking for pseudos and
+    is purely to give the sticker a display name.
+    """
     pseudos: list[str] = []
+    """Command names to use the sticker."""
 
     texture_name: str
+    """Name of the texture this sticker uses."""
     sound_name: str | None = None
+    """Name of the sound effect to play when using the sticker."""
 
     duration_ms: int = 5000
     spaz_billboard_animation_dict: dict[float, float] = {}
@@ -74,6 +80,11 @@ class ChatSticker:
     @classmethod
     def register(cls) -> None:
         """Add this sticker into our sticker set for usage."""
+        if len(cls.pseudos) < 1:
+            logging.warning(
+                'no pseudos given to sticker "%s", so it can\'t be used!',
+                cls.name,
+            )
         STICKER_ATLAS.add(cls)
 
     @classmethod
