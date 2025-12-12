@@ -63,10 +63,7 @@ class CommandIntercept(ChatIntercept):
         # these commands function exclusively when hosting
         # as they could mess around with gmae logic and nodes
         for command in COMMAND_ALTAS_SERVER:
-            if (
-                command_entry == command.name
-                or command_entry in command.pseudos
-            ):
+            if command_entry in command.pseudos:
                 if are_we_host():
                     # there is a chance a command could work for both clients
                     # and servers (such as '/help').
@@ -122,11 +119,33 @@ CommandIntercept.register()
 class ChatCommand:
     """A command executable by sending its name in chat."""
 
-    name: str
-    pseudos: list[str] = []
-
-    display_name: str = 'Command Name'
+    name: str = 'Command Name'
+    """Name of this command.
+    
+    This name is not used when checking for pseudos and
+    is purely to give the command a display name.
+    """
     description: str = 'Describes what this command does.'
+    """A description of this command.
+    
+    Elaborates on what the command is meant to do.
+    This is not used directly but rather stored for any
+    command that might require it (eg. a help command.)
+    """
+
+    pseudos: list[str] = []
+    """Names to check for to trigger this command."""
+
+    @classmethod
+    def _pseudos_check(cls) -> None:
+        """Check if this command has pseudos to use.
+        Log a warning if we don't.
+        """
+        if len(cls.pseudos) < 1:
+            logging.warning(
+                'no pseudos given to sticker "%s", so it can\'t be used!',
+                cls.name,
+            )
 
     @classmethod
     def register_client(cls) -> None:
@@ -136,6 +155,7 @@ class ChatCommand:
         server, even if you don't have any operator permissions.
         This type of command can't mess with gameplay content.
         """
+        cls._pseudos_check()
         COMMAND_ALTAS_CLIENT.add(cls)
 
     @classmethod
@@ -147,6 +167,7 @@ class ChatCommand:
         is hosting the command.
         This type of command can do basically whatever!
         """
+        cls._pseudos_check()
         COMMAND_ALTAS_SERVER.add(cls)
 
     def execute(self, msg: str, client_id: int) -> None:
@@ -168,11 +189,10 @@ class ChatCommand:
 class HelpCommand(ChatCommand):
     """Help command."""
 
-    name = 'help'
-    pseudos = ['?']
-
-    display_name = 'Help'
+    name = 'Help'
     description = 'Show all available commands.'
+
+    pseudos = ['help', '?']
 
     @override
     def execute(self, msg: str, client_id: int) -> None:
@@ -188,7 +208,7 @@ class HelpCommand(ChatCommand):
         host_send_custom_chatmessage(text)
 
         for cmd in set().union(COMMAND_ALTAS_SERVER):
-            t = f'{cmd.display_name}: {cmd.description}\n'
+            t = f'{cmd.name}: {cmd.description}\n'
 
             host_send_custom_chatmessage(t)
 
