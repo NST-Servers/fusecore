@@ -2,11 +2,15 @@
 and does nothing else aside from asking for more info.
 """
 
-from . import _bootstrap as _
-from . import discordrp
-from . import _config
+import bascenev1 as bs
 
-DiscordRP = discordrp.DiscordRPSubsystem()
+from . import (
+    _bootstrap as _,
+    discordrp,
+    _config,
+)
+
+DiscordRP = bs.app.register_subsystem(discordrp.DiscordRPSubsystem())
 # DiscordRP.start()
 
 config = _config.ConfigSystem()
