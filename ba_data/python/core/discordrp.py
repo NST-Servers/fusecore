@@ -25,6 +25,7 @@ TIME_WAIT: float = 0.33
 IDLE_TIME: int = 15
 HIDE_ONLINE: bool = False
 # Reconnection retry attributes
+AUTO_START = False
 RETRY_ON_DISCONNECT = True
 RETRY_ON_BOOT_FAIL = True
 RETRY_TIME_START: float = 8
@@ -291,7 +292,8 @@ class DiscordRPSubsystem(AppSubsystem):
         """Start automatically when our app reaches running state,
         making sure we don't load up when other subsystems are unavailable.
         """
-        self.start()
+        if AUTO_START:
+            self.start()
 
     def _reset_variables(self) -> None:
         self.data = {}
