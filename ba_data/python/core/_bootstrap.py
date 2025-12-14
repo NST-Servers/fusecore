@@ -10,12 +10,14 @@ import babase
 from core._tools import toolsTab, add_devconsole_tab, obj_method_override
 
 from core import (
-    base,
-    discordrp,
-    _cloudsafety,
+    _modloader as _ml,
+    base as _,
+    discordrp as _,
+    _cloudsafety as _,
+    chat as _,
 )
 
-from . import chat as _
+
 from .chat import (
     commands as _,
     stickers as _,
