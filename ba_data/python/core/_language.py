@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import logging
 import json
+from pathlib import Path
 from typing import Any, override
 
 import bascenev1 as bs
@@ -19,8 +20,8 @@ from babase._logging import applog
 
 from core.common import DATA_DIRECTORY
 
-LANG_FOLDERS: list[str] = [
-    os.path.join(DATA_DIRECTORY, 'lang'),
+LANG_FOLDERS: list[Path] = [
+    Path(os.path.join(DATA_DIRECTORY, 'lang')),
 ]
 
 
@@ -37,7 +38,7 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
 
     def _get_custom_language_files_list(
         self, folder_path: str, language: str
-    ) -> list:
+    ) -> list[Path]:
         """Fetch our custom '.json' language files via language name."""
         if not os.path.exists(folder_path):
             _log().warning(
@@ -57,7 +58,11 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
             )
             return []
 
-        return os.listdir(path)
+        l = []
+        for main_path, _, filelist in os.walk(path):
+            for file in filelist:
+                l.append(os.path.join(main_path, file))
+        return l
 
     def read_language_file(self, file_path: str) -> dict | Any:
         """Load a '.json' language file.
@@ -82,20 +87,19 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
             lang_folder_path = [lang_folder_path]
 
         for folder in lang_folder_path:
-            for langfile in self._get_custom_language_files_list(
+            for filepath in self._get_custom_language_files_list(
                 folder, language
             ):
-                path = os.path.join(folder, language, langfile)
-                with open(path, encoding='utf-8') as langfile:
+                with open(filepath, encoding='utf-8') as f:
                     out: Any = {}
                     try:
-                        out = json.loads(langfile.read())
+                        out = json.loads(f.read())
                         outcome.append(out)
                     except json.JSONDecodeError:
                         # in case the json is malformed or empty, we don't want
                         # to halt loading our other jsons, so log and dismiss it
                         warning_text = (
-                            f"Malformed '.json' file @ '{langfile.name}'"
+                            f"Malformed '.json' file @ '{f.name}'"
                         )
                         _log().warning(warning_text)
                         # NOTE: we should keep track of the files do and dont load...
