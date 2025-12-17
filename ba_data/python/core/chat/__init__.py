@@ -24,7 +24,7 @@ class ChatIntercept:
     @abstractmethod
     def intercept(self, msg: str, client_id: int) -> bool:
         """returns whether we want to deliver this message."""
-        raise RuntimeError("'interception' function has to be overriden.")
+        raise RuntimeError("'intercept()' function has to be overriden.")
 
 
 def chat_message_intercept(msg: str, client_id: int) -> str | None:
