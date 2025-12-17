@@ -98,9 +98,7 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
                     except json.JSONDecodeError:
                         # in case the json is malformed or empty, we don't want
                         # to halt loading our other jsons, so log and dismiss it
-                        warning_text = (
-                            f"Malformed '.json' file @ '{f.name}'"
-                        )
+                        warning_text = f"Malformed '.json' file @ '{f.name}'"
                         _log().warning(warning_text)
                         # NOTE: we should keep track of the files do and dont load...
                         continue
