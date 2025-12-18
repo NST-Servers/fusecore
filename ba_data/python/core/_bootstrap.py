@@ -25,6 +25,9 @@ from .chat import (
 from ._language import ExternalLanguageSubsystem, reload_language
 
 
+modloader = bs.app.register_subsystem(_ml.ModLoaderSubsystem())
+
+
 add_devconsole_tab('Core Tools', toolsTab)
 
 
