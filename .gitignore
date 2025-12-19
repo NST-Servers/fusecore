@@ -11,6 +11,6 @@ $*.*
 BombSquadGeneric.pdb
 
 # mods
-ba_data/textures2/core/mods/*
-ba_data/audio2/core/mods/*
-ba_data/meshes2/core/mods/*
+ba_data/textures2/core/mods/ext/*
+ba_data/audio2/core/mods/ext/*
+ba_data/meshes2/core/mods/ext/*
