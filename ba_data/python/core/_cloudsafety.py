@@ -49,8 +49,8 @@ def user_allowed_remote_code() -> None:
     HAS_ACCEPTED = True
 
     logging.debug(
-        'Cloud Console allowed! (temporarily)\n'
-        'Executing all previously sent commands.'
+        "Cloud Console allowed! (temporarily)\n"
+        "Executing all previously sent commands."
     )
 
     run_code_buffer()
@@ -64,7 +64,7 @@ def cloud_wrap(cloud_func):
     def wrapper(code: str):
         cfg = bs.app.config
         # TODO: hmm, we need a way to allow for this to be toggled easily...
-        if cfg.get('Allow Cloud Console', False) or HAS_ACCEPTED:
+        if cfg.get("Allow Cloud Console", False) or HAS_ACCEPTED:
             return cloud_func(code)
         else:
             if HAS_ACCEPTED is None:
@@ -74,19 +74,19 @@ def cloud_wrap(cloud_func):
                 global HAS_WARNED
                 if not HAS_WARNED:
                     _activity_pause(True)
-                    logging.warning('Awaiting for Cloud Console permission...')
+                    logging.warning("Awaiting for Cloud Console permission...")
                     from bauiv1lib.confirm import ConfirmWindow
 
                     with bs.ContextRef.empty():
                         # TODO: We need a Lstr!
                         ConfirmWindow(
                             bs.Lstr(
-                                resource='remoteCodeWarning',
+                                resource="remoteCodeWarning",
                                 fallback_value=(
-                                    'Heads up! Someone tried to run remote code\n'
+                                    "Heads up! Someone tried to run remote code\n"
                                     'via the "ballistica.net/devices" website.\n\n'
                                     'Press "Allow" if you\'re the one using the\n'
-                                    'Cloud Console and know what you\'re doing.'
+                                    "Cloud Console and know what you're doing."
                                 ),
                             ),
                             ok_text=bs.Lstr(resource="allowText"),

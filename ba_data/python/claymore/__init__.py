@@ -10,7 +10,7 @@ from .common import DATA_DIRECTORY
 _language.LANG_FOLDERS.append(
     os.path.join(
         DATA_DIRECTORY,
-        'lang',
+        "lang",
     )
 )
 _language.reload_language()
@@ -19,7 +19,7 @@ _language.reload_language()
 class ClaymoreConfig(_config.ConfigSystem):
     """Custom config. instance."""
 
-    section_name = 'claymore'
+    section_name = "claymore"
 
 
 config = ClaymoreConfig()

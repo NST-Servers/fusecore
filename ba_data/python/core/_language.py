@@ -21,7 +21,7 @@ from babase._logging import applog
 from core.common import DATA_DIRECTORY
 
 LANG_FOLDERS: list[Path] = [
-    Path(os.path.join(DATA_DIRECTORY, 'lang')),
+    Path(os.path.join(DATA_DIRECTORY, "lang")),
 ]
 
 
@@ -68,7 +68,7 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
         """Load a '.json' language file.
         Returns output, usually desired to be a dict.
         """
-        with open(file_path, encoding='utf-8') as infile:
+        with open(file_path, encoding="utf-8") as infile:
             return json.loads(infile.read())
 
     def read_custom_language_files(
@@ -90,7 +90,7 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
             for filepath in self._get_custom_language_files_list(
                 folder, language
             ):
-                with open(filepath, encoding='utf-8') as f:
+                with open(filepath, encoding="utf-8") as f:
                     out: Any = {}
                     try:
                         out = json.loads(f.read())
@@ -124,28 +124,28 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
         assert _babase.in_logic_thread()
 
         cfg = _babase.app.config
-        cur_language = cfg.get('Lang', None)
+        cur_language = cfg.get("Lang", None)
 
         if ignore_redundant and language == self._language:
             return
 
         english_langfile_path = os.path.join(
             _babase.app.env.data_directory,
-            'ba_data',
-            'data',
-            'languages',
-            'english.json',
+            "ba_data",
+            "data",
+            "languages",
+            "english.json",
         )
         # import our language data
         lenglishvalues = self.read_language_file(english_langfile_path)
         lenglishcoutput = self.read_custom_language_files(
-            LANG_FOLDERS, 'english'
+            LANG_FOLDERS, "english"
         )
         lmodcoutput = []
 
         # Special case - passing a complete dict for testing.
         if isinstance(language, dict):
-            self._language = 'Custom'
+            self._language = "Custom"
             lmodvalues = language
             switched = False
             print_change = False
@@ -159,7 +159,7 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
                 #     if 'Lang' in cfg:
                 #         del cfg['Lang']  # Clear it out for default.
                 # else:
-                cfg['Lang'] = language
+                cfg["Lang"] = language
                 cfg.commit()
                 switched = True
             else:
@@ -169,15 +169,15 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
             # if language is None:
             #     language = self.default_language
             try:
-                if language == 'English':
+                if language == "English":
                     lmodvalues = None
                 else:
                     lmodfile = os.path.join(
                         _babase.app.env.data_directory,
-                        'ba_data',
-                        'data',
-                        'languages',
-                        language.lower() + '.json',
+                        "ba_data",
+                        "data",
+                        "languages",
+                        language.lower() + ".json",
                     )
                     lmodvalues = self.read_language_file(lmodfile)
 
@@ -190,7 +190,7 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
                 applog.exception("Error importing language '%s'.", language)
                 _babase.screenmessage(
                     f"Error setting language to '{language}';"
-                    f' see log for details.',
+                    f" see log for details.",
                     color=(1, 0, 0),
                 )
                 switched = False
@@ -225,38 +225,38 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
         # Pass some keys/values in for low level code to use; start with
         # everything in their 'internal' section.
         internal_vals = [
-            v for v in list(lfull['internal'].items()) if isinstance(v[1], str)
+            v for v in list(lfull["internal"].items()) if isinstance(v[1], str)
         ]
 
         # Cherry-pick various other values to include.
         # (should probably get rid of the 'internal' section
         # and do everything this way)
         for value in [
-            'replayNameDefaultText',
-            'replayWriteErrorText',
-            'replayVersionErrorText',
-            'replayReadErrorText',
+            "replayNameDefaultText",
+            "replayWriteErrorText",
+            "replayVersionErrorText",
+            "replayReadErrorText",
         ]:
             internal_vals.append((value, lfull[value]))
         internal_vals.append(
-            ('axisText', lfull['configGamepadWindow']['axisText'])
+            ("axisText", lfull["configGamepadWindow"]["axisText"])
         )
-        internal_vals.append(('buttonText', lfull['buttonText']))
+        internal_vals.append(("buttonText", lfull["buttonText"]))
         lmerged = self._language_merged
         assert lmerged is not None
         random_names = [
-            n.strip() for n in lmerged['randomPlayerNamesText'].split(',')
+            n.strip() for n in lmerged["randomPlayerNamesText"].split(",")
         ]
-        random_names = [n for n in random_names if n != '']
+        random_names = [n for n in random_names if n != ""]
         _babase.set_internal_language_keys(internal_vals, random_names)
 
         if switched and print_change:
             assert isinstance(language, str)
             _babase.screenmessage(
                 Lstr(
-                    resource='languageSetText',
+                    resource="languageSetText",
                     subs=[
-                        ('${LANGUAGE}', Lstr(translate=('languages', language)))
+                        ("${LANGUAGE}", Lstr(translate=("languages", language)))
                     ],
                 ),
                 color=(0, 1, 0),

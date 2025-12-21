@@ -16,7 +16,7 @@ from . import (
 
 COMMAND_ALTAS_CLIENT: set[Type[ChatCommand]] = set()
 COMMAND_ALTAS_SERVER: set[Type[ChatCommand]] = set()
-COMMAND_PREFIXES: list[str] = ['/']
+COMMAND_PREFIXES: list[str] = ["/"]
 
 
 class CommandIntercept(ChatIntercept):
@@ -42,7 +42,7 @@ class CommandIntercept(ChatIntercept):
 
         Returns success.
         """
-        message = msg.split(' ')
+        message = msg.split(" ")
         command_entry = message[0].removeprefix(command_prefix)
 
         # in case got a message with nothing but a prefix, ignore
@@ -55,7 +55,7 @@ class CommandIntercept(ChatIntercept):
             except Exception as e:
                 logging.error("'%s' -> '%s'", msg, e, exc_info=True)
                 broadcast_message_to_client(
-                    client_id, bs.Lstr(resource='commands.error')
+                    client_id, bs.Lstr(resource="commands.error")
                 )
             return True
 
@@ -104,7 +104,7 @@ class CommandIntercept(ChatIntercept):
             broadcast_message_to_client(
                 client_id,
                 bs.Lstr(
-                    resource='commands.notfound',
+                    resource="commands.notfound",
                     subs=[("${CMD}", command_entry)],
                 ),
                 (1, 0.1, 0.1),
@@ -119,13 +119,13 @@ CommandIntercept.register()
 class ChatCommand:
     """A command executable by sending its name in chat."""
 
-    name: str = 'Command Name'
+    name: str = "Command Name"
     """Name of this command.
     
     This name is not used when checking for pseudos and
     is purely to give the command a display name.
     """
-    description: str = 'Describes what this command does.'
+    description: str = "Describes what this command does."
     """A description of this command.
     
     Elaborates on what the command is meant to do.
@@ -189,10 +189,10 @@ class ChatCommand:
 class HelpCommand(ChatCommand):
     """Help command."""
 
-    name = 'Help'
-    description = 'Show all available commands.'
+    name = "Help"
+    description = "Show all available commands."
 
-    pseudos = ['help', '?']
+    pseudos = ["help", "?"]
 
     @override
     def execute(self, msg: str, client_id: int) -> None:
@@ -202,13 +202,13 @@ class HelpCommand(ChatCommand):
             if are_we_host():
                 send_custom_chatmessage(t)
 
-        t_bar = '- ' * 18
-        text: str = f'- {t_bar} Command List (0/0) {t_bar}-\n'
+        t_bar = "- " * 18
+        text: str = f"- {t_bar} Command List (0/0) {t_bar}-\n"
 
         host_send_custom_chatmessage(text)
 
         for cmd in set().union(COMMAND_ALTAS_SERVER):
-            t = f'{cmd.name}: {cmd.description}\n'
+            t = f"{cmd.name}: {cmd.description}\n"
 
             host_send_custom_chatmessage(t)
 

@@ -68,7 +68,7 @@ class SpazPowerupSlot:
             self.active_powerup.duration_ms / 1000,
             self._unequip,
         )
-        if self.active_powerup.texture_name != 'empty':
+        if self.active_powerup.texture_name != "empty":
             self.owner._flash_billboard(
                 bs.gettexture(self.active_powerup.texture_name)
             )
@@ -77,7 +77,7 @@ class SpazPowerupSlot:
         if not self.active_powerup or not self.owner.exists():
             return
 
-        self.owner.node.handlemessage('flash')
+        self.owner.node.handlemessage("flash")
         self.owner.powerup_billboard_slot(self.active_powerup)
 
     def _warn(self) -> None:

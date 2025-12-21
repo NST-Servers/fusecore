@@ -52,7 +52,7 @@ class PowerupBoxFactory(Factory):
     """Library class containing shared powerup
     data to prevent gameplay hiccups."""
 
-    IDENTIFIER = '_powerup_box_factory'
+    IDENTIFIER = "_powerup_box_factory"
 
     def __init__(self) -> None:
         super().__init__()
@@ -61,8 +61,8 @@ class PowerupBoxFactory(Factory):
 
         from bascenev1 import get_default_powerup_distribution
 
-        self.drop_sound = bs.getsound('boxDrop')
-        self.powerdown_sound = bs.getsound('powerdown01')
+        self.drop_sound = bs.getsound("boxDrop")
+        self.powerdown_sound = bs.getsound("powerdown01")
 
         shared = SharedObjects.get()
         # Material for powerups.
@@ -80,24 +80,24 @@ class PowerupBoxFactory(Factory):
 
         # Pass a powerup-touched message to applicable stuff.
         self.powerup_material.add_actions(
-            conditions=('they_have_material', self.powerup_accept_material),
+            conditions=("they_have_material", self.powerup_accept_material),
             actions=(
-                ('modify_part_collision', 'collide', True),
-                ('modify_part_collision', 'physical', False),
-                ('message', 'our_node', 'at_connect', TouchedMessage()),
+                ("modify_part_collision", "collide", True),
+                ("modify_part_collision", "physical", False),
+                ("message", "our_node", "at_connect", TouchedMessage()),
             ),
         )
 
         # We don't wanna be picked up.
         self.powerup_material.add_actions(
-            conditions=('they_have_material', shared.pickup_material),
-            actions=('modify_part_collision', 'collide', False),
+            conditions=("they_have_material", shared.pickup_material),
+            actions=("modify_part_collision", "collide", False),
         )
 
         # NOTE: Currently engine broken
         self.powerup_material.add_actions(
-            conditions=('they_have_material', shared.footing_material),
-            actions=('impact_sound', self.drop_sound, 0.5, 0.1),
+            conditions=("they_have_material", shared.footing_material),
+            actions=("impact_sound", self.drop_sound, 0.5, 0.1),
         )
 
         self._powerupdist: list[str] = []
@@ -153,9 +153,9 @@ class PowerupBoxFactory(Factory):
         ]:
             powerup_pool.append(
                 {
-                    'powerup': powerup_i,
-                    'min': latest_float,
-                    'max': latest_float + powerup_i.weight,
+                    "powerup": powerup_i,
+                    "min": latest_float,
+                    "max": latest_float + powerup_i.weight,
                 }
             )
             latest_float += powerup_i.weight
@@ -164,12 +164,12 @@ class PowerupBoxFactory(Factory):
         for pwpdict in powerup_pool:
             # Check if we're within range of this powerup
             # if true, return this one!
-            if pwpdict['max'] > roll >= pwpdict['min']:
-                self.last_poweruptype = pwpdict['powerup']
-                return pwpdict['powerup']
+            if pwpdict["max"] > roll >= pwpdict["min"]:
+                self.last_poweruptype = pwpdict["powerup"]
+                return pwpdict["powerup"]
 
         # Shouldn't get here.
-        raise RuntimeError('Unable to return random powerup.')
+        raise RuntimeError("Unable to return random powerup.")
 
 
 class PowerupBox(FactoryActor):
@@ -184,7 +184,7 @@ class PowerupBox(FactoryActor):
     group_set = POWERUPBOX_SET
     """Set to register this FactoryClass under."""
 
-    texture_name: str = 'bar'
+    texture_name: str = "bar"
     """Texture name applied to the box.
     
     Transformed into 'FactoryTexture', then 'bs.Texture' in runtime.
@@ -209,7 +209,7 @@ class PowerupBox(FactoryActor):
     def _register_texture(cls) -> None:
         """Register our texture as a 'FactoryTexture' instance."""
         cls.my_factory.register_resource(
-            f'{cls.texture_name}', FactoryTexture(cls.texture_name)
+            f"{cls.texture_name}", FactoryTexture(cls.texture_name)
         )
 
     @classmethod
@@ -230,10 +230,10 @@ class PowerupBox(FactoryActor):
         able to call assets in runtime properly.
         """
         return {
-            'mesh': FactoryMesh('powerup'),
-            'mesh_simple': FactoryMesh('powerupSimple'),
-            'powerup_sound': FactorySound('powerup01'),
-            'drop_sound': FactorySound('boxDrop'),
+            "mesh": FactoryMesh("powerup"),
+            "mesh_simple": FactoryMesh("powerupSimple"),
+            "powerup_sound": FactorySound("powerup01"),
+            "drop_sound": FactorySound("boxDrop"),
         }
 
     def __init__(
@@ -258,14 +258,14 @@ class PowerupBox(FactoryActor):
 
     def attributes(self) -> None:
         """Define base variables and attributes."""
-        self.mesh: bs.Mesh = self.factory.fetch('mesh')
-        self.tex: bs.Texture = self.factory.fetch(f'{self.texture_name}')
-        self.light_mesh: bs.Mesh | bool = self.factory.fetch('mesh_simple')
+        self.mesh: bs.Mesh = self.factory.fetch("mesh")
+        self.tex: bs.Texture = self.factory.fetch(f"{self.texture_name}")
+        self.light_mesh: bs.Mesh | bool = self.factory.fetch("mesh_simple")
 
-        self.body: str = 'box'
+        self.body: str = "box"
         self.scale: float = 1.0
         self.mesh_scale: float = 1.0
-        self.rtype: str = 'powerup'
+        self.rtype: str = "powerup"
         self.rscale: float = 1.0
         self.shadow_size: float = 0.5
 
@@ -282,33 +282,33 @@ class PowerupBox(FactoryActor):
         """Create our bomb and do some bomb logic."""
         # Create the bomb node itself
         attrs = {
-            'position': self.initial_position,
-            'velocity': self.initial_velocity,
-            'mesh': self.mesh,
-            'mesh_scale': self.mesh_scale,
-            'body': self.body,
-            'body_scale': self.scale,
-            'shadow_size': self.shadow_size,
-            'color_texture': self.tex,
-            'sticky': self.sticky,
-            'reflection': self.rtype,
-            'reflection_scale': [self.rscale],
-            'materials': self.materials,
+            "position": self.initial_position,
+            "velocity": self.initial_velocity,
+            "mesh": self.mesh,
+            "mesh_scale": self.mesh_scale,
+            "body": self.body,
+            "body_scale": self.scale,
+            "shadow_size": self.shadow_size,
+            "color_texture": self.tex,
+            "sticky": self.sticky,
+            "reflection": self.rtype,
+            "reflection_scale": [self.rscale],
+            "materials": self.materials,
         }
         if self.light_mesh:
-            attrs['light_mesh'] = (
+            attrs["light_mesh"] = (
                 self.mesh if self.light_mesh is True else self.light_mesh
             )
 
         # Create the node
         self.node = bs.newnode(
-            'prop',
+            "prop",
             delegate=self,
             attrs=attrs,
         )
 
         # Animate in.
-        curve = bs.animate(self.node, 'mesh_scale', {0: 0, 0.14: 1.6, 0.2: 1})
+        curve = bs.animate(self.node, "mesh_scale", {0: 0, 0.14: 1.6, 0.2: 1})
         bs.timer(0.2, curve.delete)
 
         # Do timer flash and death
@@ -348,7 +348,7 @@ class PowerupBox(FactoryActor):
         assert self.node
         self.used = True
         # Play the sound and die
-        self.factory.fetch('powerup_sound').play(3, position=self.node.position)
+        self.factory.fetch("powerup_sound").play(3, position=self.node.position)
         self.handlemessage(bs.DieMessage())
 
     def handle_die(self, immediate: bool = False) -> None:
@@ -359,13 +359,13 @@ class PowerupBox(FactoryActor):
         if immediate:
             self.node.delete()
         else:
-            bs.animate(self.node, 'mesh_scale', {0: 1, 0.1: 0})
+            bs.animate(self.node, "mesh_scale", {0: 1, 0.1: 0})
             bs.timer(0.1, self.node.delete)
 
     def handle_hit(self, msg: bs.HitMessage) -> None:
         """Handle a hit to our node."""
         # We die if we get hit by anything other than a punch.
-        if msg.hit_type != 'punch':
+        if msg.hit_type != "punch":
             self.handlemessage(bs.DieMessage())
 
     @override
@@ -392,7 +392,7 @@ PowerupBox.register_resources()
 
 
 class TripleBombsPowerupBox(PowerupBox):
-    texture_name = 'powerupBomb'
+    texture_name = "powerupBomb"
     powerup_to_grant = TripleBombsPowerup
     weight = 3.0
 
@@ -402,7 +402,7 @@ TripleBombsPowerupBox.register()
 
 
 class StickyBombsPowerupBox(PowerupBox):
-    texture_name = 'powerupStickyBombs'
+    texture_name = "powerupStickyBombs"
     powerup_to_grant = StickyBombsPowerup
     weight = 3.0
 
@@ -411,7 +411,7 @@ StickyBombsPowerupBox.register()
 
 
 class IceBombsPowerupBox(PowerupBox):
-    texture_name = 'powerupIceBombs'
+    texture_name = "powerupIceBombs"
     powerup_to_grant = IceBombsPowerup
     weight = 3.0
 
@@ -420,7 +420,7 @@ IceBombsPowerupBox.register()
 
 
 class ImpactBombsPowerupBox(PowerupBox):
-    texture_name = 'powerupImpactBombs'
+    texture_name = "powerupImpactBombs"
     powerup_to_grant = ImpactBombsPowerup
     weight = 3.0
 
@@ -429,7 +429,7 @@ ImpactBombsPowerupBox.register()
 
 
 class LandMinesPowerupBox(PowerupBox):
-    texture_name = 'powerupLandMines'
+    texture_name = "powerupLandMines"
     powerup_to_grant = LandMinesPowerup
     weight = 2.0
 
@@ -438,7 +438,7 @@ LandMinesPowerupBox.register()
 
 
 class PunchPowerupBox(PowerupBox):
-    texture_name = 'powerupPunch'
+    texture_name = "powerupPunch"
     powerup_to_grant = PunchPowerup
     weight = 3.0
 
@@ -447,7 +447,7 @@ PunchPowerupBox.register()
 
 
 class ShieldPowerupBox(PowerupBox):
-    texture_name = 'powerupShield'
+    texture_name = "powerupShield"
     powerup_to_grant = ShieldPowerup
     weight = 2.0
 
@@ -456,7 +456,7 @@ ShieldPowerupBox.register()
 
 
 class HealthPowerupBox(PowerupBox):
-    texture_name = 'powerupHealth'
+    texture_name = "powerupHealth"
     powerup_to_grant = HealthPowerup
     weight = 1.0
 
@@ -465,7 +465,7 @@ HealthPowerupBox.register()
 
 
 class CursePowerupBox(PowerupBox):
-    texture_name = 'powerupCurse'
+    texture_name = "powerupCurse"
     powerup_to_grant = CursePowerup
     weight = 1.0
 
@@ -475,11 +475,11 @@ CursePowerupBox.register()
 
 def _retro_translate_args(
     position: Sequence[float] = (0.0, 1.0, 0.0),
-    poweruptype: str = 'triple_bombs',
+    poweruptype: str = "triple_bombs",
     expire: bool = True,
 ):
     del poweruptype
-    return {'position': position, 'velocity': (0, 0, 0), 'expire': expire}
+    return {"position": position, "velocity": (0, 0, 0), "expire": expire}
 
 
 # NOTE: is this still not working for co-op modes or
@@ -495,11 +495,11 @@ def _powerup_method_wrap(powerup_classtype: Type[powerupbox.PowerupBox]):
             # Check if we're in an activity that has excluded powerups
             activity = bs.getactivity()
             excluded_powerups = (
-                getattr(activity, '_excluded_powerups', []) or []
+                getattr(activity, "_excluded_powerups", []) or []
             )
 
             # Get the powerup type from kwargs or args
-            powerup_type = kwargs.get('poweruptype', None)
+            powerup_type = kwargs.get("poweruptype", None)
             if powerup_type is None and args:
                 # If it's in args, it should be the second argument based on the function signature
                 if len(args) > 1:

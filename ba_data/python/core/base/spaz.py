@@ -76,10 +76,10 @@ class Spaz(spaz.Spaz):
 
         # We callback wrap these on creation as the engine
         # clones these, so they won't be able to be updated later.
-        self._callback_wrap('on_punch_press')
-        self._callback_wrap('on_bomb_press')
-        self._callback_wrap('on_jump_press')
-        self._callback_wrap('on_pickup_press')
+        self._callback_wrap("on_punch_press")
+        self._callback_wrap("on_bomb_press")
+        self._callback_wrap("on_jump_press")
+        self._callback_wrap("on_pickup_press")
 
         # for name in dir(self):
         #    if name.startswith('__'):
@@ -140,29 +140,29 @@ class Spaz(spaz.Spaz):
         """DEPRECATED transform our 'self.default_bomb_type'
         into a 'self.default_bomb' class.
         """
-        if self.default_bomb_type != 'normal':
+        if self.default_bomb_type != "normal":
             bomb_type: Type[Bomb] = Bomb
             match self.default_bomb_type:
-                case 'ice':
+                case "ice":
                     bomb_type = IceBomb
-                case 'land_mine':
+                case "land_mine":
                     bomb_type = LandMine
-                case 'sticky':
+                case "sticky":
                     bomb_type = StickyBomb
-                case 'impact':
+                case "impact":
                     bomb_type = ImpactBomb
             self.active_bomb = bomb_type
 
-        if self.bomb_type != 'normal':
+        if self.bomb_type != "normal":
             bomb_type: Type[Bomb] = Bomb
             match self.bomb_type:
-                case 'ice':
+                case "ice":
                     bomb_type = IceBomb
-                case 'land_mine':
+                case "land_mine":
                     bomb_type = LandMine
-                case 'sticky':
+                case "sticky":
                     bomb_type = StickyBomb
-                case 'impact':
+                case "impact":
                     bomb_type = ImpactBomb
             self.active_bomb = bomb_type
 
@@ -222,7 +222,7 @@ class Spaz(spaz.Spaz):
 
             # Remove cursed material.
             factory = spaz.SpazFactory.get()
-            for attr in ['materials', 'roller_materials']:
+            for attr in ["materials", "roller_materials"]:
                 materials = getattr(self.node, attr)
                 if factory.curse_material in materials:
                     setattr(
@@ -260,7 +260,7 @@ class Spaz(spaz.Spaz):
         """
         method = getattr(self, method_name, None)
         if not isinstance(method, Callable):
-            raise RuntimeError(f'Method {method_name} does not exist.')
+            raise RuntimeError(f"Method {method_name} does not exist.")
         if not method_name in self._cb_wrapped_methods:
             self._callback_wrap(method_name)
 
@@ -282,7 +282,7 @@ class Spaz(spaz.Spaz):
         """
         method = getattr(self, method_name, None)
         if not isinstance(method, Callable):
-            raise RuntimeError(f'Method {method_name} does not exist.')
+            raise RuntimeError(f"Method {method_name} does not exist.")
         if not method_name in self._cb_wrapped_methods:
             self._callback_wrap(method_name)
 
@@ -301,11 +301,11 @@ class Spaz(spaz.Spaz):
         """
         method = getattr(self, method_name, None)
         if not isinstance(method, Callable):
-            raise RuntimeError(f'Method {method_name} does not exist.')
+            raise RuntimeError(f"Method {method_name} does not exist.")
         if not method_name in self._cb_wrapped_methods:
             raise RuntimeError(
-                'Can\'t remove callbacks from a method with no callback wrap.'
-                '\nHas this method been assigned a callback at all?'
+                "Can't remove callbacks from a method with no callback wrap."
+                "\nHas this method been assigned a callback at all?"
             )
         self._cb_wrap_calls[method_name].remove(callback)
 
@@ -328,7 +328,7 @@ class Spaz(spaz.Spaz):
         """
         method = getattr(self, method_name, None)
         if not isinstance(method, Callable):
-            raise RuntimeError(f'Method {method_name} does not exist.')
+            raise RuntimeError(f"Method {method_name} does not exist.")
         if not method_name in self._cb_wrapped_methods:
             self._callback_wrap(method_name)
         self._cb_overwrite_calls[method_name] = override_func
@@ -339,7 +339,7 @@ class Spaz(spaz.Spaz):
         """
         method = getattr(self, method_name, None)
         if not isinstance(method, Callable):
-            raise RuntimeError(f'Method {method_name} does not exist.')
+            raise RuntimeError(f"Method {method_name} does not exist.")
         if not method_name in self._cb_wrapped_methods:
             return
         self._cb_overwrite_calls.pop(method_name, None)
@@ -353,7 +353,7 @@ class Spaz(spaz.Spaz):
         ]:
             return
         if not isinstance(method, Callable):
-            raise ValueError(f'self.{method_name} is not a callable function.')
+            raise ValueError(f"self.{method_name} is not a callable function.")
 
         def cbwrap(func):
             def w(*args, **kwargs):
@@ -443,7 +443,7 @@ class Spaz(spaz.Spaz):
 
         Returns the hypothetical damage this impulse would've dealt.
         """
-        f: bs.HitMessage | tuple | None = args[0] or kwargs.get('msg', None)
+        f: bs.HitMessage | tuple | None = args[0] or kwargs.get("msg", None)
         # do_impulse via hitmessage
         if isinstance(f, bs.HitMessage):
             position = f.pos
@@ -454,12 +454,12 @@ class Spaz(spaz.Spaz):
             forcedir = f.force_direction
         # do_impulse via arguments
         elif isinstance(f, tuple):
-            position = args[0] or kwargs.get('position')
-            velocity = args[1] or kwargs.get('velocity')
-            mag = args[2] or kwargs.get('magnitude')
-            vmag = args[3] or kwargs.get('velocity_magnitude', 0)
-            radius = args[4] or kwargs.get('radius')
-            forcedir = args[5] or kwargs.get('force_direction')
+            position = args[0] or kwargs.get("position")
+            velocity = args[1] or kwargs.get("velocity")
+            mag = args[2] or kwargs.get("magnitude")
+            vmag = args[3] or kwargs.get("velocity_magnitude", 0)
+            radius = args[4] or kwargs.get("radius")
+            forcedir = args[5] or kwargs.get("force_direction")
         else:
             return 0.0
         if position is None or velocity is None or forcedir is None:
@@ -471,12 +471,12 @@ class Spaz(spaz.Spaz):
 
         if vmag > 0:  # We can't use this.
             logging.warning(
-                'velocity_magnitude isn\'t supported yet.', stack_info=True
+                "velocity_magnitude isn't supported yet.", stack_info=True
             )
             vmag = 0
 
         self.node.handlemessage(
-            'impulse', x, y, z, u, v, w, mag, vmag, radius, 0, i, j, k
+            "impulse", x, y, z, u, v, w, mag, vmag, radius, 0, i, j, k
         )
         return int(self.damage_scale * self.node.damage)
 
@@ -521,23 +521,23 @@ class Spaz(spaz.Spaz):
         )
 
         match msg.poweruptype:
-            case 'triple_bombs':
+            case "triple_bombs":
                 powerup = TripleBombsPowerup
-            case 'land_mines':
+            case "land_mines":
                 powerup = LandMinesPowerup
-            case 'impact_bombs':
+            case "impact_bombs":
                 powerup = ImpactBombsPowerup
-            case 'sticky_bombs':
+            case "sticky_bombs":
                 powerup = StickyBombsPowerup
-            case 'punch':
+            case "punch":
                 powerup = PunchPowerup
-            case 'shield':
+            case "shield":
                 powerup = ShieldPowerup
-            case 'curse':
+            case "curse":
                 powerup = CursePowerup
-            case 'ice_bombs':
+            case "ice_bombs":
                 powerup = IceBombsPowerup
-            case 'health':
+            case "health":
                 powerup = HealthPowerup
 
         return self.handle_powerupmsg(
@@ -574,7 +574,7 @@ class Spaz(spaz.Spaz):
                 # at larger scales and messier code if we create on demand.
                 logging.warning(
                     '"SpazPowerupSlot" created for %s as there was '
-                    'no previous instance of one existing; please dont do this!',
+                    "no previous instance of one existing; please dont do this!",
                     type(powerup.slot),
                     stack_info=True,
                 )
@@ -583,9 +583,9 @@ class Spaz(spaz.Spaz):
 
     def _orphan_powerup(self, powerup: SpazPowerup) -> None:
         """Equip a powerup that does not belong in any slot."""
-        if powerup.texture_name != 'empty':
+        if powerup.texture_name != "empty":
             self._flash_billboard(bs.gettexture(powerup.texture_name))
-        self.node.handlemessage('flash')
+        self.node.handlemessage("flash")
         powerup.equip()
 
     def powerup_billboard_slot(self, powerup: SpazPowerup) -> None:
@@ -600,23 +600,23 @@ class Spaz(spaz.Spaz):
         # don't use 'setattr' unless it is absolutely necessary, kids.
         setattr(  # texture
             self.node,
-            f'mini_billboard_{slot}_texture',
+            f"mini_billboard_{slot}_texture",
             bs.gettexture(tex_name),
         )
         setattr(  # initial time
             self.node,
-            f'mini_billboard_{slot}_start_time',
+            f"mini_billboard_{slot}_start_time",
             t_ms,
         )
         setattr(  # end time
             self.node,
-            f'mini_billboard_{slot}_end_time',
+            f"mini_billboard_{slot}_end_time",
             t_ms + powerup.duration_ms,
         )
 
     def powerup_warn(self, tex: str) -> None:
         """Show a billboard warning us of a powerup running out of time."""
-        if not self.node or tex == 'empty':
+        if not self.node or tex == "empty":
             return
 
         self.node.billboard_texture = bs.gettexture(tex)

@@ -21,12 +21,12 @@ PERSISTENCY_CHECK_TIME: float = 0.012
 
 NO_QUEUE_CONNECTION_ATTEMPTS: int = 24
 
-CUSTOMDATA_UI_ENTRY = 'core:_serverqueueuielement'
+CUSTOMDATA_UI_ENTRY = "core:_serverqueueuielement"
 """Name ID to use when injecting our UI element in an activity."""
 PRESERVE_UI = False
 """Do we show the queue UI on replays?"""
 
-ASSET_PATH: str = 'core/serverqueue'
+ASSET_PATH: str = "core/serverqueue"
 
 
 @dataclass
@@ -66,8 +66,8 @@ class ServerQueueSubsystem(AppSubsystem):
         self.server_info: ServerInfo | None = None
         self.status: QueueStatus = QueueStatus.NONE
 
-        self._activity_hash: str = ''
-        self._session_hash: str = ''
+        self._activity_hash: str = ""
+        self._session_hash: str = ""
         self.persistency_check_timer: bs.AppTimer | None = None
 
     @override
@@ -77,7 +77,7 @@ class ServerQueueSubsystem(AppSubsystem):
         if is_server():
             return
 
-        self.server_info = ServerInfo('Public Party', None)
+        self.server_info = ServerInfo("Public Party", None)
 
     @override
     def on_app_shutdown(self) -> None:
@@ -144,16 +144,16 @@ class ServerQueueSubsystem(AppSubsystem):
 
     def show_quit_reason(self, reason: QuitReason | None) -> None:
         """Show a message with the reason we stopped queuing."""
-        r = 'serverqueue.messages.quit_by'
-        lstr: bs.Lstr = bs.Lstr(resource=f'{r}.other')
+        r = "serverqueue.messages.quit_by"
+        lstr: bs.Lstr = bs.Lstr(resource=f"{r}.other")
 
         match reason:
             case QuitReason.UNKNOWN:
                 ...
             case QuitReason.STOPPED:
-                lstr = bs.Lstr(resource=f'{r}.cancel')
+                lstr = bs.Lstr(resource=f"{r}.cancel")
             case QuitReason.FAILED:
-                lstr = bs.Lstr(resource=f'{r}.failure')
+                lstr = bs.Lstr(resource=f"{r}.failure")
 
         bui.screenmessage(lstr, color=(1, 0.15, 0.15))
 
@@ -241,11 +241,11 @@ class ServerQueueUIElement(bs.Actor):
         self.position = position
         self.align = align
 
-        self.sound_start: bui.Sound = bui.getsound(f'{ASSET_PATH}/start_queue')
-        self.sound_join: bui.Sound = bui.getsound(f'{ASSET_PATH}/join_attempt')
-        self.sound_leave: bui.Sound = bui.getsound('shieldDown')
+        self.sound_start: bui.Sound = bui.getsound(f"{ASSET_PATH}/start_queue")
+        self.sound_join: bui.Sound = bui.getsound(f"{ASSET_PATH}/join_attempt")
+        self.sound_leave: bui.Sound = bui.getsound("shieldDown")
         self.icon_tex: list[bs.Texture] | None = [
-            bs.gettexture(f'spinner{i}') for i in range(12)
+            bs.gettexture(f"spinner{i}") for i in range(12)
         ]
         self.icon_frame: int = UI_ICON_LAST_FRAME
 
@@ -267,97 +267,97 @@ class ServerQueueUIElement(bs.Actor):
 
         assert self.icon_tex
         x, y = self.position
-        self.node_defaults['backdrop'] = d = {
-            'position': (x, y - 2),
-            'opacity': 0.65,
+        self.node_defaults["backdrop"] = d = {
+            "position": (x, y - 2),
+            "opacity": 0.65,
         }
-        self.node_elements['backdrop'] = bs.NodeActor(
+        self.node_elements["backdrop"] = bs.NodeActor(
             bs.newnode(
-                'image',
+                "image",
                 attrs={
-                    'host_only': host_only,
-                    'texture': bs.gettexture('clayStroke'),
-                    'position': (x, y - 2),
-                    'scale': (280, 125),
-                    'rotate': -1.23,
-                    'color': (0, 0, 0),
-                    'opacity': 0 if intro else d['opacity'],
-                    'front': True,
-                    'attach': self.align.get_attach(),
+                    "host_only": host_only,
+                    "texture": bs.gettexture("clayStroke"),
+                    "position": (x, y - 2),
+                    "scale": (280, 125),
+                    "rotate": -1.23,
+                    "color": (0, 0, 0),
+                    "opacity": 0 if intro else d["opacity"],
+                    "front": True,
+                    "attach": self.align.get_attach(),
                 },
             )
         )
-        self.node_defaults['spinner'] = d = {
-            'position': (x - 100, y),
-            'opacity': 1,
+        self.node_defaults["spinner"] = d = {
+            "position": (x - 100, y),
+            "opacity": 1,
         }
-        self.node_elements['spinner'] = bs.NodeActor(
+        self.node_elements["spinner"] = bs.NodeActor(
             bs.newnode(
-                'image',
+                "image",
                 attrs={
-                    'host_only': host_only,
-                    'texture': self.icon_tex[self.icon_frame],
-                    'position': (x - 100, y),
-                    'scale': e_scale(40),
-                    'color': (1, 1, 1),
-                    'opacity': 0 if intro else d['opacity'],
-                    'front': True,
-                    'attach': self.align.get_attach(),
+                    "host_only": host_only,
+                    "texture": self.icon_tex[self.icon_frame],
+                    "position": (x - 100, y),
+                    "scale": e_scale(40),
+                    "color": (1, 1, 1),
+                    "opacity": 0 if intro else d["opacity"],
+                    "front": True,
+                    "attach": self.align.get_attach(),
                 },
             )
         )
         # Use a weak callback so the timer does not keep a strong
         # reference to this UI element and prevent it from dying.
-        self.misc_elements['spinner_anim'] = bui.AppTimer(
+        self.misc_elements["spinner_anim"] = bui.AppTimer(
             1 / 16, bui.WeakCallStrict(self._do_icon_spin), repeat=True
         )
-        self.node_defaults['label_server'] = d = {
-            'position': (x - 75, y + 8),
-            'opacity': 1,
+        self.node_defaults["label_server"] = d = {
+            "position": (x - 75, y + 8),
+            "opacity": 1,
         }
-        self.node_elements['label_server'] = bs.NodeActor(
+        self.node_elements["label_server"] = bs.NodeActor(
             bs.newnode(
-                'text',
+                "text",
                 attrs={
-                    'host_only': host_only,
-                    'text': self.server_info.name,
-                    'position': (x - 75, y + 8),
-                    'scale': 0.9,
-                    'maxwidth': 175,
-                    'flatness': 0.0,
-                    'color': (1, 1, 1, 1),
-                    'opacity': 0 if intro else d['opacity'],
-                    'shadow': 1.0,
-                    'front': True,
-                    'h_align': 'left',
-                    'v_align': 'center',
-                    'h_attach': self.align.get_h_attach(),
-                    'v_attach': self.align.get_v_attach(),
+                    "host_only": host_only,
+                    "text": self.server_info.name,
+                    "position": (x - 75, y + 8),
+                    "scale": 0.9,
+                    "maxwidth": 175,
+                    "flatness": 0.0,
+                    "color": (1, 1, 1, 1),
+                    "opacity": 0 if intro else d["opacity"],
+                    "shadow": 1.0,
+                    "front": True,
+                    "h_align": "left",
+                    "v_align": "center",
+                    "h_attach": self.align.get_h_attach(),
+                    "v_attach": self.align.get_v_attach(),
                 },
             )
         )
-        self.node_defaults['label_status'] = d = {
-            'position': (x - 75, y - 12),
-            'opacity': 1,
+        self.node_defaults["label_status"] = d = {
+            "position": (x - 75, y - 12),
+            "opacity": 1,
         }
-        self.node_elements['label_status'] = bs.NodeActor(
+        self.node_elements["label_status"] = bs.NodeActor(
             bs.newnode(
-                'text',
+                "text",
                 attrs={
-                    'host_only': host_only,
-                    'text': 'Waiting in queue... (2/12)',
-                    'position': (x - 75, y - 12),
-                    'scale': 0.65,
-                    'maxwidth': 250,
-                    'flatness': 0.0,
-                    'color': (1, 1, 1, 1),
-                    'opacity': 0 if intro else d['opacity'],
-                    'shadow': 1.0,
-                    'front': True,
-                    'h_align': 'left',
-                    'v_align': 'center',
-                    'h_attach': self.align.get_h_attach(),
-                    'v_attach': self.align.get_v_attach(),
+                    "host_only": host_only,
+                    "text": "Waiting in queue... (2/12)",
+                    "position": (x - 75, y - 12),
+                    "scale": 0.65,
+                    "maxwidth": 250,
+                    "flatness": 0.0,
+                    "color": (1, 1, 1, 1),
+                    "opacity": 0 if intro else d["opacity"],
+                    "shadow": 1.0,
+                    "front": True,
+                    "h_align": "left",
+                    "v_align": "center",
+                    "h_attach": self.align.get_h_attach(),
+                    "v_attach": self.align.get_v_attach(),
                 },
             )
         )
@@ -370,10 +370,10 @@ class ServerQueueUIElement(bs.Actor):
                 continue
             if not actor.node:
                 continue
-            default_opacity = self.node_defaults.get(name, {}).get('opacity', 1)
+            default_opacity = self.node_defaults.get(name, {}).get("opacity", 1)
             bs.animate(
                 actor.node,
-                'opacity',
+                "opacity",
                 {0.0: 0.0, 0.2: 0.0, 0.75: default_opacity},
             )
 
@@ -385,11 +385,11 @@ class ServerQueueUIElement(bs.Actor):
             if not node:
                 continue
             x, y = self.node_defaults.get(name, {}).get(
-                'position', (self.position)
+                "position", (self.position)
             )
             bs.animate_array(
                 node,
-                'position',
+                "position",
                 2,
                 {
                     0.0: (x, y),
@@ -407,11 +407,11 @@ class ServerQueueUIElement(bs.Actor):
             if not node:
                 continue
             x, y = self.node_defaults.get(name, {}).get(
-                'position', (self.position)
+                "position", (self.position)
             )
             bs.animate_array(
                 node,
-                'position',
+                "position",
                 2,
                 {0.0: (x + 350, y), 0.3: (x + 175, y), 0.5: (x, y)},
             )
@@ -419,12 +419,12 @@ class ServerQueueUIElement(bs.Actor):
     def _do_icon_spin(self) -> None:
         if (
             self.icon_tex is None
-            or self.node_elements.get('spinner', None) is None
+            or self.node_elements.get("spinner", None) is None
         ):
             return
 
         frame = (self.icon_frame + 1) % len(self.icon_tex)
-        self.node_elements['spinner'].node.texture = self.icon_tex[frame]
+        self.node_elements["spinner"].node.texture = self.icon_tex[frame]
 
         global UI_ICON_LAST_FRAME  # pylint: disable=global-statement
         UI_ICON_LAST_FRAME = self.icon_frame = frame
@@ -437,11 +437,11 @@ class ServerQueueUIElement(bs.Actor):
         self._update_text()
 
     def _update_text(self) -> None:
-        self.node_elements['label_server'].node.text = self.server_info.name
-        self.node_elements['label_status'].node.text = self._get_status_text()
+        self.node_elements["label_server"].node.text = self.server_info.name
+        self.node_elements["label_status"].node.text = self._get_status_text()
 
     def _get_status_text(self) -> bs.Lstr | str:
-        return bs.Lstr(resource='serverqueue.status.in_queue')
+        return bs.Lstr(resource="serverqueue.status.in_queue")
 
     def delete(self, silent: bool = False) -> None:
         """Delete the node contents of this actor."""

@@ -29,7 +29,7 @@ from ._language import ExternalLanguageSubsystem, reload_language
 modloader = bs.app.register_subsystem(_ml.ModLoaderSubsystem())
 serverqueue = bs.app.register_subsystem(sq.ServerQueueSubsystem())
 
-add_devconsole_tab('Core Tools', FuseToolsDevTab)
+add_devconsole_tab("Core Tools", FuseToolsDevTab)
 
 
 # patch our language class and re-set our language to execute our changes.

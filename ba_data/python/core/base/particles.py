@@ -70,7 +70,7 @@ class ParticleLimitMode(Enum):
 class ParticleFactory(Factory):
     """Factory to quickly access our particles."""
 
-    IDENTIFIER = '_particle_factory'
+    IDENTIFIER = "_particle_factory"
 
     def __init__(self) -> None:
         super().__init__()
@@ -92,14 +92,14 @@ class ParticleFactory(Factory):
             stiffness (float, optional): _description_. Defaults to 0.
         """
         m = bs.Material()
-        m.add_actions(('modify_part_collision', 'collide', False))
-        m.add_actions(('modify_part_collision', 'damping', damping))
-        m.add_actions(('modify_part_collision', 'stiffness', stiffness))
+        m.add_actions(("modify_part_collision", "collide", False))
+        m.add_actions(("modify_part_collision", "damping", damping))
+        m.add_actions(("modify_part_collision", "stiffness", stiffness))
         m.add_actions(  # map collision
-            conditions=('they_have_material', self.shared.footing_material),
+            conditions=("they_have_material", self.shared.footing_material),
             actions=(
-                ('modify_part_collision', 'collide', True),
-                ('modify_part_collision', 'friction', friction),
+                ("modify_part_collision", "collide", True),
+                ("modify_part_collision", "friction", friction),
             ),
         )
         return m
@@ -215,8 +215,8 @@ class Particle(FactoryActor):
         able to call assets in runtime properly.
         """
         return {
-            'mesh': FactoryMesh('bomb'),
-            'tex': FactoryTexture('bombColor'),
+            "mesh": FactoryMesh("bomb"),
+            "tex": FactoryTexture("bombColor"),
         }
 
     def attributes(self) -> None:
@@ -228,15 +228,15 @@ class Particle(FactoryActor):
         # if you don't care about it having custom
         # friction, dampingand stiffness qualities.
 
-        self.mesh: bs.Mesh = self.factory.fetch('mesh')
+        self.mesh: bs.Mesh = self.factory.fetch("mesh")
         self.light_mesh: bs.Mesh = self.mesh
-        self.body: str = 'landMine'
+        self.body: str = "landMine"
         # Can be 'sphere', 'crate', 'landMine', 'box', 'capsule' or 'puck'.
         self.body_scale: float = 1.0
         self.mesh_scale: float = 1.0
         self.shadow_size: float = 0.3
-        self.color_texture: bs.Texture = self.factory.fetch('tex')
-        self.reflection: str = 'soft'
+        self.color_texture: bs.Texture = self.factory.fetch("tex")
+        self.reflection: str = "soft"
         # Can be 'soft', 'char' or 'powerup'
         self.reflection_scale: list[float] = [1.0]
         self.gravity_scale: float = 1.0
@@ -272,22 +272,22 @@ class Particle(FactoryActor):
     ) -> None:
         """Create our node."""
         self.node: bs.Node | None = bs.newnode(
-            'prop',
+            "prop",
             delegate=self,
             attrs={
-                'position': position,
-                'velocity': velocity,
-                'mesh': self.mesh,
-                'light_mesh': self.light_mesh,
-                'body': self.body,
-                'body_scale': self.body_scale,
-                'mesh_scale': self.mesh_scale,
-                'shadow_size': self.shadow_size,
-                'color_texture': self.color_texture,
-                'reflection': self.reflection,
-                'reflection_scale': self.reflection_scale,
-                'gravity_scale': self.gravity_scale,
-                'materials': self.materials,
+                "position": position,
+                "velocity": velocity,
+                "mesh": self.mesh,
+                "light_mesh": self.light_mesh,
+                "body": self.body,
+                "body_scale": self.body_scale,
+                "mesh_scale": self.mesh_scale,
+                "shadow_size": self.shadow_size,
+                "color_texture": self.color_texture,
+                "reflection": self.reflection,
+                "reflection_scale": self.reflection_scale,
+                "gravity_scale": self.gravity_scale,
+                "materials": self.materials,
             },
         )
 
@@ -305,7 +305,7 @@ class Particle(FactoryActor):
 
         self._animation_node = bs.animate(
             self.node,
-            'mesh_scale',
+            "mesh_scale",
             {
                 0: 0,
                 t_in: self.mesh_scale,
@@ -343,7 +343,7 @@ class Particle(FactoryActor):
             if self.node:
                 self._animation_node = bs.animate(
                     self.node,
-                    'mesh_scale',
+                    "mesh_scale",
                     {
                         0: self.node.mesh_scale,
                         self.t_fade_out: 0,

@@ -17,7 +17,7 @@ class ConfigSystem:
     values using the provided 'section_name'.
     """
 
-    section_name: str = 'core_config'
+    section_name: str = "core_config"
 
     def __repr__(self) -> str:
         """When printing this class, return our config. section instead."""
@@ -40,16 +40,16 @@ class ConfigSystem:
             Commonly happens when trying to access a directory that
             already has a value rather than a nested dict.
         """
-        dir_subs = directory.split('.')
+        dir_subs = directory.split(".")
 
         bs.app.config.setdefault(self.section_name, {})
         root_path: dict = bs.app.config[self.section_name]
 
         active_path = root_path
-        done_subs_str: str = ''
+        done_subs_str: str = ""
 
         for i, sub in enumerate(dir_subs[:-1]):
-            done_subs_str += f'.{sub}'
+            done_subs_str += f".{sub}"
             _log().debug(
                 'write: accessing "%s%s"', self.section_name, done_subs_str
             )
@@ -59,14 +59,14 @@ class ConfigSystem:
             if not isinstance(active_path.get(sub, None), dict):
                 raise KeyError(
                     f'Config path: "{".".join(list(dir_subs[:i+1]))}"'
-                    'is not valid!\n'
-                    f'config[\'{self.section_name}\']'
+                    "is not valid!\n"
+                    f"config['{self.section_name}']"
                     f'{[f"[{key}]" for key in dir_subs[:i+1]]} = {active_path[sub]}\n\n'
                     f'Caused when trying to access "{sub}".'
                 )
             active_path = active_path[sub]
 
-        done_subs_str += f'.{dir_subs[-1]}'
+        done_subs_str += f".{dir_subs[-1]}"
         # write to our final path.
         active_path[dir_subs[-1]] = value
         _log().info(
@@ -105,16 +105,16 @@ class ConfigSystem:
         Returns:
             Any: Value of the provided config. path, or our fallback value.
         """
-        dir_subs = directory.split('.')
+        dir_subs = directory.split(".")
 
         bs.app.config.setdefault(self.section_name, {})
         root_path: dict = bs.app.config[self.section_name]
 
         active_path = root_path
-        done_subs_str: str = ''
+        done_subs_str: str = ""
 
         for i, sub in enumerate(dir_subs[:-1]):
-            done_subs_str += f'.{sub}'
+            done_subs_str += f".{sub}"
             _log().debug(
                 'fetch: accessing "%s%s"', self.section_name, done_subs_str
             )
@@ -124,12 +124,12 @@ class ConfigSystem:
             if not isinstance(active_path[sub], dict):
                 raise KeyError(
                     f'Config path: "{".".join(list(dir_subs[:i+1]))}"'
-                    'is not a valid subkey!\n\n'
+                    "is not a valid subkey!\n\n"
                     f'Caused when trying to access "{sub}".'
                 )
             active_path = active_path[sub]
 
-        done_subs_str += f'.{dir_subs[-1]}'
+        done_subs_str += f".{dir_subs[-1]}"
         # return & create the value, saving only if we we're assigned
         # to create data if there was none.
         to_sender = active_path.setdefault(dir_subs[-1], fallback)
@@ -170,9 +170,9 @@ class ConfigSystem:
 
         bs.app.plus.add_v1_account_transaction(
             {
-                'type': 'SET_MISC_VAL',
-                'name': f'{self.section_name}:{key}',
-                'value': value,
+                "type": "SET_MISC_VAL",
+                "name": f"{self.section_name}:{key}",
+                "value": value,
             }
         )
         _log().info(
@@ -202,7 +202,7 @@ class ConfigSystem:
             return None
 
         v = bs.app.plus.get_v1_account_misc_val(
-            f'{self.section_name}:{key}', fallback
+            f"{self.section_name}:{key}", fallback
         )
         _log().info(
             'v1_fetch: got "%s" from "%s:%s"', v, self.section_name, key
@@ -239,5 +239,5 @@ class ConfigSystem:
 
 def _is_v1_logged_in() -> bool:
     return not (
-        bs.app.plus is None or bs.app.plus.get_v1_account_state() != 'signed_in'
+        bs.app.plus is None or bs.app.plus.get_v1_account_state() != "signed_in"
     )
