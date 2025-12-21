@@ -68,6 +68,15 @@ def is_admin() -> bool:
         return False
 
 
+def is_server() -> bool:
+    """Return whether we're running as a server or not."""
+    classic = bs.app.classic
+    if classic is None:
+        raise RuntimeError('classic is unexpectedly none')
+
+    return not classic.server is None
+
+
 PLAYLIST_NAME_BLACKLIST = ['__default__', '__playlist_create__']
 
 
