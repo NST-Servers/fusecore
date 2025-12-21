@@ -18,7 +18,7 @@ from ..base.spazfactory import SpazComponent
 
 if TYPE_CHECKING:
     import bascenev1 as bs
-    from core.base.spaz import Spaz
+    from fusecore.base.spaz import Spaz
 
 POWERUP_SET: set[Type[SpazPowerup]] = set()
 DEFAULT_POWERUP_DURATION: int = 20000

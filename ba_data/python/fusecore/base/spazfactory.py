@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Type, override
 import bascenev1 as bs
 from bascenev1lib.actor import spazfactory
 
-from core._tools import obj_clone, obj_method_override
+from fusecore._tools import obj_clone, obj_method_override
 
 # clone original to use functions later on
 VanillaSpazFactory: Type[spazfactory.SpazFactory] = obj_clone(
@@ -91,7 +91,7 @@ class SpazPowerupSlot:
         if not self.active_powerup or not self.owner.exists():
             return
 
-        from core.base.powerupbox import (
+        from fusecore.base.powerupbox import (
             PowerupBoxFactory,
         )
 

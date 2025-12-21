@@ -14,8 +14,8 @@ import bauiv1 as bui
 from bascenev1lib.mainmenu import MainMenuActivity
 from bauiv1lib.gather.publictab import PartyEntry
 
-from core.utils import NodeAlignment
-from core._tools import is_server
+from fusecore.utils import NodeAlignment
+from fusecore._tools import is_server
 
 PERSISTENCY_CHECK_TIME: float = 0.012
 

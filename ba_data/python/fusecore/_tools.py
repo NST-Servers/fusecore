@@ -135,17 +135,17 @@ class FuseToolsDevTab(DevConsoleTab):
         )
 
     def _get_discordrp_btn_label(self) -> str:
-        import core
+        import fusecore
 
-        drp = core.DiscordRP
+        drp = fusecore.DiscordRP
 
         return "Disable DiscordRP" if drp.is_active() else "Enable DiscordRP"
 
     def toggle_discordrp(self) -> None:
         """Toggles DiscordRP."""
-        import core
+        import fusecore
 
-        drp = core.DiscordRP
+        drp = fusecore.DiscordRP
         msg: str = ""
 
         if drp.is_active():
