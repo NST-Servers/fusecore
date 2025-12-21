@@ -1,0 +1,23 @@
+{
+    "serverqueue": {
+        "title": "Server Queue",
+        "party_unknown": "Unknown Party",
+        "status": {
+            "in_queue": "Waiting in queue...",
+            "in_queue_extended": "Waiting in queue (+${A})",
+            "queue_update": "Queue: +${A}",
+            "join_attempt": "Joining in ${A}...",
+            "join_request": "Requsting to join...",
+            "joining": "Joining..."
+        },
+        "messages": {
+            "queue_host_warning": "Heads up! Queuing into a server while hosting a party\nwill result in all your party members getting kicked.\nAre you sure you want to proceed?\n",
+            "replay_note": "You're still queued!\nThe UI isn't visible while watching replays.",
+            "quit_by": {
+                "failure": "Couldn't join server.",
+                "cancel": "Queueing cancelled by user.",
+                "other": "Queueing cancelled."
+            }
+        }
+    }
+}

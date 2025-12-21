@@ -11,6 +11,7 @@ from core._tools import toolsTab, add_devconsole_tab, obj_method_override
 
 from core import (
     _modloader as _ml,
+    serverqueue as sq,
     base as _,
     discordrp as _,
     _cloudsafety as _,
@@ -26,7 +27,7 @@ from ._language import ExternalLanguageSubsystem, reload_language
 
 
 modloader = bs.app.register_subsystem(_ml.ModLoaderSubsystem())
-
+serverqueue = bs.app.register_subsystem(sq.ServerQueueSubsystem())
 
 add_devconsole_tab('Core Tools', toolsTab)
 
