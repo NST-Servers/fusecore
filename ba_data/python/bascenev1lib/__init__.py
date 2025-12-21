@@ -3,5 +3,5 @@
 """Library of stuff using the bascenev1 api: games, actors, etc."""
 
 # ba_meta require api 9
-import core
+import fusecore
 import claymore

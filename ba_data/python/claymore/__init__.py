@@ -3,7 +3,7 @@
 #         for core to load us automatically.
 import os
 
-from core import _language, _config
+from fusecore import _language, _config
 from .common import DATA_DIRECTORY
 
 # append our language dir and reload lang to apply changes

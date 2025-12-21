@@ -18,7 +18,7 @@ from babase._language import (
 )
 from babase._logging import applog
 
-from core.common import DATA_DIRECTORY
+from fusecore.common import DATA_DIRECTORY
 
 LANG_FOLDERS: list[Path] = [
     Path(os.path.join(DATA_DIRECTORY, "lang")),

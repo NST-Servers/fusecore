@@ -13,7 +13,7 @@ import bascenev1 as bs
 from bascenev1lib.gameutils import SharedObjects
 from bascenev1lib.mainmenu import MainMenuActivity
 
-from core.common import vector3_multfactor
+from fusecore.common import vector3_multfactor
 
 from .factory import (
     Factory,

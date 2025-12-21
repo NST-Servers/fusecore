@@ -8,7 +8,7 @@ from typing import Type, cast, override
 import bascenev1 as bs
 from bascenev1lib.actor.spaz import Spaz
 
-from core.chat import ChatIntercept, get_players_from_client_id, are_we_host
+from fusecore.chat import ChatIntercept, get_players_from_client_id, are_we_host
 
 STICKER_ATLAS: set[Type[ChatSticker]] = set()
 STICKER_DEFAULT: Type[ChatSticker] | None = None
