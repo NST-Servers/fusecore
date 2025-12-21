@@ -508,7 +508,7 @@ class Spaz(spaz.Spaz):
 
         # FIXME: nested import of humilliation
         # curse you, deprecation!
-        from core.base.powerup import (  # pylint: disable=import-outside-toplevel
+        from core.base.powerup import (
             TripleBombsPowerup,
             StickyBombsPowerup,
             IceBombsPowerup,

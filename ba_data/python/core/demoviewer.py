@@ -62,7 +62,7 @@ def launch_replay_from_list(replay_path_list: list[str]) -> None:
             # in case we half-launched or something.
             from bascenev1lib import (
                 mainmenu,
-            )  # pylint: disable=import-outside-toplevel
+            )
 
             bs.new_host_session(mainmenu.MainMenuSession)
 

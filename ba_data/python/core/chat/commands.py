@@ -52,7 +52,7 @@ class CommandIntercept(ChatIntercept):
         def run_command(call: Callable) -> bool:
             try:
                 call()
-            except Exception as e:  # pylint: disable=broad-exception-caught
+            except Exception as e:
                 logging.error("'%s' -> '%s'", msg, e, exc_info=True)
                 broadcast_message_to_client(
                     client_id, bs.Lstr(resource='commands.error')

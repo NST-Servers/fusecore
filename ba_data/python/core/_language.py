@@ -186,7 +186,7 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
                         language.lower(),
                     )
 
-            except Exception:  # pylint: disable=broad-exception-caught
+            except Exception:
                 applog.exception("Error importing language '%s'.", language)
                 _babase.screenmessage(
                     f"Error setting language to '{language}';"

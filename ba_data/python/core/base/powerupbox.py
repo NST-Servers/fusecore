@@ -59,7 +59,6 @@ class PowerupBoxFactory(Factory):
 
         self.last_poweruptype: Type[PowerupBox] | None = None
 
-        # pylint: disable=import-outside-toplevel
         from bascenev1 import get_default_powerup_distribution
 
         self.drop_sound = bs.getsound('boxDrop')
@@ -70,7 +69,7 @@ class PowerupBoxFactory(Factory):
         self.powerup_material = bs.Material()
 
         # Material for anyone wanting to accept powerups.
-        # pylint: disable=import-outside-toplevel
+
         from bascenev1lib.actor.powerupbox import (
             PowerupBoxFactory as VanillaBoxFactory,
         )

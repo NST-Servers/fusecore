@@ -467,7 +467,7 @@ class DiscordRPSubsystem(AppSubsystem):
             return
         return self._thread.status
 
-    def _is_active(self) -> bool:
+    def is_active(self) -> bool:
         return bool(self.update_timer)
 
     def _process_stop(self) -> None:
@@ -503,8 +503,7 @@ class DiscordRPSubsystem(AppSubsystem):
         with bs.ContextRef.empty():
             if bs.app.classic is None or (
                 bs.app.classic.server is None
-                and bs.app.classic.platform
-                in ['windows', 'win32', 'mac', 'linux']
+                and bs.app.classic.platform in ('windows', 'mac', 'linux')
             ):
                 # If we're already running something, don't do anything.
                 # (don't mark it as an error as we might be trying to

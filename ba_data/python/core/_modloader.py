@@ -45,7 +45,7 @@ def get_mods_resource_folder(
             f'{resource}2',
             'core',
             'mods',
-            'ext'
+            'ext',
         )
     )
 

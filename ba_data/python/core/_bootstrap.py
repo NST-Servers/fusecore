@@ -7,7 +7,7 @@ Loads multiple modules and prepares them for usage.
 import bascenev1 as bs
 import babase
 
-from core._tools import toolsTab, add_devconsole_tab, obj_method_override
+from core._tools import FuseToolsDevTab, add_devconsole_tab, obj_method_override
 
 from core import (
     _modloader as _ml,
@@ -29,7 +29,7 @@ from ._language import ExternalLanguageSubsystem, reload_language
 modloader = bs.app.register_subsystem(_ml.ModLoaderSubsystem())
 serverqueue = bs.app.register_subsystem(sq.ServerQueueSubsystem())
 
-add_devconsole_tab('Core Tools', toolsTab)
+add_devconsole_tab('Core Tools', FuseToolsDevTab)
 
 
 # patch our language class and re-set our language to execute our changes.
