@@ -10,7 +10,7 @@ import bauiv1 as bui
 
 CHAT_INTERCEPTS_SET: set[Type[ChatIntercept]] = set()
 
-SENDER_OVERRIDE_DEFAULT: str = f'{bui.charstr(bui.SpecialChar.LOGO_FLAT)}'
+SENDER_OVERRIDE_DEFAULT: str = f"{bui.charstr(bui.SpecialChar.LOGO_FLAT)}"
 
 
 class ChatIntercept:

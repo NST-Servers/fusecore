@@ -52,25 +52,25 @@ The smaller the number, the more we fetch our servers,
 but the more bandwidth we occupy.
 """
 
-MAPICON_PRE = 'map_'
+MAPICON_PRE = "map_"
 MAPICON_STR: dict = {
-    'Big G': 'bigg',
-    'Bridgit': 'bridgit',
-    'Courtyard': 'courtyard',
-    'Crag Castle': 'cragcastle',
-    'Doom Shroom': 'doomshroom',
-    'Football Stadium': 'footballstadium',
-    'Hockey Stadium': 'hockeystadium',
-    'Happy Thoughts': 'happythoughts',
-    'Lake Frigid': 'lakefrigid',
-    'Monkey Face': 'monkeyface',
-    'Rampage': 'rampage',
-    'Roundabout': 'roundabout',
-    'Step Right Up': 'steprightup',
-    'The Pad': 'thepad',
-    'Tip Top': 'tiptop',
-    'Tower D': 'towerd',
-    'Zigzag': 'zigzag',
+    "Big G": "bigg",
+    "Bridgit": "bridgit",
+    "Courtyard": "courtyard",
+    "Crag Castle": "cragcastle",
+    "Doom Shroom": "doomshroom",
+    "Football Stadium": "footballstadium",
+    "Hockey Stadium": "hockeystadium",
+    "Happy Thoughts": "happythoughts",
+    "Lake Frigid": "lakefrigid",
+    "Monkey Face": "monkeyface",
+    "Rampage": "rampage",
+    "Roundabout": "roundabout",
+    "Step Right Up": "steprightup",
+    "The Pad": "thepad",
+    "Tip Top": "tiptop",
+    "Tower D": "towerd",
+    "Zigzag": "zigzag",
 }
 
 
@@ -115,8 +115,8 @@ class RPTimestamps:
 
     def to_dict(self) -> dict:
         return {
-            'start': self.start,
-            'end': self.end,
+            "start": self.start,
+            "end": self.end,
         }
 
 
@@ -125,7 +125,7 @@ class RPEmoji:
     # https://discord.com/developers/docs/events/gateway-events#activity-object-activity-emoji
     # FIXME: is this even needed in this context?
     name: str
-    id: str = ''
+    id: str = ""
     animated: bool = False
 
 
@@ -142,13 +142,13 @@ class RichPresenceStatus:
     """Used for streams, goes unused here."""
     timestamps: RPTimestamps | None = None
     """Start and end times of our activity, displayed as a timer."""
-    application_id: str = ''
+    application_id: str = ""
     status_display_type: RPDisplayType = RPDisplayType.NAME
 
-    details: str = ''
-    details_url: str = ''
-    state: str = ''
-    state_url: str = ''
+    details: str = ""
+    details_url: str = ""
+    state: str = ""
+    state_url: str = ""
 
     # FIXME: is this even needed in this context?
     emoji: RPEmoji | None = None
@@ -186,8 +186,8 @@ class RichPresenceThread(threading.Thread):
         if isinstance(exc, OSError) and not isinstance(exc, FileNotFoundError):
             return
         _log().error(
-            'Something wrong occurred while handling a rich presence request.\n'
-            f'ThreadState: {self.status}',
+            "Something wrong occurred while handling a rich presence request.\n"
+            f"ThreadState: {self.status}",
             exc_info=exc,
         )
 
@@ -195,7 +195,7 @@ class RichPresenceThread(threading.Thread):
         """Try executing our presence."""
         # Start running and mantain our presence.
         try:
-            _log().info('Starting \'RichPresenceThread\'...')
+            _log().info("Starting 'RichPresenceThread'...")
             with Presence(APP_CLIENT_ID) as presence:
                 self.presence = presence
                 presence.set(
@@ -207,14 +207,14 @@ class RichPresenceThread(threading.Thread):
                 )
                 self.status = ThreadState.ACTIVE
                 _log().info(
-                    '\'RichPresenceThread\' started successfully!\n'
-                    'Waiting for our DiscordRPSubsystem to link...'
+                    "'RichPresenceThread' started successfully!\n"
+                    "Waiting for our DiscordRPSubsystem to link..."
                 )
                 # Keep it running!
                 while not self._should_stop.is_set():
                     time.sleep(0.1)
                 self.status = ThreadState.STOPPED
-                _log().info('\'RichPresenceThread\' stopped.')
+                _log().info("'RichPresenceThread' stopped.")
 
         except Exception as e:
             self._handle_error(e)
@@ -224,12 +224,12 @@ class RichPresenceThread(threading.Thread):
         # https://discord.com/developers/docs/topics/gateway-events#activity-object-activity-structure
         if self.presence is None:
             _log().warning(
-                'No DiscordRPSubsystem linked while tying to set presence status?',
+                "No DiscordRPSubsystem linked while tying to set presence status?",
                 stack_info=True,
             )
             return
 
-        _log().info('Set our Discord Presence Status.\n' f'Provided: {data}')
+        _log().info("Set our Discord Presence Status.\n" f"Provided: {data}")
 
         try:
             self.presence.set(data)
@@ -259,7 +259,7 @@ class DiscordRPSubsystem(AppSubsystem):
         self._creation_time: int = int(time.time() * 1000)
 
         self.rpstatus: RichPresenceStatus = RichPresenceStatus(
-            name='BombSquad',
+            name="BombSquad",
             type=RPStatusType.PLAYING,
             created_at=self._creation_time,
         )
@@ -283,10 +283,10 @@ class DiscordRPSubsystem(AppSubsystem):
         self.server_listing: dict = {}
         self.server_entry: dict = {}
 
-        self._party_id: str = ''
-        self._join_secret: str = ''
+        self._party_id: str = ""
+        self._join_secret: str = ""
 
-        self.r = 'discordrp'
+        self.r = "discordrp"
 
     def on_app_running(self) -> None:
         """Start automatically when our app reaches running state,
@@ -305,8 +305,8 @@ class DiscordRPSubsystem(AppSubsystem):
         self.retry_time = RETRY_TIME_START
         self.retry_attempt = 0
         # Generate secrets too
-        self._party_id = ''
-        self._join_secret = ''
+        self._party_id = ""
+        self._join_secret = ""
         self.generate_secrets()
 
     def _update_status(self, data: dict) -> None:
@@ -350,7 +350,7 @@ class DiscordRPSubsystem(AppSubsystem):
         """Get our GameActivity's translated map name."""
         # Check and translate our current map's name.
         return bs.Lstr(
-            translate=('mapsNames', activity.map.name),
+            translate=("mapsNames", activity.map.name),
         ).evaluate()
 
     def _get_map_large_image(self, activity: bs.GameActivity) -> str:
@@ -373,29 +373,29 @@ class DiscordRPSubsystem(AppSubsystem):
         Returns:
             str: Our evaluated details string.
         """
-        return 'hello!'
+        return "hello!"
 
-        session_name = f'{self.r}.session.'
+        session_name = f"{self.r}.session."
         if isinstance(session, bs.CoopSession):
             if session.campaign is not None:
-                session_name += f'coop.{session.campaign.name}'
+                session_name += f"coop.{session.campaign.name}"
             else:
-                session_name += 'other'
+                session_name += "other"
 
         elif isinstance(session, bs.FreeForAllSession):
-            session_name += 'ffa'
+            session_name += "ffa"
 
         elif isinstance(session, bs.FreeForAllSession):
-            session_name += 'teams'
+            session_name += "teams"
 
         else:
-            session_name += 'other'
+            session_name += "other"
 
         return bs.Lstr(
-            value='${SESSION} | ${ACTIVITY}',
+            value="${SESSION} | ${ACTIVITY}",
             subs=[
-                ('${SESSION}', bs.Lstr(resource=session_name)),
-                ('${ACTIVITY}', set_activity),
+                ("${SESSION}", bs.Lstr(resource=session_name)),
+                ("${ACTIVITY}", set_activity),
             ],
         ).evaluate()
 
@@ -403,11 +403,11 @@ class DiscordRPSubsystem(AppSubsystem):
         """Get our online address, port and if we're accessible.
         Generate secrets out of that once fetched.
         """
-        _log().info('Preparing to generate secrets...')
+        _log().info("Preparing to generate secrets...")
         if bs.app.classic is not None:
             bs.app.classic.master_server_v1_get(
-                'bsAccessCheck',
-                {'b': bs.app.env.engine_build_number},
+                "bsAccessCheck",
+                {"b": bs.app.env.engine_build_number},
                 callback=bs.WeakCallPartial(self._actually_generate_secrets),
             )
 
@@ -415,51 +415,51 @@ class DiscordRPSubsystem(AppSubsystem):
         """Generate secrets for handling discord join requests."""
         # Very lame case handler
         if data is None:
-            _log().info('No data to generate secrets.')
+            _log().info("No data to generate secrets.")
             return
-        elif not data.get('accessible', False):
-            _log().info('Party is unjoinable, ignoring secrets.')
+        elif not data.get("accessible", False):
+            _log().info("Party is unjoinable, ignoring secrets.")
             return
 
-        _log().info(f'Generating secrets\nData: {data}')
+        _log().info(f"Generating secrets\nData: {data}")
 
-        address = data.get('address', None)
-        port = data.get('port', None)
+        address = data.get("address", None)
+        port = data.get("port", None)
 
-        def do_hash(v, algorithm: str = 'sha256') -> str:
+        def do_hash(v, algorithm: str = "sha256") -> str:
             """Return a sha algorithm value."""
             hasher = hashlib.new(algorithm)
-            hasher.update(str(v).encode('utf-8'))
+            hasher.update(str(v).encode("utf-8"))
             return hasher.hexdigest()
 
         # party_id is correlated to the validity of invites.
         # Uniqueness is important to prevent people from using
         # old invites to join your current party.
         self._party_id = do_hash(
-            f'{address}{babase._hooks.get_v2_account_id()}'
-            f'{time.time()*random.random()}'
+            f"{address}{babase._hooks.get_v2_account_id()}"
+            f"{time.time()*random.random()}"
         )
 
         # *sigh* The proper way to handle this would be by requesting
         # the master server for a unique key linked to our party.
         # Currently, nothing is stopping mods from hijacking and replacing
         # this secret to direct to their own servers, which is super lame.
-        self._join_secret = f'a:{address},' f'p:{port}'
+        self._join_secret = f"a:{address}," f"p:{port}"
         # @efro Let us know if you'd plan on implementing a system
         # to solve this in the future!
 
     def _get_allow_joining(self) -> bool:
         """Return whether we allow joining via Rich Presence or not."""
-        discord_ckey: str = bs.app.config.get('Allow Discord Joining', 'Allow')
+        discord_ckey: str = bs.app.config.get("Allow Discord Joining", "Allow")
         return (
-            bs.get_public_party_enabled() and not discord_ckey == 'Never'
-        ) or discord_ckey in 'Always'
+            bs.get_public_party_enabled() and not discord_ckey == "Never"
+        ) or discord_ckey in "Always"
 
     def _hide_local_party_status(self) -> None:
         """Hide our status if we're not in a party and don't allow joining."""
         if not bs.get_game_roster() and not self._get_allow_joining():
-            self.data.pop('state', None)
-            self.data.pop('party', None)
+            self.data.pop("state", None)
+            self.data.pop("party", None)
 
     def _get_process_status(self) -> ThreadState | None:
         """Get our DRPProcess' status."""
@@ -483,7 +483,7 @@ class DiscordRPSubsystem(AppSubsystem):
         in case our player has been gone for too long.
         Else, return our provided "active" text.
         """
-        default = bs.Lstr(resource=f'{self.r}.idle').evaluate()
+        default = bs.Lstr(resource=f"{self.r}.idle").evaluate()
         return (
             (
                 default
@@ -503,14 +503,14 @@ class DiscordRPSubsystem(AppSubsystem):
         with bs.ContextRef.empty():
             if bs.app.classic is None or (
                 bs.app.classic.server is None
-                and bs.app.classic.platform in ('windows', 'mac', 'linux')
+                and bs.app.classic.platform in ("windows", "mac", "linux")
             ):
                 # If we're already running something, don't do anything.
                 # (don't mark it as an error as we might be trying to
                 #  reconnect in case we lost connection to Discord.)
                 if self._thread is not None:
                     _log().warning(
-                        'Tried to start while already running?', stack_info=True
+                        "Tried to start while already running?", stack_info=True
                     )
                     return
 
@@ -523,8 +523,8 @@ class DiscordRPSubsystem(AppSubsystem):
                 )
             else:
                 _log().warning(
-                    'DiscordRPSubsystem won\'t start in '
-                    'server mode or non-desktop environments.'
+                    "DiscordRPSubsystem won't start in "
+                    "server mode or non-desktop environments."
                 )
 
     def stop(self, retry: bool = False) -> None:
@@ -533,9 +533,9 @@ class DiscordRPSubsystem(AppSubsystem):
         """
         self._process_stop()
         self.update_timer = None
-        _log().info('DiscordRPSubsystem halted.')
+        _log().info("DiscordRPSubsystem halted.")
         if retry:
-            _log().info('Attempting Subsystem restart!')
+            _log().info("Attempting Subsystem restart!")
             self.retry_timer = bs.AppTimer(
                 self.retry_time, self.rp_reconnect, repeat=True
             )
@@ -549,7 +549,7 @@ class DiscordRPSubsystem(AppSubsystem):
 
         # Switch our timer to updates once it activates.
         if self._thread.status is ThreadState.ACTIVE:
-            _log().info('DiscordRPSubsystem up and running!')
+            _log().info("DiscordRPSubsystem up and running!")
             self.update_timer = bs.AppTimer(
                 TIME_UPDATE, self.update, repeat=True
             )
@@ -565,14 +565,14 @@ class DiscordRPSubsystem(AppSubsystem):
         self.retry_attempt += 1
         if not self.retry_attempt > RETRY_ATTEMPTS and not RETRY_ATTEMPTS < 0:
             _log().info(
-                'Attempting reconnection!' f'({self.retry_time} seconds)'
+                "Attempting reconnection!" f"({self.retry_time} seconds)"
             )
             self.retry_timer = bs.AppTimer(
                 self.retry_time, self.rp_reconnect, repeat=True
             )
             self.start(reconnect=True)
         else:
-            _log().info('Reached reconnect attempt limit, stopping!')
+            _log().info("Reached reconnect attempt limit, stopping!")
             self.retry_timer = None
 
     def update(self) -> None:
@@ -580,7 +580,7 @@ class DiscordRPSubsystem(AppSubsystem):
         if not self._thread:
             return
 
-        _log().debug('DiscordRPSubsystem update cycle start')
+        _log().debug("DiscordRPSubsystem update cycle start")
 
         # Stop the subsystem if we lose connection.
         if self._thread.status is ThreadState.STOPPED:
@@ -598,9 +598,9 @@ class DiscordRPSubsystem(AppSubsystem):
         if party or allow_joining:
             self.data.update(
                 {
-                    'party': {
-                        'id': self._party_id or '00',
-                        'size': (party or 1, bs.get_public_party_max_size()),
+                    "party": {
+                        "id": self._party_id or "00",
+                        "size": (party or 1, bs.get_public_party_max_size()),
                     }
                 }
             )
@@ -614,8 +614,8 @@ class DiscordRPSubsystem(AppSubsystem):
         ):
             self.data.update(
                 {
-                    'secrets': {
-                        'join': self._join_secret,
+                    "secrets": {
+                        "join": self._join_secret,
                     },
                 }
             )
@@ -625,17 +625,17 @@ class DiscordRPSubsystem(AppSubsystem):
         if session is not None:
             sessionplayers = len(session.sessionplayers)
         self.data["state"] = bs.Lstr(
-            resource=f'{self.r}.players.'
+            resource=f"{self.r}.players."
             + (
-                'solo'
+                "solo"
                 if not party and sessionplayers < 2
                 else (
-                    'coop'
+                    "coop"
                     if not party and isinstance(session, bs.CoopSession)
                     else (
-                        'multi'
+                        "multi"
                         if not party
-                        else 'public' if allow_joining else 'private'
+                        else "public" if allow_joining else "private"
                     )
                 )
             ),
@@ -692,7 +692,7 @@ class DiscordRPSubsystem(AppSubsystem):
                 return
 
             _log().debug(
-                'server data results:' f'{results}',
+                "server data results:" f"{results}",
             )
 
             self.server_listing = results
@@ -700,10 +700,10 @@ class DiscordRPSubsystem(AppSubsystem):
                 self.server_entry = (
                     [
                         entry
-                        for entry in self.server_listing.get('l', [])
-                        if entry.get('a', None)
+                        for entry in self.server_listing.get("l", [])
+                        if entry.get("a", None)
                         == self.current_server_data.address
-                        and entry.get('p', None)
+                        and entry.get("p", None)
                         == self.current_server_data.port
                     ]
                     or [{}]
@@ -716,12 +716,12 @@ class DiscordRPSubsystem(AppSubsystem):
             got_results(self.server_listing)
         # Else... *gulp*... Call the list in.
         elif plus is not None:
-            _log().info('Fetching server list (ugh) to cherry-pick.')
+            _log().info("Fetching server list (ugh) to cherry-pick.")
             plus.add_v1_account_transaction(
                 {
-                    'type': 'PUBLIC_PARTY_QUERY',
-                    'proto': bs.protocol_version(),
-                    'lang': bs.app.lang.language,
+                    "type": "PUBLIC_PARTY_QUERY",
+                    "proto": bs.protocol_version(),
+                    "lang": bs.app.lang.language,
                 },
                 callback=bs.CallPartial(got_results),
             )
@@ -739,14 +739,14 @@ class DiscordRPSubsystem(AppSubsystem):
         self.current_server_data = server
 
         name = None
-        if hasattr(server, 'name') and not HIDE_ONLINE:
+        if hasattr(server, "name") and not HIDE_ONLINE:
             name = server.name if len(server.name) > 2 else None
         details = bs.Lstr(
-            value='${SERVER}',
+            value="${SERVER}",
             subs=[
                 (
-                    '${SERVER}',
-                    name or (bs.Lstr(resource=f'{self.r}.session.private')),
+                    "${SERVER}",
+                    name or (bs.Lstr(resource=f"{self.r}.session.private")),
                 )
             ],
         ).evaluate()
@@ -759,8 +759,8 @@ class DiscordRPSubsystem(AppSubsystem):
                     # Ignore the server by turning the "spec_string"
                     # string into a proper dict. and checking the "a" val.
                     if not (
-                        ast.literal_eval(p['spec_string']).get('a', None)
-                        == 'Server'
+                        ast.literal_eval(p["spec_string"]).get("a", None)
+                        == "Server"
                     )
                 ]
             ),
@@ -768,13 +768,13 @@ class DiscordRPSubsystem(AppSubsystem):
         # For whom reads this... Yes.
         # We indeed just got a whole server listing
         # JUST to get an accurate max player number.
-        player_limit = self.server_entry.get('sm', 8)
+        player_limit = self.server_entry.get("sm", 8)
 
         self.data.update(
             {
                 "details": details,
                 "state": bs.Lstr(
-                    resource=f'{self.r}.players.online'
+                    resource=f"{self.r}.players.online"
                 ).evaluate(),
                 "timestamps": {
                     "start": self._get_start_time(),
@@ -782,8 +782,8 @@ class DiscordRPSubsystem(AppSubsystem):
                 "assets": {
                     "large_image": "claypocalypse_logo_final",
                     "large_text": self.large_image_idle_text(
-                        active=bs.Lstr(resource=f'{self.r}.play'),
-                        idle=bs.Lstr(resource=f'{self.r}.spectate'),
+                        active=bs.Lstr(resource=f"{self.r}.play"),
+                        idle=bs.Lstr(resource=f"{self.r}.spectate"),
                     ),
                 },
                 "party": {
@@ -803,7 +803,7 @@ class DiscordRPSubsystem(AppSubsystem):
 
     def set_presence_replay(self) -> None:
         """Update our replay status."""
-        details = bs.Lstr(resource=f'{self.r}.replay').evaluate()
+        details = bs.Lstr(resource=f"{self.r}.replay").evaluate()
         self.data.update(
             {
                 "details": details,
@@ -813,7 +813,7 @@ class DiscordRPSubsystem(AppSubsystem):
                 "assets": {
                     "large_image": "replay",
                     "large_text": bs.Lstr(
-                        resource=f'{self.r}.watch'
+                        resource=f"{self.r}.watch"
                     ).evaluate(),
                 },
                 "instance": False,
@@ -826,9 +826,9 @@ class DiscordRPSubsystem(AppSubsystem):
         """Update our pre-game status."""
         session: bs.Session = bs.get_foreground_host_session()
         details = self._get_game_details(
-            session, bs.Lstr(resource=f'{self.r}.lobby')
+            session, bs.Lstr(resource=f"{self.r}.lobby")
         )
-        state = bs.Lstr(resource=f'{self.r}.players.wait').evaluate()
+        state = bs.Lstr(resource=f"{self.r}.players.wait").evaluate()
 
         self.data.update(
             {
@@ -849,14 +849,14 @@ class DiscordRPSubsystem(AppSubsystem):
         """Update our main menu status."""
         self.data.update(
             {
-                "details": bs.Lstr(resource=f'{self.r}.menu').evaluate(),
+                "details": bs.Lstr(resource=f"{self.r}.menu").evaluate(),
                 "timestamps": {
                     "start": self._get_start_time(),
                 },
                 "assets": {
                     "large_image": "claypocalypse_logo_final",
                     "large_text": self.large_image_idle_text(
-                        active=bs.Lstr(resource=f'{self.r}.navigate')
+                        active=bs.Lstr(resource=f"{self.r}.navigate")
                     ),
                 },
                 "instance": False,
@@ -874,7 +874,7 @@ class DiscordRPSubsystem(AppSubsystem):
             activity.get_instance_scoreboard_display_string().evaluate()
         )
         details = self._get_game_details(
-            session, bs.Lstr(translate=('gameNames', activity_name))
+            session, bs.Lstr(translate=("gameNames", activity_name))
         )
 
         self.data.update(

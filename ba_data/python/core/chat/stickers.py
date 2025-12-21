@@ -38,7 +38,7 @@ class StickerIntercept(ChatIntercept):
 
         Returns success.
         """
-        message = msg.split(' ')
+        message = msg.split(" ")
         sticker_entry = message[0].removeprefix(command_prefix)
         del message
 
@@ -132,7 +132,7 @@ class SpazStickerCallout(Spaz):
         # Do a cool animation!
         bs.animate(
             self.node,
-            'billboard_opacity',
+            "billboard_opacity",
             sticker.spaz_billboard_animation_dict
             or {
                 0.0: 0.0,

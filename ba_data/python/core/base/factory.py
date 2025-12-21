@@ -81,7 +81,7 @@ class Factory:
     game performance by having a single pointer to every asset needed.
     """
 
-    IDENTIFIER: str = 'default_factory'
+    IDENTIFIER: str = "default_factory"
     """Unique identifier for this factory.
     
     Any object to use a factory will require this
@@ -106,7 +106,7 @@ class Factory:
             name,
             cls,
             res,
-            ' as overwrite' if cls.does_resource_exists(name) else '',
+            " as overwrite" if cls.does_resource_exists(name) else "",
         )
         FACTORY_ATLAS.setdefault(cls.IDENTIFIER, {})[name] = res
         # If we have an active instance, immediately load this resource
@@ -200,7 +200,7 @@ class FactoryClass:
             'Registering "%s" with factory "%s" %s',
             {cls.__qualname__},
             {cls.my_factory},
-            'with group' if cls.group_set is not None else 'no group',
+            "with group" if cls.group_set is not None else "no group",
         )
         cls.register_resources()
         if cls.group_set is not None:

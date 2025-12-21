@@ -22,16 +22,16 @@ def send(msg: str, condition: bool = True) -> None:
     if not condition:
         return
 
-    i_am: str = 'module'
+    i_am: str = "module"
 
     module = inspect.getmodule(inspect.stack()[1][0])
     if module:
         i_am = module.__name__
 
-    i_am += '.py'
+    i_am += ".py"
 
-    bs.screenmessage(f'{msg}')
-    print(f'[{i_am}]: {msg}')
+    bs.screenmessage(f"{msg}")
+    print(f"[{i_am}]: {msg}")
 
 
 def obj_clone(cls) -> Type[Any]:
@@ -67,11 +67,11 @@ def is_admin() -> bool:
 
     platform: str = classic.platform
     try:
-        if platform in ('windows'):
+        if platform in ("windows"):
             return ctypes.windll.shell32.IsUserAnAdmin() != 0
-        if platform == 'linux':
+        if platform == "linux":
             return os.getpid() == 0
-        if platform == 'mac':
+        if platform == "mac":
             if hasattr(os, "geteuid"):
                 return os.geteuid() == 0  # type: ignore
             return False
@@ -89,7 +89,7 @@ def is_server() -> bool:
     return not classic.server is None
 
 
-PLAYLIST_NAME_BLACKLIST = ['__default__', '__playlist_create__']
+PLAYLIST_NAME_BLACKLIST = ["__default__", "__playlist_create__"]
 
 
 def playlist_cleanse() -> None:
@@ -98,16 +98,16 @@ def playlist_cleanse() -> None:
         return
 
     # Check all available playlist lists.
-    for group in ['Free-for-All', 'Team Tournament']:
-        for name, _ in bs.app.config.get(f'{group} Playlists', {}).items():
+    for group in ["Free-for-All", "Team Tournament"]:
+        for name, _ in bs.app.config.get(f"{group} Playlists", {}).items():
             # If a playlist name is in the list of
             # faulty names, remove it.
             if name in PLAYLIST_NAME_BLACKLIST:
                 bs.app.plus.add_v1_account_transaction(
                     {
-                        'type': 'REMOVE_PLAYLIST',
-                        'playlistType': group,
-                        'playlistName': name,
+                        "type": "REMOVE_PLAYLIST",
+                        "playlistType": group,
+                        "playlistName": name,
                     }
                 )
     # Run all transactions.
@@ -139,20 +139,20 @@ class FuseToolsDevTab(DevConsoleTab):
 
         drp = core.DiscordRP
 
-        return 'Disable DiscordRP' if drp.is_active() else 'Enable DiscordRP'
+        return "Disable DiscordRP" if drp.is_active() else "Enable DiscordRP"
 
     def toggle_discordrp(self) -> None:
         """Toggles DiscordRP."""
         import core
 
         drp = core.DiscordRP
-        msg: str = ''
+        msg: str = ""
 
         if drp.is_active():
-            msg = 'DiscordRP stopped.'
+            msg = "DiscordRP stopped."
             drp.stop()
         else:
-            msg = 'Starting up DiscordRP...'
+            msg = "Starting up DiscordRP..."
             drp.start()
         bs.screenmessage(msg, DISCORD_SM_COLOR)
 

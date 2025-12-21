@@ -29,7 +29,7 @@ class BlastFactory(Factory):
     """Library containing shared blast data
     to prevent gameplay hiccups."""
 
-    IDENTIFIER = '_blast_factory'
+    IDENTIFIER = "_blast_factory"
 
     def __init__(self) -> None:
         super().__init__()
@@ -37,20 +37,20 @@ class BlastFactory(Factory):
         shared = SharedObjects.get()
 
         self.explode_sounds = (
-            bs.getsound('explosion01'),
-            bs.getsound('explosion02'),
-            bs.getsound('explosion03'),
-            bs.getsound('explosion04'),
-            bs.getsound('explosion05'),
+            bs.getsound("explosion01"),
+            bs.getsound("explosion02"),
+            bs.getsound("explosion03"),
+            bs.getsound("explosion04"),
+            bs.getsound("explosion05"),
         )
 
         self.blast_material = bs.Material()
         self.blast_material.add_actions(
-            conditions=('they_have_material', shared.object_material),
+            conditions=("they_have_material", shared.object_material),
             actions=(
-                ('modify_part_collision', 'collide', True),
-                ('modify_part_collision', 'physical', False),
-                ('message', 'our_node', 'at_connect', ExplodeHitMessage()),
+                ("modify_part_collision", "collide", True),
+                ("modify_part_collision", "physical", False),
+                ("message", "our_node", "at_connect", ExplodeHitMessage()),
             ),
         )
 
@@ -67,9 +67,9 @@ class Blast(FactoryActor):
     group_set = BLAST_SET
     """Set to register this FactoryClass under."""
 
-    blast_type = 'normal'
-    hit_type = 'explosion'
-    hit_subtype = 'normal'
+    blast_type = "normal"
+    hit_type = "explosion"
+    hit_subtype = "normal"
 
     @staticmethod
     def resources() -> dict:
@@ -80,9 +80,9 @@ class Blast(FactoryActor):
         you play!
         """
         return {
-            'bomb_mesh': FactoryMesh('bomb'),
-            'bomb_tex': FactoryTexture('bombColor'),
-            'debris_fall_sound': FactorySound('debrisFall'),
+            "bomb_mesh": FactoryMesh("bomb"),
+            "bomb_tex": FactoryTexture("bombColor"),
+            "debris_fall_sound": FactorySound("debrisFall"),
         }
 
     def __init__(
@@ -115,7 +115,7 @@ class Blast(FactoryActor):
         # explosion attrs.
         self.magnitude: int = 2000
         self.materials: tuple[bs.Material, ...] = (
-            self.factory.fetch('blast_material'),
+            self.factory.fetch("blast_material"),
             self.shared.attack_material,
         )
         # blast attrs.
@@ -140,17 +140,17 @@ class Blast(FactoryActor):
         """Create the node that handles dealing blows."""
         # Set our position a bit lower so we throw more things upward.
         self.node = bs.newnode(
-            'region',
+            "region",
             delegate=self,
             attrs={
-                'position': (
+                "position": (
                     self.position[0],
                     self.position[1] - 0.1,
                     self.position[2],
                 ),
-                'scale': tuple([self.blast_radius for _ in range(3)]),
-                'type': 'sphere',
-                'materials': self.materials,
+                "scale": tuple([self.blast_radius for _ in range(3)]),
+                "type": "sphere",
+                "materials": self.materials,
             },
         )
         bs.timer(0.05, self.node.delete)
@@ -160,12 +160,12 @@ class Blast(FactoryActor):
         # Throw in an explosion and flash.
         evel = (self.velocity[0], max(-1.0, self.velocity[1]), self.velocity[2])
         self.explosion = bs.newnode(
-            'explosion',
+            "explosion",
             attrs={
-                'position': self.position,
-                'velocity': evel,
-                'radius': self.blast_radius,
-                'big': self.is_big,
+                "position": self.position,
+                "velocity": evel,
+                "radius": self.blast_radius,
+                "big": self.is_big,
             },
         )
         if self.blast_color:
@@ -175,11 +175,11 @@ class Blast(FactoryActor):
     def create_light(self) -> None:
         """Create a shining light to enhance our explosion."""
         self.light = bs.newnode(
-            'light',
+            "light",
             attrs={
-                'position': self.position,
-                'volume_intensity_scale': 10.0,
-                'color': self.light_color,
+                "position": self.position,
+                "volume_intensity_scale": 10.0,
+                "color": self.light_color,
             },
         )
         iscale = self.light_intensity
@@ -187,7 +187,7 @@ class Blast(FactoryActor):
         scl = self.scale_mult
         bs.animate(
             self.light,
-            'intensity',
+            "intensity",
             {
                 0: 2.0 * iscale,
                 scl * 0.02: 0.1 * iscale,
@@ -202,7 +202,7 @@ class Blast(FactoryActor):
         )
         bs.animate(
             self.light,
-            'radius',
+            "radius",
             {
                 0: lradius * 0.2,
                 scl * 0.05: lradius * 0.55,
@@ -217,11 +217,11 @@ class Blast(FactoryActor):
         """Create a scorch mark that fades over time."""
         # pylint: disable=attribute-defined-outside-init
         self.scorch = bs.newnode(
-            'scorch',
+            "scorch",
             attrs={
-                'position': self.position,
-                'size': self.scorch_radius * 0.5,
-                'big': self.is_big,
+                "position": self.position,
+                "size": self.scorch_radius * 0.5,
+                "big": self.is_big,
             },
         )
         if self.scorch_color:
@@ -229,7 +229,7 @@ class Blast(FactoryActor):
 
         bs.animate(
             self.scorch,
-            'presence',
+            "presence",
             {
                 self.scorch_duration * 0.23076923076923078: 1,  # 3.0 from 13.0
                 self.scorch_duration: 0,
@@ -240,7 +240,7 @@ class Blast(FactoryActor):
     def do_sounds(self) -> None:
         """Play some sounds."""
         self.factory.random_explode_sound().play(position=self.position)
-        self.factory.fetch('debris_fall_sound').play(position=self.position)
+        self.factory.fetch("debris_fall_sound").play(position=self.position)
 
     def do_emit(self) -> None:
         """Play some particle related functions."""
@@ -256,12 +256,12 @@ class Blast(FactoryActor):
             position=self.position,
             velocity=self.velocity,
             count=int(4.0 + random.random() * 4),
-            emit_type='tendrils',
-            tendril_type='smoke',
+            emit_type="tendrils",
+            tendril_type="smoke",
         )
         bs.emitfx(
             position=self.position,
-            emit_type='distortion',
+            emit_type="distortion",
             spread=2.0,
         )
 
@@ -274,8 +274,8 @@ class Blast(FactoryActor):
                 velocity=self.velocity,
                 count=30,
                 scale=0.7,
-                chunk_type='spark',
-                emit_type='stickers',
+                chunk_type="spark",
+                emit_type="stickers",
             )
             bs.emitfx(
                 position=self.position,
@@ -283,7 +283,7 @@ class Blast(FactoryActor):
                 count=int(18.0 + random.random() * 20),
                 scale=0.8,
                 spread=1.5,
-                chunk_type='spark',
+                chunk_type="spark",
             )
 
         # It looks better if we delay a bit.
@@ -299,7 +299,7 @@ class Blast(FactoryActor):
                 count=int(10.0 + random.random() * 20),
                 scale=0.8,
                 spread=1.5,
-                chunk_type='spark',
+                chunk_type="spark",
             )
 
         bs.timer(0.07, emit_extra_sparks)
@@ -352,7 +352,7 @@ class StickyBlast(Blast):
                 velocity=self.velocity,
                 count=int(4.0 + random.random() * 8),
                 spread=0.7,
-                chunk_type='slime',
+                chunk_type="slime",
             )
             bs.emitfx(
                 position=self.position,
@@ -360,23 +360,23 @@ class StickyBlast(Blast):
                 count=int(4.0 + random.random() * 8),
                 scale=0.5,
                 spread=0.7,
-                chunk_type='slime',
+                chunk_type="slime",
             )
             bs.emitfx(
                 position=self.position,
                 velocity=self.velocity,
                 count=15,
                 scale=0.6,
-                chunk_type='slime',
-                emit_type='stickers',
+                chunk_type="slime",
+                emit_type="stickers",
             )
             bs.emitfx(
                 position=self.position,
                 velocity=self.velocity,
                 count=20,
                 scale=0.7,
-                chunk_type='spark',
-                emit_type='stickers',
+                chunk_type="spark",
+                emit_type="stickers",
             )
             bs.emitfx(
                 position=self.position,
@@ -384,7 +384,7 @@ class StickyBlast(Blast):
                 count=int(6.0 + random.random() * 12),
                 scale=0.8,
                 spread=1.5,
-                chunk_type='spark',
+                chunk_type="spark",
             )
 
         # It looks better if we delay a bit.
@@ -400,8 +400,8 @@ class IceBlast(Blast):
     @staticmethod
     def resources() -> dict:
         return {
-            'freeze_sound': FactorySound('freeze'),
-            'hiss_sound': FactorySound('hiss'),
+            "freeze_sound": FactorySound("freeze"),
+            "hiss_sound": FactorySound("hiss"),
         }
 
     def attributes(self) -> None:
@@ -419,7 +419,7 @@ class IceBlast(Blast):
     def do_sounds(self) -> None:
         """Play an extra hiss sound."""
         super().do_sounds()
-        self.factory.fetch('hiss_sound').play(position=self.position)
+        self.factory.fetch("hiss_sound").play(position=self.position)
 
     def do_effects(self) -> None:
         """Do our tendrils & distortion effects."""
@@ -428,19 +428,19 @@ class IceBlast(Blast):
             position=self.position,
             velocity=self.velocity,
             count=int(1.0 + random.random() * 4),
-            emit_type='tendrils',
-            tendril_type='thin_smoke',
+            emit_type="tendrils",
+            tendril_type="thin_smoke",
         )
         bs.emitfx(
             position=self.position,
             velocity=self.velocity,
             count=int(4.0 + random.random() * 4),
-            emit_type='tendrils',
-            tendril_type='ice',
+            emit_type="tendrils",
+            tendril_type="ice",
         )
         bs.emitfx(
             position=self.position,
-            emit_type='distortion',
+            emit_type="distortion",
             spread=2.0,
         )
 
@@ -454,8 +454,8 @@ class IceBlast(Blast):
                 count=30,
                 spread=2.0,
                 scale=0.4,
-                chunk_type='ice',
-                emit_type='stickers',
+                chunk_type="ice",
+                emit_type="stickers",
             )
 
         # It looks better if we delay a bit.
@@ -466,7 +466,7 @@ class IceBlast(Blast):
         # Do standard behavior
         super().handle_explode_hit()
         # Then kick 'em with a freeze!
-        self.factory.fetch('freeze_sound').play(10, position=self.node.position)
+        self.factory.fetch("freeze_sound").play(10, position=self.node.position)
         node = bs.getcollision().opposingnode
         node.handlemessage(bs.FreezeMessage())
 
@@ -493,22 +493,22 @@ class ImpactBlast(Blast):
                 velocity=self.velocity,
                 count=int(4.0 + random.random() * 8),
                 scale=0.8,
-                chunk_type='metal',
+                chunk_type="metal",
             )
             bs.emitfx(
                 position=self.position,
                 velocity=self.velocity,
                 count=int(4.0 + random.random() * 8),
                 scale=0.4,
-                chunk_type='metal',
+                chunk_type="metal",
             )
             bs.emitfx(
                 position=self.position,
                 velocity=self.velocity,
                 count=20,
                 scale=0.7,
-                chunk_type='spark',
-                emit_type='stickers',
+                chunk_type="spark",
+                emit_type="stickers",
             )
             bs.emitfx(
                 position=self.position,
@@ -516,7 +516,7 @@ class ImpactBlast(Blast):
                 count=int(8.0 + random.random() * 15),
                 scale=0.8,
                 spread=1.5,
-                chunk_type='spark',
+                chunk_type="spark",
             )
 
         # It looks better if we delay a bit.
@@ -547,7 +547,7 @@ class TNTBlast(Blast):
     @staticmethod
     def resources() -> dict:
         return {
-            'wood_debris_fall_sound': FactorySound('woodDebrisFall'),
+            "wood_debris_fall_sound": FactorySound("woodDebrisFall"),
         }
 
     def attributes(self) -> None:
@@ -577,8 +577,8 @@ class TNTBlast(Blast):
             self.factory.random_explode_sound().play(position=self.position)
 
         def extra_debris() -> None:
-            self.factory.fetch('debris_fall_sound').play(position=self.position)
-            self.factory.fetch('wood_debris_fall_sound').play(
+            self.factory.fetch("debris_fall_sound").play(position=self.position)
+            self.factory.fetch("wood_debris_fall_sound").play(
                 position=self.position
             )
 
@@ -591,13 +591,13 @@ class TNTBlast(Blast):
             position=self.position,
             velocity=self.velocity,
             count=int(4.0 + random.random() * 4),
-            emit_type='tendrils',
-            tendril_type='smoke',
+            emit_type="tendrils",
+            tendril_type="smoke",
         )
         # Decrease spread to 1.0
         bs.emitfx(
             position=self.position,
-            emit_type='distortion',
+            emit_type="distortion",
             spread=1.0,
         )
 
@@ -611,14 +611,14 @@ class TNTBlast(Blast):
                 position=self.position,
                 velocity=self.velocity,
                 count=int(4.0 + random.random() * 8),
-                chunk_type='rock',
+                chunk_type="rock",
             )
             bs.emitfx(
                 position=self.position,
                 velocity=self.velocity,
                 count=int(4.0 + random.random() * 8),
                 scale=0.5,
-                chunk_type='rock',
+                chunk_type="rock",
             )
 
         bs.timer(0.05, emit)
@@ -631,7 +631,7 @@ class TNTBlast(Blast):
                 count=int(20.0 + random.random() * 25),
                 scale=0.8,
                 spread=1.0,
-                chunk_type='splinter',
+                chunk_type="splinter",
             )
 
         bs.timer(0.01, emit_splinters)

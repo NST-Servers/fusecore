@@ -32,7 +32,7 @@ class PowerupFactory(Factory):
     """Library class containing shared powerup
     data to prevent gameplay hiccups."""
 
-    IDENTIFIER = '_powerup_factory'
+    IDENTIFIER = "_powerup_factory"
 
 
 class SpazPowerup(FactoryClass):
@@ -61,7 +61,7 @@ class SpazPowerup(FactoryClass):
     (Default: 20000ms -> 20 secs.)
     """
 
-    texture_name: str = 'empty'
+    texture_name: str = "empty"
     """A texture (as a string) assigned to this powerup. (Default: "empty")
 
     To make it invisible, set to 'empty' -- though it's not recommended to
@@ -72,7 +72,7 @@ class SpazPowerup(FactoryClass):
     def _register_texture(cls) -> None:
         """Register our unique texture."""
         cls.my_factory.register_resource(
-            f'{cls.texture_name}', FactoryTexture(cls.texture_name)
+            f"{cls.texture_name}", FactoryTexture(cls.texture_name)
         )
 
     @classmethod
@@ -124,7 +124,7 @@ class TripleBombsPowerup(SpazPowerup):
     """A powerup that allows spazzes to throw up to three bombs."""
 
     slot = PowerupSlotType.BUFF
-    texture_name = 'powerupBomb'
+    texture_name = "powerupBomb"
 
     @override
     def equip(self) -> None:
@@ -159,7 +159,7 @@ class BombPowerup(SpazPowerup):
 
 
 class StickyBombsPowerup(BombPowerup):
-    texture_name = 'powerupStickyBombs'
+    texture_name = "powerupStickyBombs"
     bomb_type = StickyBomb
 
 
@@ -167,7 +167,7 @@ StickyBombsPowerup.register()
 
 
 class IceBombsPowerup(BombPowerup):
-    texture_name = 'powerupIceBombs'
+    texture_name = "powerupIceBombs"
     bomb_type = IceBomb
 
 
@@ -175,7 +175,7 @@ IceBombsPowerup.register()
 
 
 class ImpactBombsPowerup(BombPowerup):
-    texture_name = 'powerupImpactBombs'
+    texture_name = "powerupImpactBombs"
     bomb_type = ImpactBomb
 
 
@@ -183,7 +183,7 @@ ImpactBombsPowerup.register()
 
 
 class LandMinesPowerup(SpazPowerup):
-    texture_name = 'empty'
+    texture_name = "empty"
 
     @override
     def equip(self) -> None:
@@ -197,7 +197,7 @@ class PunchPowerup(SpazPowerup):
     """A powerup which grants boxing gloves to a spaz."""
 
     slot = PowerupSlotType.GLOVES
-    texture_name = 'powerupPunch'
+    texture_name = "powerupPunch"
 
     # This powerup has some built-in functions; don't have to do much about it.
     @override
@@ -240,7 +240,7 @@ class ShieldComponent(SpazComponent):
 
 
 class ShieldPowerup(SpazPowerup):
-    texture_name = 'empty'
+    texture_name = "empty"
 
     @override
     def equip(self) -> None:
@@ -253,7 +253,7 @@ ShieldPowerup.register()
 
 
 class HealthPowerup(SpazPowerup):
-    texture_name = 'powerupHealth'
+    texture_name = "powerupHealth"
 
     @override
     def equip(self) -> None:
@@ -264,7 +264,7 @@ HealthPowerup.register()
 
 
 class CursePowerup(SpazPowerup):
-    texture_name = 'empty'
+    texture_name = "empty"
 
     @override
     def equip(self) -> None:

@@ -43,7 +43,7 @@ class BombFactory(Factory):
     """Library class containing shared bomb
     data to prevent gameplay hiccups."""
 
-    IDENTIFIER = '_bomb_factory'
+    IDENTIFIER = "_bomb_factory"
 
     def __init__(self) -> None:
         super().__init__()
@@ -59,100 +59,100 @@ class BombFactory(Factory):
         self.bomb_material.add_actions(
             conditions=(
                 (
-                    ('we_are_younger_than', 100),
-                    'or',
-                    ('they_are_younger_than', 100),
+                    ("we_are_younger_than", 100),
+                    "or",
+                    ("they_are_younger_than", 100),
                 ),
-                'and',
-                ('they_have_material', shared.object_material),
+                "and",
+                ("they_have_material", shared.object_material),
             ),
-            actions=('modify_node_collision', 'collide', False),
+            actions=("modify_node_collision", "collide", False),
         )
 
         # We want pickup materials to always hit us even if we're currently
         # not colliding with their node. (generally due to the above rule)
         self.bomb_material.add_actions(
-            conditions=('they_have_material', shared.pickup_material),
-            actions=('modify_part_collision', 'use_node_collide', False),
+            conditions=("they_have_material", shared.pickup_material),
+            actions=("modify_part_collision", "use_node_collide", False),
         )
 
         self.bomb_material.add_actions(
-            actions=('modify_part_collision', 'friction', 0.3)
+            actions=("modify_part_collision", "friction", 0.3)
         )
 
         self.land_mine_no_explode_material = bs.Material()
         self.land_mine_blast_material = bs.Material()
         self.land_mine_blast_material.add_actions(
             conditions=(
-                ('we_are_older_than', 200),
-                'and',
-                ('they_are_older_than', 200),
-                'and',
-                ('eval_colliding',),
-                'and',
+                ("we_are_older_than", 200),
+                "and",
+                ("they_are_older_than", 200),
+                "and",
+                ("eval_colliding",),
+                "and",
                 (
                     (
-                        'they_dont_have_material',
+                        "they_dont_have_material",
                         self.land_mine_no_explode_material,
                     ),
-                    'and',
+                    "and",
                     (
-                        ('they_have_material', shared.object_material),
-                        'or',
-                        ('they_have_material', shared.player_material),
+                        ("they_have_material", shared.object_material),
+                        "or",
+                        ("they_have_material", shared.player_material),
                     ),
                 ),
             ),
-            actions=('message', 'our_node', 'at_connect', ImpactMessage()),
+            actions=("message", "our_node", "at_connect", ImpactMessage()),
         )
 
         self.impact_blast_material = bs.Material()
         self.impact_blast_material.add_actions(
             conditions=(
-                ('we_are_older_than', 200),
-                'and',
-                ('they_are_older_than', 200),
-                'and',
-                ('eval_colliding',),
-                'and',
+                ("we_are_older_than", 200),
+                "and",
+                ("they_are_older_than", 200),
+                "and",
+                ("eval_colliding",),
+                "and",
                 (
-                    ('they_have_material', shared.footing_material),
-                    'or',
-                    ('they_have_material', shared.object_material),
+                    ("they_have_material", shared.footing_material),
+                    "or",
+                    ("they_have_material", shared.object_material),
                 ),
             ),
-            actions=('message', 'our_node', 'at_connect', ImpactMessage()),
+            actions=("message", "our_node", "at_connect", ImpactMessage()),
         )
 
         self.dink_sounds = (
-            bs.getsound('bombDrop01'),
-            bs.getsound('bombDrop02'),
+            bs.getsound("bombDrop01"),
+            bs.getsound("bombDrop02"),
         )
-        self.roll_sound = bs.getsound('bombRoll01')
+        self.roll_sound = bs.getsound("bombRoll01")
 
         # Collision sounds.
         self.normal_sound_material.add_actions(
-            conditions=('they_have_material', shared.footing_material),
+            conditions=("they_have_material", shared.footing_material),
             actions=(
-                ('impact_sound', self.dink_sounds, 2, 0.8),
-                ('roll_sound', self.roll_sound, 3, 6),
+                ("impact_sound", self.dink_sounds, 2, 0.8),
+                ("roll_sound", self.roll_sound, 3, 6),
             ),
         )
 
         self.sticky_material.add_actions(
             actions=(
-                ('modify_part_collision', 'stiffness', 0.1),
-                ('modify_part_collision', 'damping', 1.0),
+                ("modify_part_collision", "stiffness", 0.1),
+                ("modify_part_collision", "damping", 1.0),
             )
         )
 
         self.sticky_material.add_actions(
             conditions=(
-                ('they_have_material', shared.player_material),
-                'or',
-                ('they_have_material', shared.footing_material),
+                ("they_have_material", shared.player_material),
+                "or",
+                ("they_have_material", shared.footing_material),
             ),
-            actions=('message', 'our_node', 'at_connect', SplatMessage()),
+            actions=("message", "our_node", "at_connect", SplatMessage()),
         )
 
 
@@ -168,7 +168,7 @@ class Bomb(FactoryActor):
     group_set = BOMB_SET
     """Set to register this FactoryClass under."""
 
-    bomb_type = 'normal'
+    bomb_type = "normal"
     """Name of this bomb. Must be unique."""
 
     @staticmethod
@@ -185,9 +185,9 @@ class Bomb(FactoryActor):
         able to call assets in runtime properly.
         """
         return {
-            'bomb_mesh': FactoryMesh('bomb'),
-            'bomb_tex': FactoryTexture('bombColor'),
-            'fuse_sound': FactorySound('fuse01'),
+            "bomb_mesh": FactoryMesh("bomb"),
+            "bomb_tex": FactoryTexture("bombColor"),
+            "fuse_sound": FactorySound("fuse01"),
         }
 
     def __init__(
@@ -216,20 +216,20 @@ class Bomb(FactoryActor):
 
     def attributes(self) -> None:
         """Define base attributes."""
-        self.mesh: bs.Mesh = self.factory.fetch('bomb_mesh')
-        self.tex: bs.Texture = self.factory.fetch('bomb_tex')
+        self.mesh: bs.Mesh = self.factory.fetch("bomb_mesh")
+        self.tex: bs.Texture = self.factory.fetch("bomb_tex")
         self.light_mesh: bs.Mesh | bool = False
 
         self.body: str | None = None
         self.scale: float = 1.0
         self.mesh_scale: float = 1.0
-        self.rtype: str = 'sharper'
+        self.rtype: str = "sharper"
         self.rscale: float = 1.8
         self.shadow_size: float = 0.3
 
         self.materials: tuple[bs.Material, ...] = (
-            self.factory.fetch('bomb_material'),
-            self.factory.fetch('normal_sound_material'),
+            self.factory.fetch("bomb_material"),
+            self.factory.fetch("normal_sound_material"),
             self.shared.object_material,
         )
         self.sticky: bool = False
@@ -239,7 +239,7 @@ class Bomb(FactoryActor):
         # to run a node with a "prop" type will warn the user that
         # the engine doesn't really work like that.
         self.visible_fuse: bool | int = 1
-        self.fuse_sound: bs.Sound | None = self.factory.fetch('fuse_sound')
+        self.fuse_sound: bs.Sound | None = self.factory.fetch("fuse_sound")
         self.fuse_time: float | None = 3.0
         self.blast_class: Type[Blast] = Blast
 
@@ -247,28 +247,28 @@ class Bomb(FactoryActor):
         """Create our bomb and do some bomb logic."""
         # Create the bomb node itself
         attrs = {
-            'position': self.initial_position,
-            'velocity': self.initial_velocity,
-            'mesh': self.mesh,
-            'mesh_scale': self.mesh_scale,
-            'body_scale': self.scale,
-            'shadow_size': self.shadow_size,
-            'color_texture': self.tex,
-            'sticky': self.sticky,
-            'owner': self.owner,
-            'reflection': self.rtype,
-            'reflection_scale': [self.rscale],
-            'materials': self.materials,
+            "position": self.initial_position,
+            "velocity": self.initial_velocity,
+            "mesh": self.mesh,
+            "mesh_scale": self.mesh_scale,
+            "body_scale": self.scale,
+            "shadow_size": self.shadow_size,
+            "color_texture": self.tex,
+            "sticky": self.sticky,
+            "owner": self.owner,
+            "reflection": self.rtype,
+            "reflection_scale": [self.rscale],
+            "materials": self.materials,
         }
         if self.light_mesh:
-            attrs['light_mesh'] = (
+            attrs["light_mesh"] = (
                 self.mesh if self.light_mesh is True else self.light_mesh
             )
         if self.body:
-            attrs['body'] = self.body
+            attrs["body"] = self.body
 
         self.node = bs.newnode(
-            'bomb' if not self.body else 'prop',
+            "bomb" if not self.body else "prop",
             delegate=self,
             attrs=attrs,
         )
@@ -276,17 +276,17 @@ class Bomb(FactoryActor):
         # Do a neat pop-in animation
         bs.animate(
             self.node,
-            'mesh_scale',
+            "mesh_scale",
             {0: 0, 0.2: 1.3 * self.scale, 0.26: self.scale},
         )
         # If assigned, attach a fuse sound to the bomb node
         if self.fuse_sound:
             sound = bs.newnode(
-                'sound',
+                "sound",
                 owner=self.node,
-                attrs={'sound': self.fuse_sound, 'volume': 0.25},
+                attrs={"sound": self.fuse_sound, "volume": 0.25},
             )
-            self.node.connectattr('position', sound, 'position')
+            self.node.connectattr("position", sound, "position")
 
     def do_fuse(self) -> None:
         """Create a fuse and an explosion timer."""
@@ -298,7 +298,7 @@ class Bomb(FactoryActor):
             # prop-type bombs can't have fuses
             if not self.bomb_type in FUSE_WARNING:
                 logging.warning(
-                    'WARNING: Bombs that a body attribute'
+                    "WARNING: Bombs that a body attribute"
                     ' assigned cannot have a fuse. ("%s")',
                     self.bomb_type,
                     stack_info=True,
@@ -309,7 +309,7 @@ class Bomb(FactoryActor):
             self.node.fuse_length = 1.0 if self.visible_fuse else 0.0
             if self.fuse_time and self.fuse_time > 0:
                 bs.animate(
-                    self.node, 'fuse_length', {0.0: 1.0, self.fuse_time: 0.0}
+                    self.node, "fuse_length", {0.0: 1.0, self.fuse_time: 0.0}
                 )
 
         if self.fuse_time and self.fuse_time >= 0:
@@ -348,8 +348,8 @@ class Bomb(FactoryActor):
     def handle_hit(self, msg: bs.HitMessage) -> None:
         """We got hit by something!"""
         # We want to explode to anything that is not a punch.
-        ispunched = msg.srcnode and msg.srcnode.getnodetype() == 'spaz'
-        noexplode = msg.hit_subtype == 'noexplode'
+        ispunched = msg.srcnode and msg.srcnode.getnodetype() == "spaz"
+        noexplode = msg.hit_subtype == "noexplode"
         if not self._exploded and not (ispunched or noexplode):
             # Also lets change the owner of the bomb to whoever is setting
             # us off. (this way points for big chain reactions go to the
@@ -367,7 +367,7 @@ class Bomb(FactoryActor):
         """Move us around with using HitMessage info."""
         assert self.node
         self.node.handlemessage(
-            'impulse',
+            "impulse",
             msg.pos[0],
             msg.pos[1],
             msg.pos[2],
@@ -415,15 +415,15 @@ Bomb.register()
 class StickyBomb(Bomb):
     """A green, gooey bomb that sticks to entities."""
 
-    bomb_type = 'sticky'
+    bomb_type = "sticky"
 
     @staticmethod
     def resources() -> dict:
         """Resources used by this bomb instance."""
         return {
-            'sticky_bomb_mesh': FactoryMesh('bombSticky'),
-            'sticky_tex': FactoryTexture('bombStickyColor'),
-            'sticky_impact_sound': FactorySound('stickyImpact'),
+            "sticky_bomb_mesh": FactoryMesh("bombSticky"),
+            "sticky_tex": FactoryTexture("bombStickyColor"),
+            "sticky_impact_sound": FactorySound("stickyImpact"),
         }
 
     def attributes(self) -> None:
@@ -431,14 +431,14 @@ class StickyBomb(Bomb):
         # Load default attributes
         super().attributes()
         # Set our own
-        self.mesh: bs.Mesh = self.factory.fetch('sticky_bomb_mesh')
-        self.tex: bs.Texture = self.factory.fetch('sticky_tex')
+        self.mesh: bs.Mesh = self.factory.fetch("sticky_bomb_mesh")
+        self.tex: bs.Texture = self.factory.fetch("sticky_tex")
 
         self.sticky = True
 
         self.materials: tuple = (
-            self.factory.fetch('bomb_material'),
-            self.factory.fetch('sticky_material'),
+            self.factory.fetch("bomb_material"),
+            self.factory.fetch("sticky_material"),
             self.shared.object_material,
         )
         self.blast_class = StickyBlast
@@ -465,7 +465,7 @@ class StickyBomb(Bomb):
         ):
             self._last_sticky_sound_time = bs.time()
             assert self.node
-            self.factory.fetch('sticky_impact_sound').play(
+            self.factory.fetch("sticky_impact_sound").play(
                 2.0,
                 position=self.node.position,
             )
@@ -484,13 +484,13 @@ StickyBomb.register()
 class IceBomb(Bomb):
     """An icey bomb that freezes players (and spazzes in general.)"""
 
-    bomb_type = 'ice'
+    bomb_type = "ice"
 
     @staticmethod
     def resources() -> dict:
         """Resources used by this bomb instance."""
         return {
-            'ice_tex': FactoryTexture('bombColorIce'),
+            "ice_tex": FactoryTexture("bombColorIce"),
         }
 
     def attributes(self) -> None:
@@ -498,7 +498,7 @@ class IceBomb(Bomb):
         # Load default attributes
         super().attributes()
         # Set our own
-        self.tex = self.factory.fetch('ice_tex')
+        self.tex = self.factory.fetch("ice_tex")
 
         self.blast_class = IceBlast
 
@@ -509,17 +509,17 @@ IceBomb.register()
 class ImpactBomb(Bomb):
     """A sensitive bomb that explodes on impact."""
 
-    bomb_type = 'impact'
+    bomb_type = "impact"
 
     @staticmethod
     def resources() -> dict:
         """Resources used by this bomb instance."""
         return {
-            'impact_bomb_mesh': FactoryMesh('impactBomb'),
-            'impact_tex': FactoryTexture('impactBombColor'),
-            'impact_lit_tex': FactoryTexture('impactBombColorLit'),
-            'activate_sound': FactorySound('activateBeep'),
-            'warn_sound': FactorySound('warnBeep'),
+            "impact_bomb_mesh": FactoryMesh("impactBomb"),
+            "impact_tex": FactoryTexture("impactBombColor"),
+            "impact_lit_tex": FactoryTexture("impactBombColorLit"),
+            "activate_sound": FactorySound("activateBeep"),
+            "warn_sound": FactorySound("warnBeep"),
         }
 
     def attributes(self) -> None:
@@ -527,13 +527,13 @@ class ImpactBomb(Bomb):
         # Load default attributes
         super().attributes()
         # Set our own
-        self.tex_off: bs.Texture = self.factory.fetch('impact_tex')
-        self.tex_on: bs.Texture = self.factory.fetch('impact_lit_tex')
-        self.mesh = self.factory.fetch('impact_bomb_mesh')
+        self.tex_off: bs.Texture = self.factory.fetch("impact_tex")
+        self.tex_on: bs.Texture = self.factory.fetch("impact_lit_tex")
+        self.mesh = self.factory.fetch("impact_bomb_mesh")
         self.tex = self.tex_off
 
-        self.body = 'sphere'
-        self.rtype = 'powerup'
+        self.body = "sphere"
+        self.rtype = "powerup"
         self.rscale = 1.5
 
         self.materials = self.materials + (self.factory.impact_blast_material,)
@@ -546,8 +546,8 @@ class ImpactBomb(Bomb):
         self.impact_timers: bool = True
         self.arm_timer: bs.Timer
         self.warn_timer: bs.Timer
-        self.warn_sound: bs.Sound = self.factory.fetch('warn_sound')
-        self.activate_sound: bs.Sound = self.factory.fetch('activate_sound')
+        self.warn_sound: bs.Sound = self.factory.fetch("warn_sound")
+        self.activate_sound: bs.Sound = self.factory.fetch("activate_sound")
         self.texture_sequence: bs.Node | None = None
 
     def create_bomb(self) -> None:
@@ -578,20 +578,20 @@ class ImpactBomb(Bomb):
             self.tex_off,
         )
         self.texture_sequence = bs.newnode(
-            'texture_sequence',
+            "texture_sequence",
             owner=self.node,
-            attrs={'rate': 100, 'input_textures': intex},
+            attrs={"rate": 100, "input_textures": intex},
         )
         # Enable our explosive material with slight delay
         bs.timer(
             0.25,
             bs.WeakCallPartial(
                 self.add_material,
-                self.factory.fetch('land_mine_blast_material'),
+                self.factory.fetch("land_mine_blast_material"),
             ),
         )
         self.texture_sequence.connectattr(  # type: ignore
-            'output_texture', self.node, 'color_texture'
+            "output_texture", self.node, "color_texture"
         )
         self.activate_sound.play(position=self.node.position)
 
@@ -615,7 +615,7 @@ class ImpactBomb(Bomb):
         if node is self.owner or (
             isinstance(node_delegate, Bomb)
             and (
-                node_delegate.bomb_type == 'impact'
+                node_delegate.bomb_type == "impact"
                 or isinstance(node_delegate, ImpactBomb)
             )
             and node_delegate.owner is self.owner
@@ -656,15 +656,15 @@ ImpactBomb.register()
 class LandMine(ImpactBomb):
     """A pad-type explosive that blows up when touched."""
 
-    bomb_type = 'land_mine'
+    bomb_type = "land_mine"
 
     @staticmethod
     def resources() -> dict:
         """Resources used by this bomb instance."""
         return {
-            'land_mine_mesh': FactoryMesh('landMine'),
-            'land_mine_tex': FactoryTexture('landMine'),
-            'land_mine_lit_tex': FactoryTexture('landMineLit'),
+            "land_mine_mesh": FactoryMesh("landMine"),
+            "land_mine_tex": FactoryTexture("landMine"),
+            "land_mine_lit_tex": FactoryTexture("landMineLit"),
         }
 
     def attributes(self) -> None:
@@ -672,19 +672,19 @@ class LandMine(ImpactBomb):
         # Load default attributes
         super().attributes()
         # Set our own
-        self.tex_off = self.factory.fetch('land_mine_tex')
-        self.tex_on = self.factory.fetch('land_mine_lit_tex')
-        self.mesh = self.factory.fetch('land_mine_mesh')
+        self.tex_off = self.factory.fetch("land_mine_tex")
+        self.tex_on = self.factory.fetch("land_mine_lit_tex")
+        self.mesh = self.factory.fetch("land_mine_mesh")
         self.tex = self.tex_off
         self.light_mesh = True
 
-        self.body = 'landMine'
+        self.body = "landMine"
         self.rscale = 1.0
         self.shadow_size = 0.44
 
         self.materials = (
-            self.factory.fetch('bomb_material'),
-            self.factory.fetch('land_mine_no_explode_material'),
+            self.factory.fetch("bomb_material"),
+            self.factory.fetch("land_mine_no_explode_material"),
             self.shared.object_material,
         )
         self.blast_class = LandMineBlast
@@ -706,9 +706,9 @@ class LandMine(ImpactBomb):
         # Create a texture sequence and assign
         intex = (self.tex_on, self.tex_off)
         self.texture_sequence = bs.newnode(
-            'texture_sequence',
+            "texture_sequence",
             owner=self.node,
-            attrs={'rate': 30, 'input_textures': intex},
+            attrs={"rate": 30, "input_textures": intex},
         )
         bs.timer(0.5, self.texture_sequence.delete)  # type: ignore # intellisense issue
 
@@ -717,11 +717,11 @@ class LandMine(ImpactBomb):
             0.25,
             bs.WeakCallPartial(
                 self.add_material,
-                self.factory.fetch('land_mine_blast_material'),
+                self.factory.fetch("land_mine_blast_material"),
             ),
         )
         self.texture_sequence.connectattr(  # type: ignore # intellisense issue
-            'output_texture', self.node, 'color_texture'
+            "output_texture", self.node, "color_texture"
         )
         self.activate_sound.play(position=self.node.position)
 
@@ -746,14 +746,14 @@ LandMine.register()
 class TNT(Bomb):
     """A crate packing a powerful explosion."""
 
-    bomb_type = 'tnt'
+    bomb_type = "tnt"
 
     @staticmethod
     def resources() -> dict:
         """Resources used by this bomb instance."""
         return {
-            'tnt_mesh': FactoryMesh('tnt'),
-            'tnt_tex': FactoryTexture('tnt'),
+            "tnt_mesh": FactoryMesh("tnt"),
+            "tnt_tex": FactoryTexture("tnt"),
         }
 
     def attributes(self) -> None:
@@ -761,17 +761,17 @@ class TNT(Bomb):
         # Load default attributes
         super().attributes()
         # Set our own
-        self.mesh = self.factory.fetch('tnt_mesh')
-        self.tex = self.factory.fetch('tnt_tex')
+        self.mesh = self.factory.fetch("tnt_mesh")
+        self.tex = self.factory.fetch("tnt_tex")
         self.light_mesh = True
 
-        self.body = 'crate'
-        self.rtype = 'soft'
+        self.body = "crate"
+        self.rtype = "soft"
         self.rscale = 0.23
         self.shadow_size = 0.5
 
         self.materials = (
-            self.factory.fetch('bomb_material'),
+            self.factory.fetch("bomb_material"),
             self.shared.footing_material,
             self.shared.object_material,
         )

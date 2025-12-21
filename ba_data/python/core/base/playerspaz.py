@@ -46,11 +46,11 @@ class PlayerSpaz(playerspaz.Spaz):
             # Sometimes, the game sends several death
             # messages, only count those that actually kill us.
             if self.is_alive():
-                ''''''
+                """"""
             # clay.statstrack.add_stat('player_death', 1)
 
         elif isinstance(msg, bs.PowerupMessage):
-            ''''''
+            """"""
         # clay.statstrack.add_stat('player_powerup', 1)
 
         elif isinstance(msg, PunchHitMessage):

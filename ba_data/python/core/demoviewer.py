@@ -10,7 +10,7 @@ import bascenev1 as bs
 from .common import DATA_DIRECTORY
 
 
-REPLAY_FOLDERS: list[str] = [os.path.join(DATA_DIRECTORY, 'replays')]
+REPLAY_FOLDERS: list[str] = [os.path.join(DATA_DIRECTORY, "replays")]
 
 
 def _get_replays_dir_from_path(path: str) -> list[str]:
@@ -56,7 +56,7 @@ def launch_replay_from_list(replay_path_list: list[str]) -> None:
             bui.fade_screen(True)
             bs.new_replay_session(path)
         except RuntimeError:
-            logging.exception('Error running replay session.')
+            logging.exception("Error running replay session.")
 
             # Drop back into a fresh main menu session
             # in case we half-launched or something.

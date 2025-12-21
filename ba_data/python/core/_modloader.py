@@ -35,17 +35,17 @@ def _log() -> logging.Logger:
 
 
 def get_mods_resource_folder(
-    resource: Literal['textures', 'audio', 'meshes'],
+    resource: Literal["textures", "audio", "meshes"],
 ) -> Path:
     """Get our BombSquad folders for mod assets."""
     return Path(
         os.path.join(
             os.path.abspath(bs.app.env.data_directory),
-            'ba_data',
-            f'{resource}2',
-            'core',
-            'mods',
-            'ext',
+            "ba_data",
+            f"{resource}2",
+            "core",
+            "mods",
+            "ext",
         )
     )
 
@@ -89,11 +89,11 @@ class ModEntry:
                 for f in sorted(fl):
                     try:
                         file = Path(os.path.join(p, f))
-                        hasher.update(f'{file.stat().st_mtime_ns}'.encode())
+                        hasher.update(f"{file.stat().st_mtime_ns}".encode())
                     except OSError:
                         continue
         else:
-            hasher.update(f'{self.path.stat().st_mtime_ns}'.encode())
+            hasher.update(f"{self.path.stat().st_mtime_ns}".encode())
 
         return hasher.hexdigest()
 
@@ -114,9 +114,9 @@ class ModLoaderSubsystem(AppSubsystem):
         self._scan_timer: bs.AppTimer | None = None
 
         # make sure these exist before we start our jobs
-        os.makedirs(get_mods_resource_folder('textures'), exist_ok=True)
-        os.makedirs(get_mods_resource_folder('audio'), exist_ok=True)
-        os.makedirs(get_mods_resource_folder('meshes'), exist_ok=True)
+        os.makedirs(get_mods_resource_folder("textures"), exist_ok=True)
+        os.makedirs(get_mods_resource_folder("audio"), exist_ok=True)
+        os.makedirs(get_mods_resource_folder("meshes"), exist_ok=True)
 
     @override
     def on_app_running(self) -> None:
@@ -157,13 +157,13 @@ class ModLoaderSubsystem(AppSubsystem):
                 elif filepath.is_file():
                     ext = filepath.suffix
                     match ext:
-                        case '.py':
+                        case ".py":
                             entry = ModEntry(filepath, type=ModEntryType.PLUGIN)
                         # NOTE: '.bsmod' compressed mods will have their own
                         # file structure and we want to compensate for that...
-                        case '.bsmod':
+                        case ".bsmod":
                             entry = ModEntry(filepath, type=ModEntryType.PACKED)
-                        case '.zip' | '.rar':
+                        case ".zip" | ".rar":
                             entry = ModEntry(
                                 filepath, type=ModEntryType.COMPRESSED
                             )
@@ -190,7 +190,7 @@ class ModLoaderSubsystem(AppSubsystem):
                 self._mod_entries.remove(entry)
                 continue
 
-            lasthash = self._mod_entry_hashes.setdefault(entry, '')
+            lasthash = self._mod_entry_hashes.setdefault(entry, "")
             first_update = not lasthash
             newhash = entry.get_filetree_time_hash()
             updateable = entry.type in [
@@ -235,16 +235,16 @@ class ModLoaderSubsystem(AppSubsystem):
         hashname = self._generate_mod_name_hash(manifest_data)
 
         main_script_path = self._get_abspath(
-            manifest_data['assets']['main'], folder_path
+            manifest_data["assets"]["main"], folder_path
         )
         textures_path = self._get_abspath(
-            manifest_data['assets']['textures'], folder_path
+            manifest_data["assets"]["textures"], folder_path
         )
         audio_path = self._get_abspath(
-            manifest_data['assets']['audio'], folder_path
+            manifest_data["assets"]["audio"], folder_path
         )
         meshes_path = self._get_abspath(
-            manifest_data['assets']['meshes'], folder_path
+            manifest_data["assets"]["meshes"], folder_path
         )
 
         # TODO: folder mods should have their .pngs automatically
@@ -252,26 +252,26 @@ class ModLoaderSubsystem(AppSubsystem):
         # then, we'd build a folder with each respective extension on export.
         self._migrate_files(
             textures_path,
-            get_mods_resource_folder('textures'),
+            get_mods_resource_folder("textures"),
             hashname,
-            ['.png', '.dds', '.ktx'],
+            [".png", ".dds", ".ktx"],
         )
         # NOTE: convert .mp3 files, maybe?
         self._migrate_files(
-            audio_path, get_mods_resource_folder('audio'), hashname, ['.ogg']
+            audio_path, get_mods_resource_folder("audio"), hashname, [".ogg"]
         )
         # NOTE: convert .glb files, maybe?
         self._migrate_files(
             meshes_path,
-            get_mods_resource_folder('meshes'),
+            get_mods_resource_folder("meshes"),
             hashname,
-            ['.bob', '.cob'],
+            [".bob", ".cob"],
         )
 
         if (
             main_script_path.exists()
             and main_script_path.is_file()
-            and main_script_path.suffix == '.py'
+            and main_script_path.suffix == ".py"
         ):
             # FIXME: We don't want to be doing ANY of this repeatedly.
             # 'sys.path.append'ing the same path... importing multiple times...
@@ -283,8 +283,8 @@ class ModLoaderSubsystem(AppSubsystem):
             else:
                 importlib.reload(importlib.import_module(filename))
 
-        state = 'loaded' if first_update else 'reloaded'
-        sfx = 'gunCocking' if first_update else 'core/misc/mod_update'
+        state = "loaded" if first_update else "reloaded"
+        sfx = "gunCocking" if first_update else "core/misc/mod_update"
         bui.screenmessage(
             f'"{manifest_data['name']}" by "{manifest_data['author']}" {state}!',
             (0.3, 0.45, 0.8),
@@ -292,10 +292,10 @@ class ModLoaderSubsystem(AppSubsystem):
         bui.getsound(sfx).play()
 
     def _get_manifest_data(self, path: Path) -> Any | None:
-        manifest_path = Path(os.path.join(path, 'manifest.json'))
+        manifest_path = Path(os.path.join(path, "manifest.json"))
 
         if manifest_path.exists() and manifest_path.is_file():
-            with open(manifest_path, encoding='utf-8') as f:
+            with open(manifest_path, encoding="utf-8") as f:
                 try:
                     return json.loads(f.read())
                 except json.JSONDecodeError:
@@ -327,8 +327,8 @@ class ModLoaderSubsystem(AppSubsystem):
                     shutil.copy(filepath, to_path)
 
     def _generate_mod_name_hash(self, metadata: dict) -> str:
-        n, a = metadata['name'], metadata['author']
-        encoded_title = f'{n}&{a}'.encode()
+        n, a = metadata["name"], metadata["author"]
+        encoded_title = f"{n}&{a}".encode()
 
         return hashlib.sha256(encoded_title).hexdigest()
 
