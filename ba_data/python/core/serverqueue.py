@@ -1,4 +1,5 @@
 """Queue servers in the background."""
+
 # FIXME: Unfinished module
 
 from __future__ import annotations
@@ -84,8 +85,7 @@ class ServerQueueSubsystem(AppSubsystem):
 
     def _active_queue(self) -> bool:
         return (
-            not self.status is QueueStatus.NONE
-            and self.server_info is not None
+            not self.status is QueueStatus.NONE and self.server_info is not None
         )
 
     def persistency_check(self) -> None:
@@ -429,9 +429,7 @@ class ServerQueueUIElement(bs.Actor):
         global UI_ICON_LAST_FRAME  # pylint: disable=global-statement
         UI_ICON_LAST_FRAME = self.icon_frame = frame
 
-    def update(
-        self, server_info: ServerInfo, status: QueueStatus
-    ) -> None:
+    def update(self, server_info: ServerInfo, status: QueueStatus) -> None:
         """Update our server info and queue status data."""
         self.server_info = server_info
         self.queue_status = status

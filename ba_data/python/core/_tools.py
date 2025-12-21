@@ -1,9 +1,12 @@
+"""Developer tools!"""
+
 from typing import Any, Type, override
 
-import bascenev1 as bs
 import inspect
 import ctypes
 import os
+
+import bascenev1 as bs
 
 import babase
 from babase._devconsole import DevConsoleTab, DevConsoleTabEntry
@@ -19,11 +22,12 @@ def send(msg: str, condition: bool = True) -> None:
     if not condition:
         return
 
-    i_am: str
-    try:  # get a dirty string path to this script.
-        i_am = inspect.getmodule(inspect.stack()[1][0]).__name__  # type: ignore
-    except:
-        i_am = 'file'
+    i_am: str = 'module'
+
+    module = inspect.getmodule(inspect.stack()[1][0])
+    if module:
+        i_am = module.__name__
+
     i_am += '.py'
 
     bs.screenmessage(f'{msg}')
@@ -53,18 +57,26 @@ def obj_method_override(obj_to_override: object, obj_source: object) -> None:
 
 def is_admin() -> bool:
     """Check if we are running this program as administrator / with sudo.
+
     Returns:
         bool: Whether operator privileges are enabled
     """
-    platform: str = bs.app.classic.platform  # type: ignore
+    classic = bs.app.classic
+    if classic is None:
+        raise RuntimeError('"bs.app.classic" unavailable.')
+
+    platform: str = classic.platform
     try:
-        if platform in ['windows', 'win32']:
+        if platform in ('windows'):
             return ctypes.windll.shell32.IsUserAnAdmin() != 0
         if platform == 'linux':
             return os.getpid() == 0
-        # couldn't care less about mac tbh :p
+        if platform == 'mac':
+            if hasattr(os, "geteuid"):
+                return os.geteuid() == 0  # type: ignore
+            return False
         return False
-    except Exception:  # don't crash over a failure
+    except Exception:
         return False
 
 
@@ -72,7 +84,7 @@ def is_server() -> bool:
     """Return whether we're running as a server or not."""
     classic = bs.app.classic
     if classic is None:
-        raise RuntimeError('classic is unexpectedly none')
+        raise RuntimeError('"bs.app.classic" unavailable.')
 
     return not classic.server is None
 
@@ -105,7 +117,8 @@ def playlist_cleanse() -> None:
 DISCORD_SM_COLOR = (0.44, 0.53, 0.85)
 
 
-class toolsTab(DevConsoleTab):
+class FuseToolsDevTab(DevConsoleTab):
+    """Developer Tab containing debugging tools for Fuse."""
 
     @override
     def refresh(self) -> None:
@@ -113,7 +126,7 @@ class toolsTab(DevConsoleTab):
         x, y = (0, 40)
         btn_size_x, btn_size_y = (175, 40)
 
-        self.discordrp_button = self.button(
+        self.button(
             self._get_discordrp_btn_label(),
             pos=(x - (btn_size_x / 2), y - (btn_size_y / 2)),
             size=(btn_size_x, btn_size_y),
@@ -126,15 +139,16 @@ class toolsTab(DevConsoleTab):
 
         drp = core.DiscordRP
 
-        return 'Disable DiscordRP' if drp._is_active() else 'Enable DiscordRP'
+        return 'Disable DiscordRP' if drp.is_active() else 'Enable DiscordRP'
 
     def toggle_discordrp(self) -> None:
+        """Toggles DiscordRP."""
         import core
 
         drp = core.DiscordRP
         msg: str = ''
 
-        if drp._is_active():
+        if drp.is_active():
             msg = 'DiscordRP stopped.'
             drp.stop()
         else:
@@ -146,4 +160,5 @@ class toolsTab(DevConsoleTab):
 
 
 def add_devconsole_tab(name: str, console_tab: Type[DevConsoleTab]) -> None:
+    """Add a new "DevConsoleTab" entry in our devconsole."""
     babase.app.devconsole.tabs.append(DevConsoleTabEntry(name, console_tab))

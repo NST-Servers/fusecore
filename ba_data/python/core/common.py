@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import os
 import bascenev1 as bs
-import _babase  # type: ignore
+import babase
 
-ENV_DIRECTORY: str = _babase.app.env.data_directory
+ENV_DIRECTORY: str = babase.app.env.data_directory
 """Full environment path."""
 CORE_FOLDER_NAME: str = 'core'
 
@@ -31,6 +31,7 @@ def vector3_spread(
     """Spread a Vector3 using a Fibonnaci Sphere.
     Used for spreading multiple objects around a specific area.
     """
+    # FIXME: implement me!
     raise RuntimeError("not implemented.")
 
     import math, random
