@@ -231,13 +231,11 @@ class Particle(FactoryActor):
         self.mesh: bs.Mesh = self.factory.fetch("mesh")
         self.light_mesh: bs.Mesh = self.mesh
         self.body: Literal['landMine', 'crate', 'sphere', 'box', 'capsule', 'puck'] = "landMine"
-        # Can be 'sphere', 'crate', 'landMine', 'box', 'capsule' or 'puck'.
         self.body_scale: float = 1.0
         self.mesh_scale: float = 1.0
         self.shadow_size: float = 0.3
         self.color_texture: bs.Texture = self.factory.fetch("tex")
-        self.reflection: str = "soft"
-        # Can be 'soft', 'char' or 'powerup'
+        self.reflection: Literal['soft', 'char', 'powerup'] = "soft"
         self.reflection_scale: list[float] = [1.0]
         self.gravity_scale: float = 1.0
         self.materials: list[bs.Material] = [particle_material]
