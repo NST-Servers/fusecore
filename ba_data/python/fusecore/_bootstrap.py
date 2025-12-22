@@ -4,6 +4,12 @@ Loads multiple modules and prepares them for usage.
 
 # pylint: disable=unused-import
 
+# FIXME: some imports generate gc issues and the gc refuses to elaborate
+# it's not an issue at all due to it only happening at
+# launch, and the end user can't even see it happening
+# unless they have garbage-gollection set to 'leak-debug'
+# but holy folk is it super annoying...
+
 import bascenev1 as bs
 import babase
 
