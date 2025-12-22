@@ -159,7 +159,7 @@ class ModLoaderSubsystem(AppSubsystem):
                     match ext:
                         case ".py":
                             entry = ModEntry(filepath, type=ModEntryType.PLUGIN)
-                        # NOTE: '.bsmod' compressed mods will have their own
+                        # TODO: '.bsmod' compressed mods will have their own
                         # file structure and we want to compensate for that...
                         case ".bsmod":
                             entry = ModEntry(filepath, type=ModEntryType.PACKED)
@@ -256,11 +256,11 @@ class ModLoaderSubsystem(AppSubsystem):
             hashname,
             [".png", ".dds", ".ktx"],
         )
-        # NOTE: convert .mp3 files, maybe?
+        # TODO: convert .mp3 files, maybe?
         self._migrate_files(
             audio_path, get_mods_resource_folder("audio"), hashname, [".ogg"]
         )
-        # NOTE: convert .glb files, maybe?
+        # TODO: convert .glb files, maybe?
         self._migrate_files(
             meshes_path,
             get_mods_resource_folder("meshes"),

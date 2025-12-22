@@ -95,6 +95,7 @@ class PowerupBoxFactory(Factory):
         )
 
         # NOTE: Currently engine broken
+        # DOUBLE NOTE: is this still broken?
         self.powerup_material.add_actions(
             conditions=("they_have_material", shared.footing_material),
             actions=("impact_sound", self.drop_sound, 0.5, 0.1),

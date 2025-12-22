@@ -95,7 +95,7 @@ class ServerQueueSubsystem(AppSubsystem):
         if self.status is QueueStatus.NONE:
             return
 
-        # NOTE: kind of afraid that this might affect
+        # TODO: kind of afraid that this might affect
         # performance, even if just a little...
         ui_element = self._get_ui_element()
 
