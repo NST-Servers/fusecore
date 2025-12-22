@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections import OrderedDict
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Self, Type, override
+from typing import Any, Literal, Self, Type, override
 
 import random
 
@@ -230,7 +230,7 @@ class Particle(FactoryActor):
 
         self.mesh: bs.Mesh = self.factory.fetch("mesh")
         self.light_mesh: bs.Mesh = self.mesh
-        self.body: str = "landMine"
+        self.body: Literal['landMine', 'crate', 'sphere', 'box', 'capsule', 'puck'] = "landMine"
         # Can be 'sphere', 'crate', 'landMine', 'box', 'capsule' or 'puck'.
         self.body_scale: float = 1.0
         self.mesh_scale: float = 1.0
