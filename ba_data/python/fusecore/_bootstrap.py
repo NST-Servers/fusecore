@@ -7,7 +7,11 @@ Loads multiple modules and prepares them for usage.
 import bascenev1 as bs
 import babase
 
-from fusecore._tools import FuseToolsDevTab, add_devconsole_tab, obj_method_override
+from fusecore._tools import (
+    FuseToolsDevTab,
+    add_devconsole_tab,
+    obj_method_override,
+)
 
 from fusecore import (
     _modloader as _ml,
