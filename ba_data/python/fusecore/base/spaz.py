@@ -76,10 +76,15 @@ class Spaz(spaz.Spaz):
 
         # We callback wrap these on creation as the engine
         # clones these, so they won't be able to be updated later.
-        self._callback_wrap("on_punch_press")
-        self._callback_wrap("on_bomb_press")
-        self._callback_wrap("on_jump_press")
-        self._callback_wrap("on_pickup_press")
+
+        # FIXME: This causes issues.
+        # Instead, we should make a class entry to allow people to
+        # wrap their own functions organically without having to rely
+        # on this monolith of a function.
+        # self._callback_wrap("on_punch_press")
+        # self._callback_wrap("on_bomb_press")
+        # self._callback_wrap("on_jump_press")
+        # self._callback_wrap("on_pickup_press")
 
         # for name in dir(self):
         #    if name.startswith('__'):
@@ -644,6 +649,20 @@ class Spaz(spaz.Spaz):
         if self.node:
             self.node.boxing_gloves_flashing = False
             self.node.boxing_gloves = False
+
+    @override
+    def on_expire(self) -> None:
+        """Prevent from hanging onto the activity by cleaning after ourselves."""
+        # because components and powerups depend on spaz themselves,
+        # we need to remove them on expire to keep the gc happy.
+        self.components = {}
+        self._powerup_slots = {}
+        # these don't cause as many issues if left unbothered, but
+        # it's still a good idea to take care of these containers.
+        self._cb_wrapped_methods = set()
+        self._cb_wrap_calls = {}
+        self._cb_raw_wrap_calls = {}
+        self._cb_overwrite_calls = {}
 
 
 # Overwrite the vanilla game's spaz init with our own
