@@ -1,20 +1,11 @@
 # Sorry efro I stole your config file [https://github.com/efroemling/ballistica/blob/main/config/toolconfigsrc/pylintrc]
-[MASTER]
-jobs=1
-
-# PIL seems to throw pylint for a loop (possibly related to our plugins?)
-ignored-modules=PIL
+# NOTE: We don't actually run tests because most of the linting relies
+# on the full source code to work properly.
+# We keep this here purely to mantain the vsc extension satisfied.
 
 persistent=no
 
 extension-pkg-allow-list=math, readline, zlib, binascii
-
-__EFRO_PYLINT_INIT__
-
-[REPORTS]
-
-# Don't want a score; aiming for perfection.
-score=no
 
 [VARIABLES]
 # By default pylint ignores unused imports in __init__.py, but
