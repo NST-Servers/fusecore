@@ -8,7 +8,7 @@ import babase
 
 ENV_DIRECTORY: str = babase.app.env.data_directory
 """Full environment path."""
-CORE_FOLDER_NAME: str = "core"
+CORE_FOLDER_NAME: str = "fusecore"
 
 PYTHON_CORE_DIRECTORY: str = os.path.join(
     bs.app.env.python_directory_app,

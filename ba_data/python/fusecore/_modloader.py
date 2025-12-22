@@ -20,9 +20,9 @@ from typing import Any, Literal, override
 import bascenev1 as bs
 import bauiv1 as bui
 
-from bascenev1lib.mainmenu import MainMenuActivity
-
 from babase._appsubsystem import AppSubsystem
+
+from .common import CORE_FOLDER_NAME
 
 MOD_PATHS: list[Path] = [
     Path(bs.app.env.python_directory_user),
@@ -43,7 +43,7 @@ def get_mods_resource_folder(
             os.path.abspath(bs.app.env.data_directory),
             "ba_data",
             f"{resource}2",
-            "core",
+            CORE_FOLDER_NAME,
             "mods",
             "ext",
         )
@@ -284,7 +284,11 @@ class ModLoaderSubsystem(AppSubsystem):
                 importlib.reload(importlib.import_module(filename))
 
         state = "loaded" if first_update else "reloaded"
-        sfx = "gunCocking" if first_update else "core/misc/mod_update"
+        sfx = (
+            "gunCocking"
+            if first_update
+            else f"{CORE_FOLDER_NAME}/misc/mod_update"
+        )
         bui.screenmessage(
             f'"{manifest_data['name']}" by "{manifest_data['author']}" {state}!',
             (0.3, 0.45, 0.8),
