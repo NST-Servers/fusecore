@@ -52,7 +52,7 @@ class Spaz(spaz.Spaz):
 
         self._has_set_components: bool = False
         self.components: dict[Type[SpazComponent], SpazComponent] = {}
-        # NOTE: ^ this doesnt feel right...
+        # NOTE: ^ still thinking about this...
         self._apply_components()
 
         self.active_bomb: Type[Bomb] = self.default_bomb

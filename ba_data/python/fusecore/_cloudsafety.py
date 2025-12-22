@@ -57,7 +57,7 @@ def user_allowed_remote_code() -> None:
 
 
 def cloud_wrap(cloud_func):
-    # NOTE: It would be really cool if this could be handled
+    # TODO: It would be really cool if this could be handled
     # on a device basis; it's impossible to do so currently
     # as remote methods don't seem to store the source device
     # in any way.

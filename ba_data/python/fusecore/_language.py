@@ -100,7 +100,7 @@ class ExternalLanguageSubsystem(LanguageSubsystem):
                         # to halt loading our other jsons, so log and dismiss it
                         warning_text = f"Malformed '.json' file @ '{f.name}'"
                         _log().warning(warning_text)
-                        # NOTE: we should keep track of the files do and dont load...
+                        # FIXME: we should keep track of the files do and dont load...
                         continue
         return outcome
 

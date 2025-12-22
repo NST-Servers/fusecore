@@ -35,8 +35,8 @@ PARTICLE_SET: set[Type[Particle]] = set()
 class ParticleLimitMode(Enum):
     """Ways to handle having too many particles."""
 
-    # NOTE: figure out if we can find device specs to switch between these?
-    # NOTE 2: pc = overcharge, android = dynamic / dismiss / overwrite
+    # TODO: figure out if we can find device specs to switch between these?
+    #       pc = overcharge, android = dynamic / dismiss / overwrite
     DISABLED = -1
     """Ignore the particle limit cap and spawn
     as many particles as we please.
