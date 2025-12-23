@@ -4,4 +4,3 @@
 
 # ba_meta require api 9
 import fusecore
-import claymore
