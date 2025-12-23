@@ -664,7 +664,7 @@ class Spaz(spaz.Spaz):
 
         def log_mistake() -> None:
             logging.warning(
-                'spaz: "_compat_bomb_update" was called with an invalid "bomb_type".',
+                'spaz: "_compat_bomb_update" was called with an invalid "bomb_type".'
                 " Did you change the wrong variable?\n"
                 "If you're working with FuseCore, the"
                 ' variable name is now "self.active_bomb"!',

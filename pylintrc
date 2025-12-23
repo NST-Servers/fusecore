@@ -1,18 +1,3 @@
-# Sorry efro I stole your config file [https://github.com/efroemling/ballistica/blob/main/config/toolconfigsrc/pylintrc]
-# NOTE: We don't actually run tests because most of the linting relies
-# on the full source code to work properly.
-# We keep this here purely to mantain the vsc extension satisfied.
-
-persistent=no
-
-extension-pkg-allow-list=math, readline, zlib, binascii
-
-[VARIABLES]
-# By default pylint ignores unused imports in __init__.py, but
-# when flycheck checks it as flycheck___init__.py that doesn't apply.
-# Turning this off to keep things consistent.
-init-import=yes
-
 [FORMAT]
 # PEP-8 specifies 79 chars (that's right, not 80).
 # Update: switching to 80 to reclaim that extra char. There
@@ -94,7 +79,3 @@ notes=
 [IMPORTS]
 # We do quite a bit of this. Perhaps can reconsider if its a good idea later.
 disable=import-outside-toplevel
-
-[STRING]
-# PEP-8 says to be consistent with quotes; let's remind ourself...
-check-quote-consistency=yes
