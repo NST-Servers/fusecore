@@ -41,7 +41,7 @@ if TYPE_CHECKING:
 class Spaz(spaz.Spaz):
     """Wrapper for our actor Spaz class."""
 
-    default_bomb: Type[Bomb] = Bomb
+    default_bomb_class: Type[Bomb] = Bomb
 
     @override
     def __init__(self, *args, **kwargs):
@@ -55,8 +55,7 @@ class Spaz(spaz.Spaz):
         # NOTE: ^ still thinking about this...
         self._apply_components()
 
-        self.active_bomb: Type[Bomb] = self.default_bomb
-        self._bomb_compat()  # bot behavior & mod compatibility
+        self.active_bomb_class: Type[Bomb] = self.default_bomb_class
 
         self._powerup_wearoff_time_ms: int = 2000
         """For how long the powerup wearoff alert is displayed for (in milliseconds.)"""
@@ -93,6 +92,18 @@ class Spaz(spaz.Spaz):
         #    if callable(v) or isinstance(v, (staticmethod, classmethod)):
         #        self._callback_wrap(name)
 
+        # COMPATIBILITY STUFF - IGNORE THESE VARIABLES!
+        self.default_bomb_type: str
+        """### Don't use this!
+        We keep this for the sake of retrocompat.
+        Use ``self.default_bomb_class`` instead.
+        """
+        # handle deprecated bomb types for mod compatibility sake.
+        self._deprecated_bomb_type: str = (
+            self.default_bomb_type or self.bomb_type or "normal"
+        )
+        self._compat_bomb_update(check_default=True)
+
     @override
     def handlemessage(self, msg: Any) -> Any:
         # in the off-chance an external mode uses 'bs.PowerupMessage',
@@ -127,49 +138,13 @@ class Spaz(spaz.Spaz):
         """Return the active component object, provided by the type."""
         return self.components[component]
 
-    def apply_ruleset(self) -> None:
-        ...
-        # self.hitpoints_max = int(
-        #    clay.rulesets.get('player','health') * 10
-        # )
-
     def assign_bomb_type(self, bomb: Type[Bomb]) -> None:
         """Set a bomb type for this spaz to use."""
-        self.active_bomb = bomb
+        self.active_bomb_class = bomb
 
     def reset_bomb_type(self) -> None:
         """Reset our bomb type back to our default type."""
-        self.active_bomb = self.default_bomb
-
-    def _bomb_compat(self) -> None:
-        """DEPRECATED transform our 'self.default_bomb_type'
-        into a 'self.default_bomb' class.
-        """
-        if self.default_bomb_type != "normal":
-            bomb_type: Type[Bomb] = Bomb
-            match self.default_bomb_type:
-                case "ice":
-                    bomb_type = IceBomb
-                case "land_mine":
-                    bomb_type = LandMine
-                case "sticky":
-                    bomb_type = StickyBomb
-                case "impact":
-                    bomb_type = ImpactBomb
-            self.active_bomb = bomb_type
-
-        if self.bomb_type != "normal":
-            bomb_type: Type[Bomb] = Bomb
-            match self.bomb_type:
-                case "ice":
-                    bomb_type = IceBomb
-                case "land_mine":
-                    bomb_type = LandMine
-                case "sticky":
-                    bomb_type = StickyBomb
-                case "impact":
-                    bomb_type = ImpactBomb
-            self.active_bomb = bomb_type
+        self.active_bomb_class = self.default_bomb_class
 
     @override
     def drop_bomb(self):
@@ -192,7 +167,7 @@ class Spaz(spaz.Spaz):
         pos = self.node.position_forward
         vel = self.node.velocity
 
-        bomb_type: Type[Bomb] = self.active_bomb
+        bomb_type: Type[Bomb] = self.active_bomb_class
         is_external = False
         # TODO: Migrate the landmine counter into a proper class for flexible usage
         if self.land_mine_count > 0:
@@ -663,6 +638,68 @@ class Spaz(spaz.Spaz):
         self._cb_wrap_calls = {}
         self._cb_raw_wrap_calls = {}
         self._cb_overwrite_calls = {}
+
+    @property
+    def bomb_type(self) -> str:
+        """### Don't use this!
+        We keep this for the sake of retrocompat.
+        Use ``self.active_bomb_class`` instead.
+        """
+        return self._deprecated_bomb_type
+
+    @bomb_type.setter
+    def bomb_type(self, btype: str) -> None:
+        """### Don't use this!
+        We keep this for the sake of retrocompat.
+        Use ``self.active_bomb_class`` instead.
+        """
+        self._deprecated_bomb_type = btype
+        self._compat_bomb_update()
+
+    def _compat_bomb_update(self, check_default: bool = False) -> None:
+        """transform our 'self.default_bomb_type' into a 'self.default_bomb' class.
+
+        ### This function is here for compatibility reasons, don't use this!
+        """
+
+        def log_mistake() -> None:
+            logging.warning(
+                'spaz: "_compat_bomb_update" was called with an invalid "bomb_type".',
+                " Did you change the wrong variable?\n"
+                "If you're working with FuseCore, the"
+                ' variable name is now "self.active_bomb"!',
+                stack_info=True,
+            )
+
+        if self.default_bomb_type != "normal" and check_default:
+            bomb_class: Type[Bomb] = Bomb
+            match self.default_bomb_type:
+                case "ice":
+                    bomb_class = IceBomb
+                case "land_mine":
+                    bomb_class = LandMine
+                case "sticky":
+                    bomb_class = StickyBomb
+                case "impact":
+                    bomb_class = ImpactBomb
+                case _:
+                    log_mistake()
+            self.active_bomb_class = bomb_class
+
+        elif self._deprecated_bomb_type != "normal":
+            bomb_class: Type[Bomb] = Bomb
+            match self._deprecated_bomb_type:
+                case "ice":
+                    bomb_class = IceBomb
+                case "land_mine":
+                    bomb_class = LandMine
+                case "sticky":
+                    bomb_class = StickyBomb
+                case "impact":
+                    bomb_class = ImpactBomb
+                case _:
+                    log_mistake()
+            self.active_bomb_class = bomb_class
 
 
 # Overwrite the vanilla game's spaz init with our own
