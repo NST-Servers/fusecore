@@ -670,36 +670,28 @@ class Spaz(spaz.Spaz):
                 ' variable name is now "self.active_bomb"!',
                 stack_info=True,
             )
-
-        if self.default_bomb_type != "normal" and check_default:
-            bomb_class: Type[Bomb] = Bomb
-            match self.default_bomb_type:
+            
+        def match_bombtype(to_check: str) -> Type[Bomb]:
+            match to_check:
+                case "normal":
+                    return Bomb
                 case "ice":
-                    bomb_class = IceBomb
+                    return IceBomb
                 case "land_mine":
-                    bomb_class = LandMine
+                    return LandMine
                 case "sticky":
-                    bomb_class = StickyBomb
+                    return StickyBomb
                 case "impact":
-                    bomb_class = ImpactBomb
+                    return ImpactBomb
                 case _:
                     log_mistake()
-            self.active_bomb_class = bomb_class
+                    return Bomb
 
-        elif self._deprecated_bomb_type != "normal":
-            bomb_class: Type[Bomb] = Bomb
-            match self._deprecated_bomb_type:
-                case "ice":
-                    bomb_class = IceBomb
-                case "land_mine":
-                    bomb_class = LandMine
-                case "sticky":
-                    bomb_class = StickyBomb
-                case "impact":
-                    bomb_class = ImpactBomb
-                case _:
-                    log_mistake()
-            self.active_bomb_class = bomb_class
+        bomb_class = match_bombtype(
+            self.default_bomb_type if check_default
+            else self._deprecated_bomb_type
+        )
+        self.active_bomb_class = bomb_class
 
 
 # Overwrite the vanilla game's spaz init with our own
