@@ -58,7 +58,9 @@ class Spaz(spaz.Spaz):
         self.active_bomb_class: Type[Bomb] = self.default_bomb_class
 
         self._powerup_wearoff_time_ms: int = 2000
-        """For how long the powerup wearoff alert is displayed for (in milliseconds.)"""
+        """For how long the powerup wearoff alert
+        is displayed for (in milliseconds.)
+        """
 
         # Slots to hold powerups in
         self._powerup_slots: dict[PowerupSlotType, SpazPowerupSlot] = {
@@ -108,21 +110,39 @@ class Spaz(spaz.Spaz):
     def handlemessage(self, msg: Any) -> Any:
         # in the off-chance an external mode uses 'bs.PowerupMessage',
         # let's add a compatibility layer to prevent us from breaking.
-        if isinstance(msg, bs.PowerupMessage):
-            success = self.handle_powerupmsg_compat(msg)
-            if success and msg.sourcenode:
-                msg.sourcenode.handlemessage(bs.PowerupAcceptMessage())
-            return success
-
-        # now, the NEW powerup handle function.
-        elif isinstance(msg, PowerupBoxMessage):
-            success: bool = self.handle_powerupmsg(msg)
-            if success and msg.source_node:
-                msg.source_node.handlemessage(bs.PowerupAcceptMessage())
-            return success
+        if isinstance(msg, (bs.PowerupMessage, PowerupBoxMessage)):
+            return self.handle_powerupmsg(msg)
 
         # return to standard handling
         return super().handlemessage(msg)
+
+    def handle_powerupmsg(
+        self, msg: bs.PowerupMessage | PowerupBoxMessage
+    ) -> bool:
+        """Handle modern powerup and legacy powerup messages.
+        Returns success.
+        """
+
+        def powerup_signaling(success: bool, source: bs.Node | None) -> bool:
+            # success should be the result of a handle function,
+            # and we use it's result to refer whether we tell our
+            # possibly existent source node that we got the powerup.
+            if success and source:
+                source.handlemessage(bs.PowerupAcceptMessage())
+            return success
+
+        if isinstance(msg, PowerupBoxMessage):
+            # fusecore powerup handling
+            return powerup_signaling(
+                self._handle_powerups(msg), msg.source_node
+            )
+        if isinstance(msg, bs.PowerupMessage):
+            # legacy powerup handling
+            return powerup_signaling(
+                self._handle_powerups_legacy(msg), msg.sourcenode
+            )
+
+        return False
 
     def _apply_components(self) -> None:
         """Give this spaz all available components."""
@@ -138,29 +158,23 @@ class Spaz(spaz.Spaz):
         """Return the active component object, provided by the type."""
         return self.components[component]
 
-    def assign_bomb_type(self, bomb: Type[Bomb]) -> None:
+    def assign_bomb_class(self, bomb: Type[Bomb]) -> None:
         """Set a bomb type for this spaz to use."""
         self.active_bomb_class = bomb
 
-    def reset_bomb_type(self) -> None:
+    def reset_bomb_class(self) -> None:
         """Reset our bomb type back to our default type."""
         self.active_bomb_class = self.default_bomb_class
 
-    @override
-    def drop_bomb(self):
-        """DEPRECATED drop_bomb function."""
-        # NOTE: Bombs have the same methods as the vanilla ones, but it could
-        # cause issues in particular circumstances... Keep that in mind!
-        return cast(DeprecatedBomb, self.drop_bomb_type())
-
-    def drop_bomb_type(self) -> Bomb | None:
+    def drop_bomb_class(self) -> Bomb | None:
         """Tell the spaz to drop one of his bombs, and returns
         the resulting bomb object.
 
         If the spaz has no bombs or is otherwise unable to
         drop a bomb, returns None.
         """
-        # TODO: Migrate the landmine counter into a proper class for flexible usage
+        # TODO: Migrate the landmine counter into
+        #       a proper class for flexible usage
         if (self.land_mine_count <= 0 and self.bomb_count <= 0) or self.frozen:
             return None
         assert self.node
@@ -169,7 +183,8 @@ class Spaz(spaz.Spaz):
 
         bomb_type: Type[Bomb] = self.active_bomb_class
         is_external = False
-        # TODO: Migrate the landmine counter into a proper class for flexible usage
+        # TODO: Migrate the landmine counter into
+        #       a proper class for flexible usage
         if self.land_mine_count > 0:
             is_external = True
             self.set_land_mine_count(self.land_mine_count - 1)
@@ -388,7 +403,8 @@ class Spaz(spaz.Spaz):
 
         Args:
             damage (float): Amount of damage to receive
-            fatal (bool, optional): Whether the damage can kill. Defaults to True.
+            fatal (bool, optional): Whether the damage can kill.
+                                    Defaults to True.
         """  # TODO: Finish this....
         self.on_punched(damage)
         self.hitpoints -= damage
@@ -464,7 +480,7 @@ class Spaz(spaz.Spaz):
         """Update "*self.node.hurt*" to display our current health."""
         self.node.hurt = 1.0 - float(self.hitpoints) / self.hitpoints_max
 
-    def handle_powerupmsg(self, msg: PowerupBoxMessage) -> bool:
+    def _handle_powerups(self, msg: PowerupBoxMessage) -> bool:
         """Handle incoming powerups.
 
         Manages powerup assigning and success return.
@@ -478,53 +494,6 @@ class Spaz(spaz.Spaz):
             return True
 
         return False
-
-    def handle_powerupmsg_compat(self, msg: bs.PowerupMessage) -> bool:
-        """DEPRECATED handling for 'bs.PowerupMessage'."""
-        if not self.is_alive():
-            return False
-
-        powerup: Type[SpazPowerup] | None = None
-
-        # FIXME: nested import of humilliation
-        # curse you, deprecation!
-        from fusecore.base.powerup import (
-            TripleBombsPowerup,
-            StickyBombsPowerup,
-            IceBombsPowerup,
-            ImpactBombsPowerup,
-            LandMinesPowerup,
-            PunchPowerup,
-            ShieldPowerup,
-            HealthPowerup,
-            CursePowerup,
-        )
-
-        match msg.poweruptype:
-            case "triple_bombs":
-                powerup = TripleBombsPowerup
-            case "land_mines":
-                powerup = LandMinesPowerup
-            case "impact_bombs":
-                powerup = ImpactBombsPowerup
-            case "sticky_bombs":
-                powerup = StickyBombsPowerup
-            case "punch":
-                powerup = PunchPowerup
-            case "shield":
-                powerup = ShieldPowerup
-            case "curse":
-                powerup = CursePowerup
-            case "ice_bombs":
-                powerup = IceBombsPowerup
-            case "health":
-                powerup = HealthPowerup
-
-        return self.handle_powerupmsg(
-            PowerupBoxMessage(
-                grants_powerup=powerup, source_node=msg.sourcenode
-            )
-        )
 
     def equip_powerup(self, powerup: SpazPowerup) -> None:
         """Equip a powerup in a specific slot.
@@ -554,7 +523,8 @@ class Spaz(spaz.Spaz):
                 # at larger scales and messier code if we create on demand.
                 logging.warning(
                     '"SpazPowerupSlot" created for %s as there was '
-                    "no previous instance of one existing; please dont do this!",
+                    "no previous instance of one existing;"
+                    " please dont do this!",
                     type(powerup.slot),
                     stack_info=True,
                 )
@@ -612,7 +582,9 @@ class Spaz(spaz.Spaz):
         self.node.billboard_cross_out = False
 
     def unequip_boxing_gloves(self) -> None:
-        """Remove gloves without doing the previously hardcoded powerdown sound."""
+        """Remove gloves without doing the previously
+        hardcoded powerdown sound.
+        """
         if self._demo_mode:  # Preserve old behavior.
             self._punch_power_scale = 1.2
             self._punch_cooldown = spaz.BASE_PUNCH_COOLDOWN
@@ -627,7 +599,9 @@ class Spaz(spaz.Spaz):
 
     @override
     def on_expire(self) -> None:
-        """Prevent from hanging onto the activity by cleaning after ourselves."""
+        """Prevent from hanging onto the activity
+        by cleaning after ourselves.
+        """
         # because components and powerups depend on spaz themselves,
         # we need to remove them on expire to keep the gc happy.
         self.components = {}
@@ -638,6 +612,11 @@ class Spaz(spaz.Spaz):
         self._cb_wrap_calls = {}
         self._cb_raw_wrap_calls = {}
         self._cb_overwrite_calls = {}
+
+    ### vvv THEY'RE ONLY HERE FOR RETROCOMPATIBILITY! vvv
+    ### vvv             LEGACY FUNCTIONS              vvv
+    ### vvv             DON'T USE THOSE!              vvv
+    ### vvv THEY'RE ONLY HERE FOR RETROCOMPATIBILITY! vvv
 
     @property
     def bomb_type(self) -> str:
@@ -656,21 +635,33 @@ class Spaz(spaz.Spaz):
         self._deprecated_bomb_type = btype
         self._compat_bomb_update()
 
+    @override
+    def drop_bomb(self):
+        """### Don't use this!
+        We keep this for the sake of retrocompat.
+        Use ``self.drop_bomb_class()`` instead.
+        """
+        # NOTE: Bombs have the same methods as the vanilla ones, but it could
+        # cause issues in particular circumstances... Keep that in mind!
+        return cast(DeprecatedBomb, self.drop_bomb_class())
+
     def _compat_bomb_update(self, check_default: bool = False) -> None:
-        """transform our 'self.default_bomb_type' into a 'self.default_bomb' class.
+        """transform our ``self.default_bomb_type`` into a
+        ``self.default_bomb`` class.
 
         ### This function is here for compatibility reasons, don't use this!
         """
 
         def log_mistake() -> None:
             logging.warning(
-                'spaz: "_compat_bomb_update" was called with an invalid "bomb_type".'
+                'spaz: "_compat_bomb_update" was called with'
+                ' an invalid "bomb_type".'
                 " Did you change the wrong variable?\n"
                 "If you're working with FuseCore, the"
                 ' variable name is now "self.active_bomb"!',
                 stack_info=True,
             )
-            
+
         def match_bombtype(to_check: str) -> Type[Bomb]:
             match to_check:
                 case "normal":
@@ -688,10 +679,58 @@ class Spaz(spaz.Spaz):
                     return Bomb
 
         bomb_class = match_bombtype(
-            self.default_bomb_type if check_default
+            self.default_bomb_type
+            if check_default
             else self._deprecated_bomb_type
         )
         self.active_bomb_class = bomb_class
+
+    def _handle_powerups_legacy(self, msg: bs.PowerupMessage) -> bool:
+        """DEPRECATED handling for 'bs.PowerupMessage'."""
+        if not self.is_alive():
+            return False
+
+        powerup: Type[SpazPowerup] | None = None
+
+        # FIXME: nested import of humilliation
+        # curse you, deprecation!
+        from fusecore.base.powerup import (
+            TripleBombsPowerup,
+            StickyBombsPowerup,
+            IceBombsPowerup,
+            ImpactBombsPowerup,
+            LandMinesPowerup,
+            PunchPowerup,
+            ShieldPowerup,
+            HealthPowerup,
+            CursePowerup,
+        )
+
+        match msg.poweruptype:
+            case "triple_bombs":
+                powerup = TripleBombsPowerup
+            case "land_mines":
+                powerup = LandMinesPowerup
+            case "impact_bombs":
+                powerup = ImpactBombsPowerup
+            case "sticky_bombs":
+                powerup = StickyBombsPowerup
+            case "punch":
+                powerup = PunchPowerup
+            case "shield":
+                powerup = ShieldPowerup
+            case "curse":
+                powerup = CursePowerup
+            case "ice_bombs":
+                powerup = IceBombsPowerup
+            case "health":
+                powerup = HealthPowerup
+
+        return self._handle_powerups(
+            PowerupBoxMessage(
+                grants_powerup=powerup, source_node=msg.sourcenode
+            )
+        )
 
 
 # Overwrite the vanilla game's spaz init with our own

@@ -151,11 +151,11 @@ class BombPowerup(SpazPowerup):
 
     @override
     def equip(self) -> None:
-        self.spaz.assign_bomb_type(self.bomb_type)
+        self.spaz.assign_bomb_class(self.bomb_type)
 
     @override
     def unequip(self, overwrite: bool, clone: bool) -> None:
-        self.spaz.reset_bomb_type()
+        self.spaz.reset_bomb_class()
 
 
 class StickyBombsPowerup(BombPowerup):
