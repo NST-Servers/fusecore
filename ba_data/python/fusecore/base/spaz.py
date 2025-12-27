@@ -1,6 +1,7 @@
 """Defines our custom Spaz class."""
 
 from __future__ import annotations
+import random
 from typing import (
     Type,
     cast,
@@ -18,6 +19,7 @@ import bascenev1 as bs
 from bascenev1lib.actor import spaz
 from bascenev1lib.actor.spaz import BombDiedMessage
 from bascenev1lib.actor.bomb import Bomb as DeprecatedBomb
+from bascenev1lib.actor.spazfactory import SpazFactory as VanillaSpazFactory
 
 from ..base.spazfactory import (
     SpazPowerupSlot,
@@ -37,6 +39,10 @@ from ..base.shared import PowerupSlotType
 if TYPE_CHECKING:
     from ..base.powerup import SpazPowerup
 
+# this a chunky boy, pylint, and it's
+# not like I can do something about it.
+# pylint: disable=too-many-lines
+
 
 class Spaz(spaz.Spaz):
     """Wrapper for our actor Spaz class."""
@@ -48,7 +54,6 @@ class Spaz(spaz.Spaz):
         super().__init__(*args, **kwargs)
 
         self.hitpoints = 1000
-        self.damage_scale = 0.22
 
         self._has_set_components: bool = False
         self.components: dict[Type[SpazComponent], SpazComponent] = {}
@@ -74,6 +79,8 @@ class Spaz(spaz.Spaz):
         self._cb_wrap_calls: dict[str, list[Callable]] = {}
         self._cb_raw_wrap_calls: dict[str, list[Callable]] = {}
         self._cb_overwrite_calls: dict[str, Callable | None] = {}
+
+        self.spaz_factory = VanillaSpazFactory.get()
 
         # We callback wrap these on creation as the engine
         # clones these, so they won't be able to be updated later.
@@ -105,44 +112,6 @@ class Spaz(spaz.Spaz):
             self.default_bomb_type or self.bomb_type or "normal"
         )
         self._compat_bomb_update(check_default=True)
-
-    @override
-    def handlemessage(self, msg: Any) -> Any:
-        # in the off-chance an external mode uses 'bs.PowerupMessage',
-        # let's add a compatibility layer to prevent us from breaking.
-        if isinstance(msg, (bs.PowerupMessage, PowerupBoxMessage)):
-            return self.handle_powerupmsg(msg)
-
-        # return to standard handling
-        return super().handlemessage(msg)
-
-    def handle_powerupmsg(
-        self, msg: bs.PowerupMessage | PowerupBoxMessage
-    ) -> bool:
-        """Handle modern powerup and legacy powerup messages.
-        Returns success.
-        """
-
-        def powerup_signaling(success: bool, source: bs.Node | None) -> bool:
-            # success should be the result of a handle function,
-            # and we use it's result to refer whether we tell our
-            # possibly existent source node that we got the powerup.
-            if success and source:
-                source.handlemessage(bs.PowerupAcceptMessage())
-            return success
-
-        if isinstance(msg, PowerupBoxMessage):
-            # fusecore powerup handling
-            return powerup_signaling(
-                self._handle_powerups(msg), msg.source_node
-            )
-        if isinstance(msg, bs.PowerupMessage):
-            # legacy powerup handling
-            return powerup_signaling(
-                self._handle_powerups_legacy(msg), msg.sourcenode
-            )
-
-        return False
 
     def _apply_components(self) -> None:
         """Give this spaz all available components."""
@@ -216,15 +185,16 @@ class Spaz(spaz.Spaz):
             self._cursed = False
 
             # Remove cursed material.
-            factory = spaz.SpazFactory.get()
             for attr in ["materials", "roller_materials"]:
                 materials = getattr(self.node, attr)
-                if factory.curse_material in materials:
+                if self.spaz_factory.curse_material in materials:
                     setattr(
                         self.node,
                         attr,
                         tuple(
-                            m for m in materials if m != factory.curse_material
+                            m
+                            for m in materials
+                            if m != self.spaz_factory.curse_material
                         ),
                     )
             self.node.curse_death_time = 0
@@ -272,8 +242,12 @@ class Spaz(spaz.Spaz):
         Unlike 'add_method_callback', it will not contain additional arguments.
 
         Args:
-            method_name (str): Name of the method to receive the callback
-            callback (Callable): Function to be linked to the target method
+            method_name (str):
+                Name of the method to receive the callback.
+
+            callback (Callable):
+                Function to be linked to the target method.
+
         """
         method = getattr(self, method_name, None)
         if not isinstance(method, Callable):
@@ -291,8 +265,11 @@ class Spaz(spaz.Spaz):
         """Remove a callback from any function.
 
         Args:
-            method_name (str): Name of the method to remove the callback from
-            callback (Callable): Function to be removed
+            method_name (str):
+                Name of the method to remove the callback from.
+
+            callback (Callable):
+                Function to be removed.
         """
         method = getattr(self, method_name, None)
         if not isinstance(method, Callable):
@@ -313,13 +290,13 @@ class Spaz(spaz.Spaz):
         this spaz as an argument along with the arguments it would've
         gotten.
 
-        eg. Overriding "*add_bomb_count(1)*" would return
-        "*override_func(spaz, 1)*", having both spaz
+        eg. Overriding ``self.add_bomb_count(1)`` would return
+        ``self.override_func(spaz, 1)``, having both spaz
         and the number as arguments.
 
         Args:
-            method_name (str): Name of the method to override
-            override_func (Callable): Function to override with
+            method_name (str): Name of the method to override.
+            override_func (Callable): Function to override with.
         """
         method = getattr(self, method_name, None)
         if not isinstance(method, Callable):
@@ -383,98 +360,500 @@ class Spaz(spaz.Spaz):
                 return method(*args, **kwargs)
         return lambda: None
 
-    def handle_hit(self, msg: bs.HitMessage) -> float:
-        """Handle getting hit."""
-        return 0.0
+    @override
+    def handlemessage(self, msg: Any) -> Any:
+        # in the off-chance an external mode uses 'bs.PowerupMessage',
+        # let's add a compatibility layer to prevent us from breaking.
+        if isinstance(msg, (bs.PowerupMessage, PowerupBoxMessage)):
+            return self._handle_powerupmsg(msg)
+        if isinstance(msg, bs.HitMessage):
+            return self._handle_hitmsg(msg)
 
-    def do_damage(
-        self,
-        damage: int,
-        srcnode: bs.Node | None = None,
-        ignore_shield: bool = False,
-        ignore_invincibility: bool = False,
-        fatal: bool = True,
-    ) -> None:
-        """Make this spaz receive a determined amount of damage.
+        # return to standard handling
+        return super().handlemessage(msg)
 
-        You can determine if the damage can pierce shields and directly
-        go to our spaz node, and if the damage can be fatal and kill in
-        case our health goes below 1.
+    def _handle_powerupmsg(
+        self, msg: bs.PowerupMessage | PowerupBoxMessage
+    ) -> bool:
+        """Handle modern powerup and legacy powerup messages.
+        Returns success.
+        """
 
-        Args:
-            damage (float): Amount of damage to receive
-            fatal (bool, optional): Whether the damage can kill.
-                                    Defaults to True.
-        """  # TODO: Finish this....
-        self.on_punched(damage)
-        self.hitpoints -= damage
+        def powerup_signaling(success: bool, source: bs.Node | None) -> bool:
+            # success should be the result of a handle function,
+            # and we use it's result to refer whether we tell our
+            # possibly existent source node that we got the powerup.
+            if success and source:
+                source.handlemessage(bs.PowerupAcceptMessage())
+            return success
 
-        if self.hitpoints <= 0 and fatal:
-            self.node.handlemessage(bs.DieMessage(how=bs.DeathType.IMPACT))
-        elif not fatal:
-            self.hitpoints = max(1, self.hitpoints)
+        if isinstance(msg, PowerupBoxMessage):
+            # fusecore powerup handling
+            return powerup_signaling(
+                self._handle_powerups(msg), msg.source_node
+            )
+        if isinstance(msg, bs.PowerupMessage):
+            # legacy powerup handling
+            return powerup_signaling(
+                self._handle_powerups_legacy(msg), msg.sourcenode
+            )
 
-        self.update_healthbar()
+        return False
 
-    def do_damage_shield(self) -> int:
-        """Apply damage to this spaz's shield. Returns spillover."""
-        return 0
+    def _handle_hitmsg(self, msg: bs.HitMessage) -> Any:
+        if not self.node:
+            return None
+        if self.node.invincible:
+            self.spaz_factory.block_sound.play(
+                1.0,
+                position=self.node.position,
+            )
+            return True
 
-    @overload
-    def do_impulse(self, msg: bs.HitMessage) -> float: ...
+        # If we were recently hit, don't count this as another.
+        # (so punch flurries and bomb pileups essentially count as 1 hit).
+        local_time = int(bs.time() * 1000.0)
+        assert isinstance(local_time, int)
+        if (
+            self._last_hit_time is None
+            or local_time - self._last_hit_time > 1000
+        ):
+            self._num_times_hit += 1
+            self._last_hit_time = local_time
 
-    @overload
+        def fx_shield_particles():
+            # Emit some cool looking sparks on shield hit.
+            assert msg.force_direction is not None
+            bs.emitfx(
+                position=msg.pos,
+                velocity=(
+                    msg.force_direction[0] * 1.0,
+                    msg.force_direction[1] * 1.0,
+                    msg.force_direction[2] * 1.0,
+                ),
+                count=min(30, 5 + int(damage * 0.005)),
+                scale=0.5,
+                spread=0.3,
+                chunk_type="spark",
+            )
+
+        def fx_punch_sound_effects():
+            # Let's always add in a super-punch sound with boxing
+            # gloves just to differentiate them.
+            if msg.hit_subtype == "super_punch":
+                self.spaz_factory.punch_sound_stronger.play(
+                    1.0,
+                    position=self.node.position,
+                )
+            if damage >= 500:
+                sounds = self.spaz_factory.punch_sound_strong
+                sound = sounds[random.randrange(len(sounds))]
+            elif damage >= 100:
+                sound = self.spaz_factory.punch_sound
+            else:
+                sound = self.spaz_factory.punch_sound_weak
+            sound.play(1.0, position=self.node.position)
+
+        def fx_punch_particles():
+            # Throw up some chunks.
+            assert msg.force_direction is not None
+            bs.emitfx(
+                position=msg.pos,
+                velocity=(
+                    msg.force_direction[0] * 0.5,
+                    msg.force_direction[1] * 0.5,
+                    msg.force_direction[2] * 0.5,
+                ),
+                count=min(10, 1 + int(damage * 0.0025)),
+                scale=0.3,
+                spread=0.03,
+            )
+
+            bs.emitfx(
+                position=msg.pos,
+                chunk_type="sweat",
+                velocity=(
+                    msg.force_direction[0] * 1.3,
+                    msg.force_direction[1] * 1.3 + 5.0,
+                    msg.force_direction[2] * 1.3,
+                ),
+                count=min(30, 1 + int(damage * 0.04)),
+                scale=0.9,
+                spread=0.28,
+            )
+
+            # Momentary flash.
+            hurtiness = damage * 0.003
+            punchpos = (
+                msg.pos[0] + msg.force_direction[0] * 0.02,
+                msg.pos[1] + msg.force_direction[1] * 0.02,
+                msg.pos[2] + msg.force_direction[2] * 0.02,
+            )
+            flash_color = (1.0, 0.8, 0.4)
+            light = bs.newnode(
+                "light",
+                attrs={
+                    "position": punchpos,
+                    "radius": 0.12 + hurtiness * 0.12,
+                    "intensity": 0.3 * (1.0 + 1.0 * hurtiness),
+                    "height_attenuated": False,
+                    "color": flash_color,
+                },
+            )
+            bs.timer(0.06, light.delete)
+
+            flash = bs.newnode(
+                "flash",
+                attrs={
+                    "position": punchpos,
+                    "size": 0.17 + 0.17 * hurtiness,
+                    "color": flash_color,
+                },
+            )
+            bs.timer(0.06, flash.delete)
+
+        def fx_impact_particles():
+            assert msg.force_direction is not None
+            bs.emitfx(
+                position=msg.pos,
+                velocity=(
+                    msg.force_direction[0] * 2.0,
+                    msg.force_direction[1] * 2.0,
+                    msg.force_direction[2] * 2.0,
+                ),
+                count=min(10, 1 + int(damage * 0.01)),
+                scale=0.4,
+                spread=0.1,
+            )
+
+        spillover_ratio = 1.0
+        if self.shield:
+            # v result includes 'damage_scale' for calculation
+            # unused value is for 'damage_smoothed'
+            damage, _ = (
+                (msg.flat_damage * self.impact_scale, 0)
+                if msg.flat_damage
+                else self.hit_message_impulse(msg, placebo=True)
+            )
+
+            spillover_damage = self.do_damage_shield(damage)
+            fx_shield_particles()
+            if not spillover_damage:
+                return  # Good job shield!
+            spillover_ratio = spillover_damage / damage
+            # scale down variables for the following impulse
+            msg.magnitude *= spillover_ratio
+            msg.velocity_magnitude *= spillover_ratio
+        # now we're gonna deal damage to spaz if we don't
+        # have a shield or if we got some spillover damage.
+
+        # v result includes 'damage_scale' for calculation
+        damage, damage_smoothed = (
+            (msg.flat_damage * self.impact_scale * spillover_ratio, 0)
+            if msg.flat_damage
+            else self.hit_message_impulse(msg, placebo=False)
+        )
+        damage = int(damage)
+        self.node.handlemessage("hurt_sound")
+
+        if msg.hit_type == "punch":
+            # call our generic punched function
+            self.on_punched(damage)
+            # If damage was significant, lets show it.
+            if damage >= 350:
+                assert msg.force_direction is not None
+                bs.show_damage_count(
+                    "-" + str(int(damage / 10)) + "%",
+                    msg.pos,
+                    msg.force_direction,
+                    self._dead,
+                )
+            # pizzazz
+            fx_punch_sound_effects()
+            fx_punch_particles()
+
+        if msg.hit_type == "impact":
+            fx_impact_particles()
+
+        # If we're dead, take a look at the smoothed damage value
+        # (which gives us a smoothed average of recent damage) and shatter
+        # us if its grown high enough.
+        if self.hitpoints <= 0:
+            if damage_smoothed >= 1000:
+                self.shatter()
+            return
+
+        # It's kinda crappy to die from impacts, so lets reduce
+        # impact damage by a reasonable amount *if* it'll keep us alive.
+        if msg.hit_type == "impact" and damage >= self.hitpoints:
+            # Drop damage to whatever puts us at 10 hit points,
+            # or 200 less than it used to be whichever is greater
+            # (so it *can* still kill us if its high enough).
+            newdamage = max(damage - 200, self.hitpoints - 10)
+            damage = newdamage
+
+        self.node.handlemessage("flash")
+
+        # If we're holding something, drop it.
+        if damage > 0.0 and self.node.hold_node:
+            self.node.hold_node = None
+
+        self.do_damage(damage, death_type=bs.DeathType.IMPACT)
+
+        # If we're cursed, *any* damage blows us up.
+        if self._cursed and damage > 0:
+            bs.timer(
+                0.05,
+                bs.WeakCallStrict(
+                    self.curse_explode, msg.get_source_player(bs.Player)
+                ),
+            )
+
+        # If we're frozen, shatter.. otherwise die if we hit zero
+        if self.frozen and (damage > 200 or self.hitpoints <= 0):
+            self.shatter()
+
+    def hit_message_impulse(
+        self, msg: bs.HitMessage, placebo: bool
+    ) -> tuple[float, float]:
+        """Apply an impulse to this spaz using ``bs.HitMessage``."""
+        # unfortunately, intellisense accepts this only!
+        # pylint: disable=unidiomatic-typecheck
+        assert type(msg.pos) is tuple[float, float, float]
+        assert type(msg.velocity) is tuple[float, float, float]
+        assert type(msg.force_direction) is tuple[float, float, float]
+        return self.do_impulse(
+            msg.pos,
+            msg.velocity,
+            msg.magnitude,
+            msg.velocity_magnitude,
+            msg.radius,
+            placebo,
+            msg.force_direction,
+            apply_impact_scale=True,
+        )
+
     def do_impulse(
         self,
         position: tuple[float, float, float],
-        velocity: tuple[float, float, float] = (0, 0, 0),
-        magnitude: float = 0.0,
-        velocity_magnitude: float = 0.0,
-        radius: float = 1.0,
-        force_direction: tuple[float, float, float] = (0, 0, 0),
-    ) -> float: ...
+        velocity: tuple[float, float, float],
+        magnitude: float,
+        velocity_magnitude: float,
+        radius: float,
+        placebo: bool,
+        force_direction: tuple[float, float, float],
+        apply_impact_scale: bool = True,
+        pure: bool = False,
+    ) -> tuple[float, float]:
+        """Executes an impulse on this spaz and
+        returns a damage value as the result of it.
 
-    def do_impulse(self, *args, **kwargs) -> float:
-        """Applies a velocity impulse to this spaz.
+        Args:
+            position (tuple[float, float, float]):
+                Place the impulse originates from.
 
-        Returns the hypothetical damage this impulse would've dealt.
+            velocity (tuple[float, float, float]):
+                Velocity of the impulse.
+
+            magnitude (float):
+                Magnitude of the impulse.
+
+            velocity_magnitude (float):
+                Velocity magnitude of the impulse.
+
+            radius (float):
+                Radial scale of the impulse.
+                Useful for stabilizing push forces.
+
+            placebo (bool):
+                If ``True``, the impulse logic is ran but
+                no actual impulse force is applied to the node.
+
+            force_direction (tuple[float, float, float]):
+                The positional direction this impulse has.
+
+                e.g. An impulse with ``velocity (0, 1, 0)`` and
+                ``force_direction (0, -1, 0)`` will perform an impulse
+                that pushes downwards when it usually have pushed upwards.
+
+            apply_impact_scale (bool, optional):
+                If ``False``, values will not be adjusted with
+                spaz's ``self.impact_scale`` variable.
+                Defaults to True.
+
+            pure (bool, optional):
+                If ``True``, the impulse will return the pure
+                damage value it dealt without applying a 0.22
+                engine compensation multiplier to it.
+                Use this exclusively if you need a more precise
+                return on the damage's value.
+                Defaults to False.
+
+        Returns:
+            tuple[float, float]:
+                1. The damage dealt by this impulse.
+                2. A smoothed variant of the damage dealt.
         """
-        f: bs.HitMessage | tuple | None = args[0] or kwargs.get("msg", None)
-        # do_impulse via hitmessage
-        if isinstance(f, bs.HitMessage):
-            position = f.pos
-            velocity = f.velocity
-            mag = f.magnitude
-            vmag = f.velocity_magnitude or 0
-            radius = f.radius
-            forcedir = f.force_direction
-        # do_impulse via arguments
-        elif isinstance(f, tuple):
-            position = args[0] or kwargs.get("position")
-            velocity = args[1] or kwargs.get("velocity")
-            mag = args[2] or kwargs.get("magnitude")
-            vmag = args[3] or kwargs.get("velocity_magnitude", 0)
-            radius = args[4] or kwargs.get("radius")
-            forcedir = args[5] or kwargs.get("force_direction")
-        else:
-            return 0.0
-        if position is None or velocity is None or forcedir is None:
-            return 0.0
-
-        x, y, z = position
-        u, v, w = velocity
-        i, j, k = forcedir
-
-        if vmag > 0:  # We can't use this.
-            logging.warning(
-                "velocity_magnitude isn't supported yet.", stack_info=True
-            )
-            vmag = 0
+        # pylint: disable=too-many-positional-arguments
+        impact_scale = 1.0 if not apply_impact_scale else self.impact_scale
 
         self.node.handlemessage(
-            "impulse", x, y, z, u, v, w, mag, vmag, radius, 0, i, j, k
+            "impulse",
+            position[0],
+            position[1],
+            position[2],
+            velocity[0],
+            velocity[1],
+            velocity[2],
+            magnitude * impact_scale,
+            velocity_magnitude * impact_scale,
+            radius,
+            placebo,
+            force_direction[0],
+            force_direction[1],
+            force_direction[2],
         )
-        return int(self.damage_scale * self.node.damage)
+        dmg_scale = 1.0 if pure else 0.22
+        return (
+            self.node.damage * dmg_scale,
+            self.node.damage_smoothed * dmg_scale,
+        )
+
+    def do_damage_shield(
+        self, damage: float, ignore_invincibility: bool = False
+    ) -> float:
+        """Damage this spaz's shield if it exists.
+        If the damage is large enough, it will destroy the shield
+        entity and return the amount of leftover damage we have.
+
+        This function should be called before dealing damage to
+        spaz's themselves.
+
+        Args:
+            damage (float):
+                Damage to apply to spaz's shield.
+
+            ignore_invincibility (bool, optional):
+                If ``True``, deal damage to the shield even if
+                we're currently immune to damage.
+                Defaults to False.
+        Returns:
+            float:
+                Spillover damage if we dealt more damage than
+                we applied to the shield.
+
+                If we're immune to damage or dead, it always returns ``0.0``.
+
+                If we don't have a shield, it returns
+                the provided ``damage`` back.
+        """
+        if not self.node:
+            return 0.0
+        if self.node.invincible and not ignore_invincibility:
+            self.spaz_factory.block_sound.play(
+                1.0,
+                position=self.node.position,
+            )
+            return 0.0
+        if not self.shield:
+            return damage
+
+        assert self.shield_hitpoints
+        max_spillover = self.spaz_factory.max_shield_spillover_damage
+        # deal damage & update healthbar
+        self.shield_hitpoints -= int(damage)
+        self.shield.hurt = (
+            1.0 - float(self.shield_hitpoints) / self.shield_hitpoints_max
+        )
+        if self.shield_hitpoints <= 0:
+            self.kill_shield()
+        else:
+            self.spaz_factory.shield_hit_sound.play(
+                0.5,
+                position=self.node.position,
+            )
+
+        # If they passed our spillover threshold,
+        # pass damage along to spaz.
+        if self.shield_hitpoints <= -max_spillover:
+            return -max_spillover - self.shield_hitpoints
+        return 0.0  # Good job shield!
+
+    def kill_shield(self) -> None:
+        """Execute this spaz's shield."""
+        if not self.shield or not self.shield_hitpoints:
+            logging.warning(
+                '"self.kill_shield()" called while shield doesn\'t properly exist.',
+                stack_info=True,
+            )
+            return
+
+        self.shield.delete()
+        self.shield = None
+
+        self.spaz_factory.shield_down_sound.play(
+            1.0,
+            position=self.node.position,
+        )
+        x, y, z = self.node.position
+        fx_count = random.randrange(20, 30)
+        bs.emitfx(
+            position=(x, y + 0.9, z),
+            velocity=self.node.velocity,
+            count=fx_count,
+            scale=1.0,
+            spread=0.6,
+            chunk_type="spark",
+        )
+
+    def do_damage(
+        self,
+        damage: float | int,
+        ignore_invincibility: bool = False,
+        fatal: bool = True,
+        death_type: bs.DeathType = bs.DeathType.GENERIC,
+    ) -> None | bool:
+        """Deal damage to this spaz.
+        This handles minor updates like updating the health bar
+        to match current health, and whether we die if our
+        health goes to zero or under.
+
+        This function does NOT handle shields at all, to deal
+        damage to shields, check ``self.do_damage_shield()``.
+
+        Args:
+            damage (float):
+                Damage to apply to spaz's shield.
+
+            ignore_invincibility (bool, optional):
+                If ``True``, deal damage to the shield even if
+                we're currently immune to damage.
+                Defaults to False.
+
+            fatal (bool, optional):
+                If ``False``, the damage will not be able to
+                kill spaz, no matter the value.
+                Defaults to True.
+        """
+        if not self.node:
+            return None
+        if self.node.invincible and not ignore_invincibility:
+            self.spaz_factory.block_sound.play(
+                1.0,
+                position=self.node.position,
+            )
+            return True
+
+        # we continue with full damage or any spillover
+        # shield damage we're about to receive.
+        self.hitpoints -= int(damage)
+        self.node.hurt = 1.0 - float(self.hitpoints) / self.hitpoints_max
+
+        if not fatal and self.hitpoints < 1:
+            self.hitpoints = 1
+        self.update_healthbar()
+        if self.hitpoints <= 0:
+            self.node.handlemessage(bs.DieMessage(how=death_type))
 
     def update_healthbar(self) -> None:
         """Update "*self.node.hurt*" to display our current health."""
@@ -482,7 +861,6 @@ class Spaz(spaz.Spaz):
 
     def _handle_powerups(self, msg: PowerupBoxMessage) -> bool:
         """Handle incoming powerups.
-
         Manages powerup assigning and success return.
         """
         if not self.is_alive():
@@ -503,7 +881,7 @@ class Spaz(spaz.Spaz):
         """
         # if we have a NONE slot type, apply and forget about it
         if powerup.slot is PowerupSlotType.NONE:
-            self._orphan_powerup(powerup)
+            self._equip_orphan_powerup(powerup)
         # else, assign our incoming powerup to a 'PowerupSlot'
         # that holds its slot type
         else:
@@ -531,7 +909,7 @@ class Spaz(spaz.Spaz):
             # our powerup slot will take it from here
             powerup_slot.apply_powerup(powerup)
 
-    def _orphan_powerup(self, powerup: SpazPowerup) -> None:
+    def _equip_orphan_powerup(self, powerup: SpazPowerup) -> None:
         """Equip a powerup that does not belong in any slot."""
         if powerup.texture_name != "empty":
             self._flash_billboard(bs.gettexture(powerup.texture_name))
@@ -589,9 +967,8 @@ class Spaz(spaz.Spaz):
             self._punch_power_scale = 1.2
             self._punch_cooldown = spaz.BASE_PUNCH_COOLDOWN
         else:
-            factory = spaz.SpazFactory.get()
-            self._punch_power_scale = factory.punch_power_scale
-            self._punch_cooldown = factory.punch_cooldown
+            self._punch_power_scale = self.spaz_factory.punch_power_scale
+            self._punch_cooldown = self.spaz_factory.punch_cooldown
         self._has_boxing_gloves = False
         if self.node:
             self.node.boxing_gloves_flashing = False
