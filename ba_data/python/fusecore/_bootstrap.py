@@ -21,9 +21,9 @@ from fusecore._tools import (
 
 from fusecore import (
     _modloader as _ml,
+    discordrpc as _,
     serverqueue as sq,
     base as _,
-    discordrp as _,
     _cloudsafety as _,
     chat as _,
 )

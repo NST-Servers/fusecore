@@ -3,20 +3,43 @@
         "session": {
             "ffa": "Free-for-All",
             "teams": "vs. Teams",
-            "coop": "Cooperative"
+            "coop": "Cooperative",
+            "coop_short": "Co-op"
         },
-        "state": {
-            "local": {
-                "solo": "Playing Solo",
-                "multi": "Local Multiplayer",
-                "online": "Open Party"
-
+        "details": {
+            "main_menu": {
+                "generic": "in Main Menu",
+                "play": "Selecting a game mode",
+                "coop": "Selecting a Co-op game",
+                "ffa": "Selecting a FFA playlist",
+                "teams": "Selecting a Teams playlist",
+                "gather": "Looking for servers",
+                "store": "Checking the store",
+                "inventory": "Sorting their inventory",
+                "profile_new": "Creating a new profile",
+                "profile_edit": "Editing a profile",
+                "settings": "Tweaking their settings",
+                "watch": "Looking through replays",
+                "achievements": "Contemplating their achievements",
+                "ranking": "Checking the leaderboards"
             },
             "party": {
                 "private": "Private Server",
                 "public": "Public Server"
-            }
+            },
+            "404": "Somewhere...",
+            "lobby": "Waiting in lobby",
+            "replay": "Watching a replay"
         },
-        "map": "Map: ${A}"
+        "state": {
+            "solo": "Solo",
+            "multi": "Local Multiplayer",
+            "online": "Online",
+            "lan": "LAN Party",
+            "host": "Open Party",
+            "lobby": "Lobby"
+        },
+        "map": "Map: ${A}",
+        "potato": "Potato!"
     }
 }

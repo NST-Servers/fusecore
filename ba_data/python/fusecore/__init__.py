@@ -6,11 +6,13 @@ import bascenev1 as bs
 
 from . import (
     _bootstrap as _,
-    discordrp,
     _config,
+    discordrpc,
 )
 
-DiscordRP = bs.app.register_subsystem(discordrp.DiscordRPSubsystem())
+DiscordRPC = bs.app.register_subsystem(
+    discordrpc.DiscordRichPresenceSubsystem()
+)
 # DiscordRP.start()
 
 config = _config.ConfigSystem()
