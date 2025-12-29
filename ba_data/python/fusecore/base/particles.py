@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections import OrderedDict
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Literal, Self, Type, override
+from typing import Any, Callable, Literal, Self, Type, override
 
 import random
 
@@ -30,6 +30,7 @@ MAX_PARTICLES_DEFAULT: int = 70
 """Particle limit to return if active activity doesn't match any previously provided ones."""
 
 PARTICLE_SET: set[Type[Particle]] = set()
+VFX_CALL_DICT: dict[str, Callable] = {}
 
 
 class ParticleLimitMode(Enum):
@@ -409,3 +410,49 @@ class Particle(FactoryActor):
 
 
 Particle.register()
+
+
+def do_vfx(
+    name: str,
+    position: tuple[float, float, float],
+    velocity: tuple[float, float, float] = (0, 0, 0),
+):
+    """Run a named vfx call with a position and velocity.
+
+    You can register vfx calls via ``@particle_vfx`` decorators, refer
+    to them for more information on how to properly operate them!
+    """
+    to_call = VFX_CALL_DICT.get(name, None)
+    if to_call is None:
+        raise NameError(f'"{str}" is not a registered for "do_vfx()".')
+    to_call(position, velocity)
+
+
+def particle_vfx(name: str):
+    """A decorator for particle summon functions
+    that require a position and velocity to function.
+
+    *(Your function is expected to receive
+    ``tuple[float, float, float]``, ``tuple[float, float, float]``.)*
+
+    Using this decorator in a summon call function will add it to a
+    global visual effects dict. for easy access with the ``do_vfx()`` function.
+
+    e.g. when used over a function as ``@particle_vfx('my_particle')``
+    will allow you to use ``do_vfx('my_particle', pos, vel)`` to quickly call
+    the decorated summon function with the provided position and velocity.
+
+    This also works for functions outside a ``Particle`` class, and even
+    functions that are not related to the particle system at all!
+    """
+
+    def decorator(func):
+        if VFX_CALL_DICT.get(name, None) is not None:
+            raise NameError(
+                f'particle_vfx with name "{name}" already exists'
+                " and can't be registered twice."
+            )
+        VFX_CALL_DICT[name] = func
+        return func
+
+    return decorator
