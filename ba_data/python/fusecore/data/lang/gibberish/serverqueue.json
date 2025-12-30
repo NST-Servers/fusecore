@@ -1,0 +1,23 @@
+{
+    "serverqueue": {
+        "title": "Seewizr Q ",
+        "party_unknown": "Umuo Pap",
+        "status": {
+            "in_queue": "Wazy ig ziq pcvtlken...",
+            "in_queue_extended": "Woyhqnb i  ueu (+${A})",
+            "queue_update": "Qntub: +${A}",
+            "join_attempt": "Joihvn ia ${A}...",
+            "join_request": "Rqmrmimvgq to nkmy...",
+            "joining": "Jzoinnig..."
+        },
+        "messages": {
+            "queue_host_warning": "H elans iio! Quiluesn il  aebr ywohe iostizi nga as\naw erhlq hs zip xmarf urt itmzu gpuiv  kbcotf.\nAy rc sgtma vo dpyrdmi to rpcy?\n",
+            "replay_note": "Yoe'td  szgumh qpnu!\nTh UI izoxwh' glqb l wqwbyen tep mnv remwy.",
+            "quit_by": {
+                "failure": "Cacvlda' jti srvuu.",
+                "cancel": "Queciw caccfssqbfd i uedhl.",
+                "other": "Queueisw bke eomm."
+            }
+        }
+    }
+}

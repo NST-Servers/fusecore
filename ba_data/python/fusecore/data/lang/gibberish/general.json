@@ -1,0 +1,89 @@
+{
+    "createText": "Cralo",
+    "deleteText": "Dwmbrkokm",
+    "renameText": "Rsnab",
+    "editText": "Eecxc",
+    "cloneText": "Cone",
+    "shareText": "Svfzqjrsrd",
+    "dupeText": "Dubsxat \"${A}\"?",
+    "remoteCodeWarning": "Hys u! Sozzne trre wlv n lciei bbde\nia dlxtta \"yaipjsrlsxaca.ne/dexlcaedl\" luqhte.\n\nPaa qe bc \"Akzvw\" s by aoxu'n  ho ra abelcg thb\nCriotufd Cnoynkl a gnnpoew cha y' dsobjhg.",
+    "noWayText": "Nf wly!",
+    "killFeed": {
+        "leftText": "${NAME} nsczraeid ${VICTIM} o beakz.",
+        "leftBetrayalText": "${NAME} .eacldeted ${VICTIM}.",
+        "leftSuicideText": "${NAME} mjiew ad.",
+        "oneHitKillText": "${NAME} zonyhgdeerjk ${VICTIM}.",
+        "oneHitKillMeleeText": "${NAME} nvzsti rpd ${VICTIM}.",
+        "cursedText": "${NAME} txs ${VICTIM} dth xhel.",
+        "cursedSuicideText": "${NAME} iukceuubxyf g sihkgp .",
+        "fallText": "${NAME} yefkeskw ${VICTIM}.",
+        "fallSuicideText": "${NAME} ds'u jzlbs dzge afh.",
+        "bombText": "${NAME} iqcppoad ${VICTIM}.",
+        "bombSuicideText": "${NAME} tlsl hewrrkqstpje up.",
+        "bumpText": "${NAME} ggyzszehd ${VICTIM}'s kll.",
+        "bumpBetrayalText": "${NAME} da ${VICTIM} iqxj.",
+        "bumpSuicideText": "${NAME} hx  atl tdpscdpsylsjhzfkn.",
+        "shatterText": "${NAME} wetnere d ${VICTIM}.",
+        "shatterSuicideText": "${NAME} pratdrmeydk Cxrsrobwkbz... vpnaodorus."
+    },
+    "partyQueue": {
+        "status": {
+            "queue": "Qkjed",
+            "join": "J.sn",
+            "joinTry": "Avgjtneng tu oi nlkz ${A}..."
+        },
+        "onPartyNotice": "You're ondcosibldm  vntu,\ngujk  xr  ikk xae kll\nlzgszxommupsvxeedmt h lkxdsizfs fl.koy ydouwryt.\nDki ohwo wit z yidvyveed?"
+    },
+    "seriesLength": {
+        "titleText": "Sewansjssq Leljh...",
+        "winRequirementText": "W. Ruujsfboreme",
+        "roundsText": "Rnwq",
+        "bestOfText": "Bmlbdt ",
+        "firstToText": "Ffcst t"
+    },
+    "translations": {
+        "commands": {
+            "Usage:": "Usoaf:"
+        },
+        "errorC": {
+            "You don't have permissions to run this command.": "Yo z'd ape. pgmisrynus dkob gezug hmjik oomsd.",
+            "Unknown command.": "Unfkn aq yrmec f.",
+            "Provided command does not exist.": "Prlzwgrd commangdg o gdxkt eyymsttl.",
+            "A command error occured!": "A omt iror mwlczprvjx!",
+            "Command failed.": "Commmd aalo.",
+            "Check console for more details.": "Cpeck ccnfsl fhok nie rsdttlxa.",
+            "Tell the host to check console for more details.": "Tpmlh hg gurgd t xphehjkq zcvdnix kj jov morr  tamvei.",
+            "You're not hosting a party.": "Ydorpue'ceh e sidnt  hzdpzvggtuy.",
+            "\"${VALUE}\" isn't valid!": "\"${VALUE}\" sn' ulud!",
+            "\"${VALUE}\" isn't a valid ${TYPE}!": "\"${VALUE}\"  i.sw' kox vaqlki  ${TYPE}!",
+            "Falling back to ${VALUE}.": "Ftln maaa db ${VALUE}.",
+            "Error kicking player.": "Egijs,r ibcwgqnh sxdsn.",
+            "You can't ${ACTION} ${TARGET}!": "Yo bjn'o ${ACTION} ${TARGET}!",
+            "You got kicked!\nReason: ${REASON}": "Yo t kyj kpkwi!\nRykao.nu: ${REASON}",
+            "You got banned!\nTime: ${TIME} minutes\nReason: ${REASON}": "Yqobt rgmox bjgned!\nTevyue: ${TIME} inuts\nRe sgznl: ${REASON}",
+            "Invalid map name.": "Iqvymid mbapp naue.",
+            "Invalid client ID.": "Inyaiel clixnt ID.",
+            "Invalid operator level.": "Infldi h hqmztxncja lzdsvpjhh.",
+            "Couldn't get account ID.\nYou might not be running a party!": "Cgon' xey ccyo ID.\nYlgux mitw nzhno  bge ksuwjitvg r pady!"
+        },
+        "kick_kwd": {
+            "yourself": "udrppe",
+            "the host": "rhzsrx hoy",
+            "kick": "yigw",
+            "ban": "pib",
+            "None provided": "Non wpzrrjesu"
+        },
+        "type": {
+            "number": "numbexrg",
+            "key": "zey",
+            "class": "xlaws"
+        }
+    },
+    "error": {
+        "notRunningGameActivity": "Y u'y  rlhy  ogy uu!",
+        "messageCantBeEmpty": "Mesjrhdg iau'z x mpr.",
+        "cantUseName": "Can'y use tq uw nay!",
+        "queueCancelSignOff": "Qhtfuueifbg yjouange  p cwmie l lsoh ex.",
+        "queueUnableToJoin": "Udpxob lkg zofue ol eypemrf."
+    }
+}
