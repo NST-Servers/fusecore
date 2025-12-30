@@ -21,6 +21,7 @@ import bascenev1 as bs
 import bauiv1 as bui
 
 from babase._appsubsystem import AppSubsystem
+from ._tools import is_server
 
 from .common import CORE_FOLDER_NAME
 
@@ -114,8 +115,11 @@ class ModLoaderSubsystem(AppSubsystem):
         self._scan_timer: bs.AppTimer | None = None
 
         # make sure these exist before we start our jobs
-        os.makedirs(get_mods_resource_folder("textures"), exist_ok=True)
-        os.makedirs(get_mods_resource_folder("audio"), exist_ok=True)
+        if is_server() is False:
+            # servers don't care about textures or audio assets
+            # only meshes are relevant.
+            os.makedirs(get_mods_resource_folder("textures"), exist_ok=True)
+            os.makedirs(get_mods_resource_folder("audio"), exist_ok=True)
         os.makedirs(get_mods_resource_folder("meshes"), exist_ok=True)
 
     @override
@@ -247,19 +251,24 @@ class ModLoaderSubsystem(AppSubsystem):
             manifest_data["assets"]["meshes"], folder_path
         )
 
-        # TODO: folder mods should have their .pngs automatically
-        #       converted to .dds or .ktx.
-        # then, we'd build a folder with each respective extension on export.
-        self._migrate_files(
-            textures_path,
-            get_mods_resource_folder("textures"),
-            hashname,
-            [".png", ".dds", ".ktx"],
-        )
-        # TODO: convert .mp3 files, maybe?
-        self._migrate_files(
-            audio_path, get_mods_resource_folder("audio"), hashname, [".ogg"]
-        )
+        # servers don't care about texture or audio files
+        if is_server() is False:
+            # TODO: folder mods should have their .pngs automatically
+            #       converted to .dds or .ktx.
+            # then, we'd build a folder with each respective extension on export.
+            self._migrate_files(
+                textures_path,
+                get_mods_resource_folder("textures"),
+                hashname,
+                [".png", ".dds", ".ktx"],
+            )
+            # TODO: convert .mp3 files, maybe?
+            self._migrate_files(
+                audio_path,
+                get_mods_resource_folder("audio"),
+                hashname,
+                [".ogg"],
+            )
         # TODO: convert .glb files, maybe?
         self._migrate_files(
             meshes_path,

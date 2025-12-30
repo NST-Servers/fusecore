@@ -26,6 +26,7 @@ from bascenev1lib.mainmenu import MainMenuSession
 from bascenev1lib import maps
 
 from bascenev1lib.tutorial import TutorialActivity
+from fusecore._tools import is_server
 from fusecore.libs.discordrp import Presence
 from fusecore.libs.discordrp.presence import _OpCode
 
@@ -365,9 +366,11 @@ class RichPresenceThread(threading.Thread):
 
     def _handle_error(self, exc: Exception) -> None:
         """Handle not being able to send a Rich Presence request."""
-        if isinstance(exc, OSError) and not isinstance(exc, FileNotFoundError):
+        if isinstance(exc, (OSError, FileNotFoundError)):
             # If we OSError, we probably lost connection.
             # Don't make a fuss about it.
+            # If we FileNotFoundError, maybe we don't have
+            # Discord in the first place?
             return
 
         _log("thread").error(
@@ -562,7 +565,7 @@ class DiscordRichPresenceSubsystem(AppSubsystem):
                 '"bs.app.classic" is None, can\'t launch Discord Rich Presence!'
             )
             return
-        if classic.server is not None:
+        if is_server() is True:
             _log("subsystem").info(
                 "Discord Rich Presence won't launch in server mode."
             )

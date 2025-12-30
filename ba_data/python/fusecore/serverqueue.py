@@ -76,7 +76,7 @@ class ServerQueueSubsystem(AppSubsystem):
     def on_app_running(self) -> None:
         # don't bother if we're running in a server environment.
         # fun fact! servers *usually* cannot queue to other servers.
-        if is_server():
+        if is_server() is True:
             return
 
         self.server_info = ServerInfo("Public Party", None)
