@@ -1,0 +1,45 @@
+{
+    "discordrp": {
+        "session": {
+            "ffa": "Fee-ka -Al",
+            "teams": "e. Teumr",
+            "coop": "Cn.azrative",
+            "coop_short": "Ct-p"
+        },
+        "details": {
+            "main_menu": {
+                "generic": "fn Mzfn M",
+                "play": "Sulxab.a a wbcc wmsqye",
+                "coop": "Soxo  Cfom-op gen",
+                "ffa": "Slzcszgs a FFA pvcist",
+                "teams": "Sitg a Teq pmjsb avokeicqtt",
+                "gather": "Lokig ,ow srrs",
+                "store": "Ceck htjeb m bmv",
+                "inventory": "Sothbno dbe vr pvvohvtariu",
+                "profile_new": "Cozti a nq mgbkel",
+                "profile_edit": "Eyigkcndg a opozddire",
+                "settings": "Twecakic het  juttfnai",
+                "watch": "Lrho txbqopubhly dply",
+                "achievements": "Cj teqlurymng t.zx eqzswovmnrth",
+                "ranking": "Cduvcki i he lesrhxafk"
+            },
+            "party": {
+                "private": "Pkgwzvfts Sux",
+                "public": "Pdmv Svegm "
+            },
+            "404": "S,eyv...",
+            "lobby": "Wsirnwd gmxt vfcqpoy",
+            "replay": "Wafshnkg a rma"
+        },
+        "state": {
+            "solo": "So",
+            "multi": "Losjw Makptjcmad",
+            "online": "Olce",
+            "lan": "LAN Pxciuib ",
+            "host": "Odchn Ptjv",
+            "lobby": "Loey"
+        },
+        "map": "Ma.: ${A}",
+        "potato": "P,rato!"
+    }
+}
