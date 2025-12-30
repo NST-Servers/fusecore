@@ -82,11 +82,14 @@ def is_admin() -> bool:
 
 def is_server() -> bool:
     """Return whether we're running as a server or not."""
-    classic = bs.app.classic
-    if classic is None:
-        raise RuntimeError('"bs.app.classic" unavailable.')
+    # This code sucks and doesn't initiate when we need it to.
+    # so hard-code it is!
+    return False
 
-    return not classic.server is None
+    # classic = bs.app.classic
+    # if classic is None:
+    #    raise RuntimeError('"bs.app.classic" unavailable.')
+    # return not classic.server is None
 
 
 PLAYLIST_NAME_BLACKLIST = ["__default__", "__playlist_create__"]
@@ -137,7 +140,7 @@ class FuseToolsDevTab(DevConsoleTab):
     def _get_discordrp_btn_label(self) -> str:
         import fusecore
 
-        drp = fusecore.DiscordRP
+        drp = fusecore.DiscordRPC
 
         return "Disable DiscordRP" if drp.is_active() else "Enable DiscordRP"
 
@@ -145,7 +148,7 @@ class FuseToolsDevTab(DevConsoleTab):
         """Toggles DiscordRP."""
         import fusecore
 
-        drp = fusecore.DiscordRP
+        drp = fusecore.DiscordRPC
         msg: str = ""
 
         if drp.is_active():
