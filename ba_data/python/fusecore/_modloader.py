@@ -23,7 +23,7 @@ import bauiv1 as bui
 from babase._appsubsystem import AppSubsystem
 from ._tools import is_server
 
-from .common import CORE_FOLDER_NAME
+from .common import CORE_DIR_NAME
 
 MOD_PATHS: list[Path] = [
     Path(bs.app.env.python_directory_user),
@@ -44,7 +44,7 @@ def get_mods_resource_folder(
             os.path.abspath(bs.app.env.data_directory),
             "ba_data",
             f"{resource}2",
-            CORE_FOLDER_NAME,
+            CORE_DIR_NAME,
             "mods",
             "ext",
         )
@@ -296,7 +296,7 @@ class ModLoaderSubsystem(AppSubsystem):
         sfx = (
             "gunCocking"
             if first_update
-            else f"{CORE_FOLDER_NAME}/misc/mod_update"
+            else f"{CORE_DIR_NAME}/misc/mod_update"
         )
         bui.screenmessage(
             f'"{manifest_data['name']}" by "{manifest_data['author']}" {state}!',
