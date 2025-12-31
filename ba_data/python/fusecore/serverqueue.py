@@ -17,7 +17,7 @@ from bauiv1lib.gather.publictab import PartyEntry
 from fusecore.utils import NodeAlignment
 from fusecore._tools import is_server
 
-from .common import CORE_FOLDER_NAME
+from .common import CORE_DIR_NAME
 
 PERSISTENCY_CHECK_TIME: float = 0.012
 
@@ -28,7 +28,7 @@ CUSTOMDATA_UI_ENTRY = "fuse:_serverqueueuielement"
 PRESERVE_UI = False
 """Do we show the queue UI on replays?"""
 
-ASSET_PATH: str = f"{CORE_FOLDER_NAME}/serverqueue"
+ASSET_PATH: str = f"{CORE_DIR_NAME}/serverqueue"
 
 
 @dataclass
