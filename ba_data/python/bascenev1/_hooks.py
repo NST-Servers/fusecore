@@ -41,8 +41,6 @@ def filter_chat_message(msg: str, client_id: int) -> str | None:
     Should filter and return the string to be displayed, or return None
     to ignore the message.
     """
-    from fusecore import chat
-    return chat.chat_message_intercept(msg, client_id)
     del client_id  # Unused by default.
     return msg
 

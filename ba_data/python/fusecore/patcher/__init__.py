@@ -1,12 +1,13 @@
-"""Patcher containing wrapper and override functions for better mod control and compatibility."""
+"""Patcher containing wrapper and override functions
+for better feature control and compatibility.
+"""
 
 from __future__ import annotations
 
-from ast import Module
-import importlib.util
 import os
 from pathlib import Path
-import sys
+
+from . import classic as _
 
 ROOT_PATH: Path = Path()
 ROOT_LOOK_FOR: list[str] = [
@@ -47,7 +48,6 @@ def _scan_path_for_root(path: Path) -> Path | None:
 
 def patch_base_files():
     """Patch all necessary base game files to make us run correctly."""
-
 
 if __name__ == "__main__":
     ROOT_PATH = _find_root()
