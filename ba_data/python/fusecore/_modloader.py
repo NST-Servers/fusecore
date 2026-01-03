@@ -23,11 +23,9 @@ import bauiv1 as bui
 from babase._appsubsystem import AppSubsystem
 from ._tools import is_server
 
-from .common import CORE_DIR_NAME
+from .common import CORE_DIR_NAME, MODS_DIRECTORY
 
-MOD_PATHS: list[Path] = [
-    Path(bs.app.env.python_directory_user),
-]
+MOD_PATHS: list[Path] = [Path(MODS_DIRECTORY)]
 """DO NOT MODIFY - Use 'ModLoaderSubsystem.add_scan_path' instead!"""
 
 
@@ -294,9 +292,7 @@ class ModLoaderSubsystem(AppSubsystem):
 
         state = "loaded" if first_update else "reloaded"
         sfx = (
-            "gunCocking"
-            if first_update
-            else f"{CORE_DIR_NAME}/misc/mod_update"
+            "gunCocking" if first_update else f"{CORE_DIR_NAME}/misc/mod_update"
         )
         bui.screenmessage(
             f'"{manifest_data['name']}" by "{manifest_data['author']}" {state}!',
