@@ -8,7 +8,10 @@ import bascenev1 as bs
 
 from . import (
     common,
-    _bootstrap as _,
+    _preload as pre,
+    _bootstrap as boots,
+    _modloader,
+    serverqueue,
     _config,
     discordrpc,
     server,
@@ -21,10 +24,12 @@ gc.collect()
 
 common.init_dirs()
 
+ServerManager = server.FCServerManager()
 DiscordRPC = bs.app.register_subsystem(
     discordrpc.DiscordRichPresenceSubsystem()
 )
-ServerManager = server.FCServerManager()
-# DiscordRP.start()
+ModLoader = bs.app.register_subsystem(_modloader.ModLoaderSubsystem())
+ServerQueue = bs.app.register_subsystem(serverqueue.ServerQueueSubsystem())
+
 
 config = _config.ConfigSystem()
