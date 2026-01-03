@@ -8,6 +8,7 @@
     "dupeText": "Duplicate \"${A}\"?",
     "remoteCodeWarning": "Heads up! Someone tried to run remote code\nvia the \"ballistica.net/devices\" website.\n\nPress \"Allow\" if you're the one using the\nCloud Console and know what you're doing.",
     "noWayText": "No way!",
+    "dontShowAgainText": "Don't show this again",
     "killFeed": {
         "leftText": "${NAME} scared ${VICTIM} to death.",
         "leftBetrayalText": "${NAME} disappointed ${VICTIM}.",

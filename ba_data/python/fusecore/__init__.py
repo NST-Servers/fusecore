@@ -11,6 +11,7 @@ from . import (
     _bootstrap as _,
     _config,
     discordrpc,
+    server,
 )
 
 # hot code above; ballistica's py gc funnel doesn't like that.
@@ -23,6 +24,7 @@ common.init_dirs()
 DiscordRPC = bs.app.register_subsystem(
     discordrpc.DiscordRichPresenceSubsystem()
 )
+ServerManager = server.FCServerManager()
 # DiscordRP.start()
 
 config = _config.ConfigSystem()

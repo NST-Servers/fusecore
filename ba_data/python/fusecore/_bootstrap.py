@@ -20,6 +20,7 @@ from fusecore._tools import (
 )
 
 from fusecore import (
+    patcher as _,
     _modloader as _ml,
     discordrpc as _,
     serverqueue as sq,
