@@ -27,8 +27,8 @@ from bascenev1lib import maps
 
 from bascenev1lib.tutorial import TutorialActivity
 from fusecore._tools import is_server
-from fusecore.libs.discordrp import Presence
-from fusecore.libs.discordrp.presence import _OpCode
+from discordrp import Presence
+from discordrp.presence import _OpCode
 
 from efro.dataclassio._api import dataclass_to_dict
 from efro.dataclassio import ioprepped

@@ -3,24 +3,37 @@
 from __future__ import annotations
 
 import os
+from pathlib import Path
+import sys
 import bascenev1 as bs
-import babase
 
-ENV_DIRECTORY: str = babase.app.env.data_directory
-"""Full environment path."""
 CORE_DIR_NAME: str = "fusecore"
 
-PYTHON_CORE_DIRECTORY: str = os.path.join(
+ENV_DIRECTORY = Path(bs.app.env.data_directory)
+MODS_DIRECTORY = Path(bs.app.env.python_directory_user)
+
+PYTHON_CORE_DIRECTORY = Path(
     bs.app.env.python_directory_app,
     CORE_DIR_NAME,
 )
-"""Path to our modded core python folder."""
+"""Path to our modded python core directory."""
 
-DATA_DIRECTORY: str = os.path.join(PYTHON_CORE_DIRECTORY, "data")
-"""Path to our modded core data folder."""
+DATA_DIRECTORY = Path(PYTHON_CORE_DIRECTORY, "data")
+"""Path to our modded core data directory."""
 
-LIBS_DIRECTORY: str = os.path.join(PYTHON_CORE_DIRECTORY, "libs")
-"""Path to our modded core libraries folder."""
+LIBS_DIRECTORY = Path(PYTHON_CORE_DIRECTORY, "libs")
+"""Path to our modded core libraries directory."""
+
+EXTERNAL_DATA_DIRECTORY = Path(MODS_DIRECTORY).parent.joinpath(CORE_DIR_NAME)
+"""External directory for configurations and other data."""
+
+sys.path += [str(LIBS_DIRECTORY)]
+
+
+def init_dirs():
+    """initialize important directories."""
+    for path in [EXTERNAL_DATA_DIRECTORY]:
+        os.makedirs(path, exist_ok=True)
 
 
 def vector3_spread(
