@@ -20,29 +20,18 @@ from fusecore._tools import (
 )
 
 from fusecore import (
-    patcher as _,
-    _modloader as _ml,
-    discordrpc as _,
-    serverqueue as sq,
     base as _,
+    patcher as _,
     _cloudsafety as _,
     chat as _,
 )
-
 
 from .chat import (
     commands as _,
     stickers as _,
 )
 from ._language import ExternalLanguageSubsystem, reload_language
-
-
-modloader = bs.app.register_subsystem(_ml.ModLoaderSubsystem())
-serverqueue = bs.app.register_subsystem(sq.ServerQueueSubsystem())
-
 add_devconsole_tab("Core Tools", FuseToolsDevTab)
-
-
 # patch our language class and re-set our language to execute our changes.
 obj_method_override(babase.LanguageSubsystem, ExternalLanguageSubsystem)
 reload_language()
