@@ -1,0 +1,156 @@
+# Server Configuration File
+
+# Comment out any entries to set them to their default values.
+# Uncomment them to provide a value explicitly.
+
+# Name to display in the public parties list.
+name = "My FuseCore Server"
+# Message of the day.
+# Currently unused, but can be accessed via fusecore.
+motd = "Welcome to my server!"
+# Website to direct to when clicking the server's 'Stats'
+# button on the public parties list.
+# NOTE: any instance of '${ACCOUNT}' in the url will be overwriten
+# with the logged-in user's account id for usage in leaderboards.
+stats_url = 'https://ballistica.net/'
+
+# General Server configuration
+
+# address_ipv4: The server's public IPv4 address.
+# address_ipv6: The server's public IPv6 address, optional.
+# port: UDP port to host on.
+#   Note that only port 43210 will show up in LAN.
+[server]
+address_ipv4 = "123.123.123.123"
+address_ipv6 = "123A::A123:23A1:A312:12A3:A213:2A13"
+port = 43210
+
+
+# Server Settings
+
+# auth_players: Authenticate joining players via ballistica's servers.
+#   Useful to prevent bot attacks, irrelevant in LAN parties.
+# party_size: The maximum amount of players allowed to connect to the server.
+# max_players: The maximum amount of players to enter the game activity.
+# protocol: Internal protocol version to use. Current best is 35.
+#   The higher our protocol is, the better features we have, but the
+#   less compatibility we can provide.
+# enable_queue: Enable the waiting queue.
+# rejoin_cooldown: Time for players to wait before rejoin when exiting the game.
+[server.settings]
+auth_players = true
+party_size = 8
+max_players = 12
+protocol = 35
+enable_queue = true
+rejoin_cooldown = 10.0
+
+# Playlist configuration
+
+# default: The playlist code, inline or mode ('ffa', 'teams') to use by default.
+# shuffle: Whether the playlist's mini-games are shuffled or play sequentially.
+# playlist_mode: 
+#   Available modes:
+#       'none': The default playlist is always used.
+#       'random': A random playlist is selected from a table. (see [playlist.random]).
+#       'daily': Every day has a unique playlist assigned to it (see [playlist.daily]).
+#   Note that if the alternate modes fail to select a proper playlist, the
+#   default one will be used in it's place.
+[playlist]
+default = 12345
+shuffle = false
+playlist_mode = "none"
+
+# Playlist-a-day configuration
+# Each day is assigned a playlist to it; if today is monday,
+# monday's playlist will be used, tuesday's playlist for tuesday, and so on...
+[playlist.daily]
+monday = 12345
+tuesday = 12345
+wednesday = 12345
+thursday = 12345
+friday = 12345
+saturday = 12345
+sunday = 12345
+
+# Random playlist configuration
+# Add a playlist with a weight chance via '[[playlist.random]]'.
+
+# playlist: The playlist code, inline or mode ('ffa', 'teams').
+# The larger the weight number, the more likely that playlist is to be selected.
+[[playlist.random]]
+playlist = 12345
+weight = 1.0
+[[playlist.random]]
+playlist = 23456
+weight = 1.0
+
+# Playlist (gameplay) settings
+
+# show_tutorial: Show a tutorial before the first series begin.
+# balance_team_joins: Players won't be allowed to join a team with the most players.
+[playlist.settings]
+show_tutorial = false
+balance_team_joins = true
+
+# Playlist team settings
+
+# series_length: 
+# team_names: 
+# team_colors: 
+[playlist.teams]
+series_length = 7
+team_names = ['Red', 'Blue']
+team_colors = [[0.1, 0.25, 1.0], [1.0, 0.25, 0.2]]
+
+# Playlist team settings
+
+# series_length: 
+[playlist.ffa]
+series_length = 24
+
+# Playlist coop settings
+# These settings are primitive and ported directly
+# from the vanilla server config. file.
+# Hosting co-op servers is not recommended due to how limiting it is.
+
+# enabled: If True, the server will host the specified co-op mode exclusively.
+# campaign: The campaign name to use levels from.
+#   Known vanilla campaigns are: 'Easy', 'Default' and 'Challenges'.
+# level: The level from the campaign provided.
+[playlist.coop]
+enabled = false
+campaign = "Default"
+level = "Onslaught Training"
+
+# Server Shutdown configuration
+# Multiple shutdown parameters to keep memory usage steady.
+# Having these enabled is crucial while hosting a server to prevent
+# issues from happening in long hosting sessions.
+# Note that shutdowns lead to automatic restarts when running in server mode
+# so you won't have to do anything in your end to keep the server running.
+
+# clean_mins: How many minutes before the server requests a clean shutdown.
+# force_mins: How many minutes before the server forcefully shuts down.
+# idle_mins: How many minutes while no player activity is occuring
+#            before the server performs a clean shutdown.
+[shutdown]
+clean_mins = 60
+force_mins = 80
+idle_mins = 10
+
+# Debug configuration
+
+# enabled: Enable debug characteristics.
+#   Prints more stuff, not necessary unless troubleshooting.
+# no_bytecode: Prevent the creation of '.pyc' files.
+#   Not recommended unless you don't want to keep cache.
+[debug]
+enabled = false
+no_bytecode = false
+
+# Debug Log Level configuration
+# Valid values are NOTSET, DEBUG, INFO, WARNING, ERROR, or CRITICAL.
+[debug.log_levels]
+"ba.lifecycle" = "INFO"
+"ba.assets" = "INFO"

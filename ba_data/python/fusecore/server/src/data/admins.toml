@@ -1,0 +1,20 @@
+# Administrators are able to kick, mute and ban people, alongside having
+# access to all commands and functionality that would be locked behind roles.
+# YOU SHOULD ONLY ENLIST PEOPLE YOU FULLY TRUST!
+
+# To append an administrator, append the line '[[admins]]', followed by the
+# user's Account ID or Ballistica ID.
+# Any additional admins require their own indent.
+
+# [[admins]]
+# account_id = "pb-AccountIDGoesHere=="
+# [[admins]]
+# ballistica_id = 'a-ballisticaID'
+
+# How to get:
+# - Account ID: Inside BombSquad, enter 'getaccountid' in settings->advanced->enter-code.
+# - Ballistica ID: Click on your account in 'https://ballistica.net'
+#                  or look for someone in 'https://ballistica.net/accounts'.
+
+[[admins]]
+account_id = "pb-ND0oS0VbA0ZAXl5EDRQDUlVfEUEKQEwSVVQWRlVLSA5fFEJDUwBXEQ=="
