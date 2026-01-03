@@ -211,8 +211,8 @@ class Bomb(FactoryActor):
         self._explode_callbacks: list[Callable[[Bomb, Blast], Any]] = []
         # Proceed with our bomba
         self.attributes()
-        self.create_bomb()
-        self.do_fuse()
+        self._create_bomb()
+        self._do_fuse()
 
     def attributes(self) -> None:
         """Define base attributes."""
@@ -243,7 +243,7 @@ class Bomb(FactoryActor):
         self.fuse_time: float | None = 3.0
         self.blast_class: Type[Blast] = Blast
 
-    def create_bomb(self) -> None:
+    def _create_bomb(self) -> None:
         """Create our bomb and do some bomb logic."""
         # Create the bomb node itself
         attrs = {
@@ -288,7 +288,7 @@ class Bomb(FactoryActor):
             )
             self.node.connectattr("position", sound, "position")
 
-    def do_fuse(self) -> None:
+    def _do_fuse(self) -> None:
         """Create a fuse and an explosion timer."""
         if not self.node:
             return
@@ -335,7 +335,7 @@ class Bomb(FactoryActor):
         # We blew up so we need to go away.
         self.handlemessage(bs.DieMessage())
 
-    def add_material(self, material: bs.Material) -> None:
+    def _add_material(self, material: bs.Material) -> None:
         """Add a new material to our active bomb node."""
         if not self.node:
             return
@@ -345,7 +345,25 @@ class Bomb(FactoryActor):
             assert isinstance(materials, tuple)
             self.node.materials = materials + (material,)
 
-    def handle_hit(self, msg: bs.HitMessage) -> None:
+    def get_source_player[PlayerT: bs.Player](
+        self, playertype: type[PlayerT]
+    ) -> PlayerT | None:
+        """Return the source-player if one exists and is the provided type."""
+        player: Any = self._source_player
+        return (
+            player
+            if isinstance(player, playertype) and player.exists()
+            else None
+        )
+
+    def add_explode_callback(self, call: Callable[[Bomb, Blast], Any]) -> None:
+        """Add a call to be run when the bomb has exploded.
+
+        The bomb and the new blast object are passed as arguments.
+        """
+        self._explode_callbacks.append(call)
+
+    def _handle_hit(self, msg: bs.HitMessage) -> None:
         """We got hit by something!"""
         # We want to explode to anything that is not a punch.
         ispunched = msg.srcnode and msg.srcnode.getnodetype() == "spaz"
@@ -383,10 +401,16 @@ class Bomb(FactoryActor):
             msg.velocity[2],
         )
 
-    def die(self) -> None:
+    def _die(self) -> None:
         """Kills this bomb."""
         if self.node:
             self.node.delete()
+
+    @override
+    def on_expire(self) -> None:
+        super().on_expire()
+        # Release callbacks/refs so we don't wind up with dependency loops.
+        self._explode_callbacks = []
 
     @override
     def handlemessage(self, msg: Any) -> None:
@@ -401,10 +425,10 @@ class Bomb(FactoryActor):
                 self._source_player = msg.node.source_player
         elif isinstance(msg, bs.HitMessage):
             # We handle hits and impulse separately now!
-            self.handle_hit(msg)
+            self._handle_hit(msg)
             self.handle_impulse(msg)
         elif isinstance(msg, (bs.DieMessage, bs.OutOfBoundsMessage)):
-            self.die()
+            self._die()
         else:
             super().handlemessage(msg)
 
@@ -446,7 +470,7 @@ class StickyBomb(Bomb):
         # Some more attributes
         self._last_sticky_sound_time: int = -9999
 
-    def handle_dropped(self) -> None:
+    def _handle_dropped(self) -> None:
         """We've been dropped!"""
 
         def sticky(node: bs.Node) -> None:
@@ -456,7 +480,7 @@ class StickyBomb(Bomb):
         # Become sticky to the owner after a brief moment
         bs.timer(0.25, lambda: sticky(self.node))
 
-    def handle_splat(self) -> None:
+    def _handle_splat(self) -> None:
         """Play a splat sound on collision."""
         node = bs.getcollision().opposingnode
         if (
@@ -472,9 +496,9 @@ class StickyBomb(Bomb):
 
     def handlemessage(self, msg: Any) -> None:
         if isinstance(msg, bs.DroppedMessage):
-            self.handle_dropped()
+            self._handle_dropped()
         elif isinstance(msg, SplatMessage):
-            self.handle_splat()
+            self._handle_splat()
         return super().handlemessage(msg)
 
 
@@ -550,9 +574,9 @@ class ImpactBomb(Bomb):
         self.activate_sound: bs.Sound = self.factory.fetch("activate_sound")
         self.texture_sequence: bs.Node | None = None
 
-    def create_bomb(self) -> None:
+    def _create_bomb(self) -> None:
         """Create our bomb and do some bomb logic."""
-        super().create_bomb()
+        super()._create_bomb()
         if self.impact_timers:
             self.create_timers()
 
@@ -567,7 +591,7 @@ class ImpactBomb(Bomb):
                 bs.WeakCallPartial(self.handlemessage, WarnMessage()),
             )
 
-    def handle_arm(self) -> None:
+    def _handle_arm(self) -> None:
         """Enable ourselves to explode."""
         if not self.node:
             return
@@ -586,7 +610,7 @@ class ImpactBomb(Bomb):
         bs.timer(
             0.25,
             bs.WeakCallPartial(
-                self.add_material,
+                self._add_material,
                 self.factory.fetch("land_mine_blast_material"),
             ),
         )
@@ -595,14 +619,14 @@ class ImpactBomb(Bomb):
         )
         self.activate_sound.play(position=self.node.position)
 
-    def handle_warn(self) -> None:
+    def _handle_warn(self) -> None:
         """Warn about our imminent explosion."""
         # Speed up our tex. sequence and play a sound
         if self.texture_sequence and self.node:
             self.texture_sequence.rate = 30
             self.warn_sound.play(0.5, position=self.node.position)
 
-    def handle_impact(self) -> None:
+    def _handle_impact(self) -> None:
         """We collisioned with something!"""
         node = bs.getcollision().opposingnode
 
@@ -623,7 +647,8 @@ class ImpactBomb(Bomb):
             return
         self.handlemessage(ExplodeMessage())
 
-    def handle_hit(self, msg: bs.HitMessage) -> None:
+    @override
+    def _handle_hit(self, msg: bs.HitMessage) -> None:
         """We got hit by something!"""
         # As an impact bomb, we explode by any hit towards us.
         if not self._exploded:
@@ -642,11 +667,11 @@ class ImpactBomb(Bomb):
     def handlemessage(self, msg: Any) -> None:
         """Handle messages regarding our node."""
         if isinstance(msg, ArmMessage):
-            self.handle_arm()
+            self._handle_arm()
         elif isinstance(msg, WarnMessage):
-            self.handle_warn()
+            self._handle_warn()
         elif isinstance(msg, ImpactMessage):
-            self.handle_impact()
+            self._handle_impact()
         return super().handlemessage(msg)
 
 
@@ -692,14 +717,14 @@ class LandMine(ImpactBomb):
         self.fuse_time = None
         self.impact_timers = False
 
-    def handle_dropped(self) -> None:
+    def _handle_dropped(self) -> None:
         """We've been dropped!"""
         # Arm ourselves
         self.arm_timer = bs.Timer(
             1.25, bs.WeakCallPartial(self.handlemessage, ArmMessage())
         )
 
-    def handle_arm(self) -> None:
+    def _handle_arm(self) -> None:
         """Enable ourselves to explode."""
         if not self.node:
             return
@@ -710,13 +735,14 @@ class LandMine(ImpactBomb):
             owner=self.node,
             attrs={"rate": 30, "input_textures": intex},
         )
-        bs.timer(0.5, self.texture_sequence.delete)  # type: ignore # intellisense issue
+        assert self.texture_sequence
+        bs.timer(0.5, self.texture_sequence.delete)
 
         # Make it explodable now
         bs.timer(
             0.25,
             bs.WeakCallPartial(
-                self.add_material,
+                self._add_material,
                 self.factory.fetch("land_mine_blast_material"),
             ),
         )
@@ -725,7 +751,7 @@ class LandMine(ImpactBomb):
         )
         self.activate_sound.play(position=self.node.position)
 
-    def handle_impact(self) -> None:
+    def _handle_impact(self) -> None:
         """We collisioned with something!"""
         node = bs.getcollision().opposingnode
 
@@ -736,7 +762,7 @@ class LandMine(ImpactBomb):
     def handlemessage(self, msg: Any) -> None:
         """Handle messages regarding our node."""
         if isinstance(msg, bs.DroppedMessage):
-            self.handle_dropped()
+            self._handle_dropped()
         return super().handlemessage(msg)
 
 
