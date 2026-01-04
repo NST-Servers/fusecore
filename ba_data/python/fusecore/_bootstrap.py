@@ -11,10 +11,12 @@ from fusecore._tools import (
     obj_method_override,
 )
 
+# load order is important!
 from fusecore import (
     common,
     _preload,
     _config,
+    _stats,
     patcher as _,
     _cloudsafety as _,
     base as _,
@@ -24,7 +26,6 @@ from fusecore import (
     server,
     _modloader,
 )
-
 from .chat import (
     commands as _,
     stickers as _,
@@ -36,6 +37,7 @@ common.init_dirs()
 
 _PreloadManager = _preload.AssetLoadManager()
 config = _config.ConfigSystem()
+stats = _stats.StatsSystem()
 ServerQueue = bs.app.register_subsystem(serverqueue.ServerQueueSubsystem())
 DiscordRPC = bs.app.register_subsystem(
     discordrpc.DiscordRichPresenceSubsystem()
