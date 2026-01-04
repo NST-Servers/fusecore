@@ -232,9 +232,11 @@ def cloud_wrap(cloud_func):
 
     return wrapper
 
+
 def _reset_config():
     cfg = bs.app.config
     cfg[CC.cfg_entry] = None
     cfg.apply()
+
 
 _cloud.cloud_console_exec = cloud_wrap(_cloud.cloud_console_exec)
