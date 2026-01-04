@@ -2,14 +2,6 @@
 Loads multiple modules and prepares them for usage.
 """
 
-# pylint: disable=unused-import
-
-# FIXME: some imports generate gc issues and the gc refuses to elaborate
-# it's not an issue at all due to it only happening at
-# launch, and the end user can't even see it happening
-# unless they have garbage-gollection set to 'leak-debug'
-# but holy folk is it super annoying...
-
 import bascenev1 as bs
 import babase
 
@@ -20,17 +12,37 @@ from fusecore._tools import (
 )
 
 from fusecore import (
-    base as _,
+    common,
+    _preload,
+    _config,
     patcher as _,
     _cloudsafety as _,
+    base as _,
     chat as _,
+    serverqueue,
+    discordrpc,
+    server,
+    _modloader,
 )
 
 from .chat import (
     commands as _,
     stickers as _,
 )
+
 from ._language import ExternalLanguageSubsystem, reload_language
+
+common.init_dirs()
+
+_PreloadManager = _preload.AssetLoadManager()
+config = _config.ConfigSystem()
+ServerQueue = bs.app.register_subsystem(serverqueue.ServerQueueSubsystem())
+DiscordRPC = bs.app.register_subsystem(
+    discordrpc.DiscordRichPresenceSubsystem()
+)
+ServerManager = server.FCServerManager()
+ModLoader = bs.app.register_subsystem(_modloader.ModLoaderSubsystem())
+
 
 add_devconsole_tab("Core Tools", FuseToolsDevTab)
 # patch our language class and re-set our language to execute our changes.
