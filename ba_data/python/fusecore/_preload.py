@@ -23,7 +23,7 @@ ASSET_PATHS_TO_SCAN: list[Path] = [
     Path(BA_DATA, "fonts"),
 ]
 
-UPDATE_TIME: float = 0.33
+UPDATE_TIME: float = 7.5
 
 
 class AssetLoadManager:
@@ -35,6 +35,7 @@ class AssetLoadManager:
         self._lock = threading.Lock()
         self._update_timer = bs.AppTimer(UPDATE_TIME, self._update, repeat=True)
 
+        self._check_file_updates()  # silent update to generate hash
         threading.Thread(target=self._watch_loop, daemon=True).start()
 
     def _watch_loop(self):
