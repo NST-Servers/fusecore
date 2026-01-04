@@ -11,7 +11,9 @@ def filter_chat_message(msg: str, client_id: int) -> str | None:
     to ignore the message.
     """
     from fusecore import chat
+
     return chat.chat_message_intercept(msg, client_id)
+
 
 def local_chat_message(msg: str) -> None:
     """..."""
@@ -23,6 +25,7 @@ def local_chat_message(msg: str) -> None:
 
     if party_window is not None:
         party_window.on_chat_message(msg)
+
 
 # fun fact! we shouldn't be doing this
 # but it's the only way we can get these to update.

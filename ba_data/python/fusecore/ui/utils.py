@@ -1,4 +1,5 @@
 """UI-related utilities from FuseCore."""
+
 from typing import Any, Callable
 from babase._language import Lstr
 

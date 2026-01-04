@@ -31,6 +31,7 @@ from .chat import (
     stickers as _,
 )
 from ._language import ExternalLanguageSubsystem, reload_language
+
 add_devconsole_tab("Core Tools", FuseToolsDevTab)
 # patch our language class and re-set our language to execute our changes.
 obj_method_override(babase.LanguageSubsystem, ExternalLanguageSubsystem)
