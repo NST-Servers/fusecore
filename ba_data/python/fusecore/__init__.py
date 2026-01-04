@@ -21,3 +21,4 @@ from ._bootstrap import (
 # specifically: some of our own packages and libraries get
 # some references going, we gotta clean those to prevent errors.
 gc.collect()
+gc.garbage.clear()
