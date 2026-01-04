@@ -1,13 +1,28 @@
 """Statistics tracking into a database using SQLite."""
 
 from dataclasses import dataclass
+import logging
 from pathlib import Path
 import sqlite3
 import time
 from typing import Any, Literal, Union
 
-from efro.dataclassio._api import dataclass_from_json
 from fusecore._tools import is_server
+
+from ..common import EXTERNAL_DATA_DIRECTORY
+
+MEMORY_DATABASE = False
+
+DATABASE = Path(EXTERNAL_DATA_DIRECTORY, "data", "user_data.db")
+# special case: allow for memory-allocated databases
+# in case we want to do some debugging and not affect
+# any existing databases.
+if MEMORY_DATABASE:
+    DATABASE = ":memory:"
+    _WARN_MSG = (
+        "MEMORY_DATABASE enabled.\nAny saved stats will be lost on shutdown."
+    )
+    logging.warning(_WARN_MSG)
 
 
 @dataclass
