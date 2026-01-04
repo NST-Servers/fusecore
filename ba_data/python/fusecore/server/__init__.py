@@ -4,14 +4,10 @@ player managing, roles, bans and chat logs.
 
 from dataclasses import dataclass
 
-import shutil
+import os
 import logging
 import tomllib
 from pathlib import Path
-
-import bascenev1 as bs
-
-from fusecore.server.stats import StatsTracker
 
 from ._schema import ServerTOML, parse_dict
 from ..common import EXTERNAL_DATA_DIRECTORY
@@ -24,20 +20,6 @@ CONFIG_SERVER_TOML: str = "config/server.toml"
 ADMIN_TOML: str = "data/admins.toml"
 BANLIST_TOML: str = "data/banlist.toml"
 ROLES_TOML: str = "data/roles.toml"
-
-MEMORY_DATABASE = True
-
-DATABASE = Path(EXTERNAL_DATA_DIRECTORY, "data", "user_data.db")
-# special case: allow for memory-allocated databases
-# in case we want to do some debugging and not affect
-# any existing databases.
-if MEMORY_DATABASE:
-    DATABASE = ":memory:"
-    _WARN_MSG = (
-        "MEMORY_DATABASE enabled.\n" "Any saved stats will be lost on shutdown."
-    )
-    bs.screenmessage(_WARN_MSG)
-    print(_WARN_MSG)
 
 
 def _log() -> logging.Logger:
@@ -82,7 +64,6 @@ class FCServerManager:
 
     def __init__(self) -> None:
         self.user_data: dict[str, UserServerData] = {}
-        self.stats_tracker = StatsTracker(DATABASE)
         self._config_server_toml = TOMLFile(
             Path(EXTERNAL_DATA_DIRECTORY, CONFIG_SERVER_TOML)
         )
@@ -130,13 +111,24 @@ class FCServerManager:
 
     def create_config_files(self) -> None:
         """Create template files in our external data directory."""
-        if EXTERNAL_DATA_DIRECTORY.exists():
-            return
         _log().info(
             'cloning preset files.\nfrom "%s" to "%s"',
             FILE_SOURCE_DIR,
             EXTERNAL_DATA_DIRECTORY,
         )
-        shutil.copytree(
-            FILE_SOURCE_DIR, EXTERNAL_DATA_DIRECTORY, dirs_exist_ok=True
-        )
+
+        for dirname, _, filenames in os.walk(FILE_SOURCE_DIR):
+
+            for filename in filenames:
+                src_file = Path(dirname, filename)
+                dst_file = Path(
+                    EXTERNAL_DATA_DIRECTORY,
+                    src_file.relative_to(FILE_SOURCE_DIR),
+                )
+
+                if not dst_file.exists():
+                    _log().info("copying '%s' to '%s'.", src_file, dst_file)
+                    os.makedirs(dst_file.parent, exist_ok=True)
+
+                    with open(dst_file, "w", encoding="utf-8") as final_file:
+                        final_file.write(src_file.read_text(encoding="utf-8"))
