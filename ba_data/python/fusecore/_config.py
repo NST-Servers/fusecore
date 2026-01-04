@@ -166,6 +166,9 @@ class ConfigSystem:
         # this function won't be obsolete by the time v2 is fully out?
         assert bs.app.plus
         if not _is_v1_logged_in():
+            _log().warning(
+                "v1_write: couldn't write; not logged in.",
+            )
             return
 
         bs.app.plus.add_v1_account_transaction(
@@ -181,7 +184,7 @@ class ConfigSystem:
         bs.app.plus.run_v1_account_transactions()
 
     def fetch_from_account_v1(
-        self, key: str, fallback: Any = None, do_set: bool = False
+        self, key: str, fallback: Any = None, create_if_missing: bool = False
     ) -> Any:
         """Fetch a value directly from our v1 account.
 
@@ -192,6 +195,7 @@ class ConfigSystem:
         Args:
             key (str): Identifier to fetch our information from.
             value (Any): Value to write to the target variable.
+            create_if_missing (bool): Create the key with our fallback value
 
         Returns:
             Any: Value of the provided account key, or our fallback.
@@ -199,6 +203,9 @@ class ConfigSystem:
         """
         assert bs.app.plus
         if not _is_v1_logged_in():
+            _log().warning(
+                "v1_write: couldn't fetch; not logged in.",
+            )
             return None
 
         v = bs.app.plus.get_v1_account_misc_val(
@@ -207,7 +214,7 @@ class ConfigSystem:
         _log().info(
             'v1_fetch: got "%s" from "%s:%s"', v, self.section_name, key
         )
-        if do_set:
+        if create_if_missing:
             self.write_to_account_v1(key, fallback)
         return v
 
