@@ -15,6 +15,7 @@ from ._bootstrap import (
     ModLoader,
     ServerQueue,
     config,
+    stats,
 )
 
 # hot code above; ballistica's py gc funnel doesn't like that.

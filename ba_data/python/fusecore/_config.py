@@ -17,7 +17,7 @@ class ConfigSystem:
     values using the provided 'section_name'.
     """
 
-    section_name: str = "core_config"
+    section_name: str = "fusecore_cfg"
 
     def __repr__(self) -> str:
         """When printing this class, return our config. section instead."""
