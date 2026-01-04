@@ -15,7 +15,7 @@ class StatsSystem:
     """Subsystem to track player statistics."""
 
     def __init__(self) -> None:
-        self._stats: dict = self.fetch_stats() or {}
+        self._stats: dict = self.fetch_stats()
         # FIXME: This is pretty flawed; if we were to log out and
         # logged into another account, not only would we not load
         # info from the new account, but we would overwrite all it's
@@ -40,11 +40,14 @@ class StatsSystem:
     def _generate_stat_timestamp(self, stat_name: str) -> None:
         self._stats.setdefault("timestamps", {})[stat_name] = time.time()
 
-    def fetch_stats(self) -> dict | None:
+    def fetch_stats(self) -> dict:
         """Retrieve stats from config.
         Creates stats entry if it doesn't exist.
         """
-        return _config.fetch("statistics", None)
+        cfg = _config.fetch("statistics", {})
+        if isinstance(cfg, dict):
+            return cfg.copy()
+        return {}
 
     def save_stats(self) -> None:
         """Write statistics to our config. file."""
@@ -61,7 +64,7 @@ class StatsSystem:
     def _fetch_acc_stats(self) -> None:
         account_stats = self.fetch_from_account()
 
-        if account_stats:
+        if account_stats and isinstance(account_stats, dict):
             self._account_fetch_timer = None
             # if we have both, compare timestamps and generate
             # a new dict with the latest stats info.
