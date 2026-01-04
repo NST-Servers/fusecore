@@ -24,6 +24,7 @@ gc.collect()
 
 common.init_dirs()
 
+_PreloadManager = pre.AssetLoadManager()
 ServerManager = server.FCServerManager()
 DiscordRPC = bs.app.register_subsystem(
     discordrpc.DiscordRichPresenceSubsystem()
