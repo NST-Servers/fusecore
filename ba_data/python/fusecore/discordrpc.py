@@ -1,14 +1,14 @@
 """Discord Rich Presence module."""
 
 import ast
-from dataclasses import dataclass
 import json
 import time
-import threading
 import logging
+import threading
 from enum import Enum
-from typing import Any, Callable, Literal, Type
 from uuid import uuid4
+from dataclasses import dataclass
+from typing import Any, Callable, Literal, Type
 
 from baclassic._appmode import ClassicAppMode
 import bascenev1 as bs
@@ -18,17 +18,15 @@ from bascenev1 import (
     FreeForAllSession,
     CoopSession,
 )
-from bascenev1._activitytypes import TransitionActivity
-from bascenev1._net import HostInfo
 
 from babase._appsubsystem import AppSubsystem
-from bascenev1lib.mainmenu import MainMenuSession
-from bascenev1lib import maps
 
+from bascenev1._net import HostInfo
+from bascenev1._activitytypes import TransitionActivity
+
+from bascenev1lib import maps
+from bascenev1lib.mainmenu import MainMenuSession
 from bascenev1lib.tutorial import TutorialActivity
-from fusecore._tools import is_server
-from discordrp import Presence
-from discordrp.presence import _OpCode
 
 from efro.dataclassio._api import dataclass_to_dict
 from efro.dataclassio import ioprepped
@@ -38,11 +36,11 @@ from bauiv1lib.play import PlayWindow
 from bauiv1lib.watch import WatchWindow
 from bauiv1lib.docui import DocUIWindow
 from bauiv1lib.gather import GatherWindow
+from bauiv1lib.store import StoreUIController
 from bauiv1lib.coop.browser import CoopBrowserWindow
 from bauiv1lib.profile.edit import EditProfileWindow
 from bauiv1lib.inventory import InventoryUIController
 from bauiv1lib.achievements import AchievementsWindow
-from bauiv1lib.store.newstore import StoreUIController
 from bauiv1lib.gather.publictab import AddrFetchThread
 from bauiv1lib.league.rankwindow import LeagueRankWindow
 from bauiv1lib.playlist.browser import PlaylistBrowserWindow
@@ -67,6 +65,11 @@ from bauiv1lib.settings import (
     touchscreen as bscfgmG,
     vrtesting as bscfgmH,
 )
+
+from fusecore._tools import is_server
+
+from discordrp import Presence
+from discordrp.presence import _OpCode
 
 
 # sorry pylint! big file.

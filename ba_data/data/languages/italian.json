@@ -1066,6 +1066,7 @@
     "allTimeText": "Di sempre",
     "currentSeasonText": "Stagione corrente (${NUMBER})",
     "leagueFullText": "${NAME} Lega",
+    "leaguePresidentText": "Leader della lega",
     "leagueRankText": "Punteggio Lega",
     "leagueText": "Lega",
     "rankInLeagueText": "#${RANK}, ${NAME} Lega${SUFFIX}",
@@ -1188,6 +1189,7 @@
   "outOfText": "(#${RANK} su ${ALL})",
   "ownFlagAtYourBaseWarning": "Per segnare un punto la tua bandiera\ndev'essere nella tua base!",
   "packageModsEnabledErrorText": "Il gioco in rete non è consentito con i mod dei pacchetti locali abilitati (vedi Impostazioni->Avanzate)",
+  "pageRefreshingTryAgainText": "La pagina si sta aggiornando - riprova tra un momento.",
   "partyWindow": {
     "chatMessageText": "Messaggio Chat",
     "emptyText": "Il tuo gruppo è vuoto",

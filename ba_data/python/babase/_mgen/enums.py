@@ -188,3 +188,6 @@ class SpecialChar(Enum):
     V2_LOGO = 96
     CLOSE = 97
     SANTA_HAT = 98
+    POTATO = 99
+    PALM_TREE = 100
+    BOXING_GLOVE = 101

@@ -53,10 +53,10 @@
   "achievementText": "Başarı",
   "achievements": {
     "Boom Goes the Dynamite": {
-      "description": "TNT ile 3 haylaz öldür",
-      "descriptionComplete": "TNT ile 3 haylaz öldürüldü",
-      "descriptionFull": "${LEVEL} da TNT ile 3 haylaz öldür",
-      "descriptionFullComplete": "${LEVEL} da TNT ile 3 haylaz öldürüldü",
+      "description": "TNT ile 3 mülteci öldür",
+      "descriptionComplete": "TNT ile 3 mülteci öldürüldü",
+      "descriptionFull": "${LEVEL} da TNT ile 3 mülteci öldür",
+      "descriptionFullComplete": "${LEVEL} da TNT ile 3 mülteci öldürüldü",
       "name": "Dinamit Gümledi"
     },
     "Boxer": {
@@ -84,10 +84,10 @@
       "name": "Otlakçı"
     },
     "Gold Miner": {
-      "description": "Yer mayınları ile 6 kötü öldür",
-      "descriptionComplete": "Kara mayını ile 6 haylaz öldürüldü",
-      "descriptionFull": "Kara mayını ile ${LEVEL} da 6 haylaz öldür",
-      "descriptionFullComplete": "Kara mayını ile ${LEVEL} da 6 haylaz öldürüldü",
+      "description": "Yer mayınları ile 6 mülteci öldür",
+      "descriptionComplete": "Kara mayını ile 6 mülteci öldürüldü",
+      "descriptionFull": "Kara mayını ile ${LEVEL} da 6 mülteci öldür",
+      "descriptionFullComplete": "Kara mayını ile ${LEVEL} da 6 mülteci öldürüldü",
       "name": "Altın Mayıncı"
     },
     "Got the Moves": {
@@ -125,16 +125,16 @@
     },
     "Mine Games": {
       "description": "Kara mayını ile 3 haylaz öldür",
-      "descriptionComplete": "kara mayını ile 3 haylaz öldürüldü",
-      "descriptionFull": "kara mayını ile ${LEVEL} da 3 haylaz öldür",
-      "descriptionFullComplete": "kara mayını ile ${LEVEL} da 3 haylaz öldürüldü",
+      "descriptionComplete": "kara mayını ile 3 mülteci öldürüldü",
+      "descriptionFull": "kara mayını ile ${LEVEL} da 3 mülteci öldür",
+      "descriptionFullComplete": "kara mayını ile ${LEVEL} da 3 mülteci öldürüldü",
       "name": "Mayın Oyunları"
     },
     "Off You Go Then": {
-      "description": "Haritadan dışarıya 3 haylaz fırlat",
-      "descriptionComplete": "Haritadan dışarıya 3 haylaz fırlatıldı",
-      "descriptionFull": "${LEVEL} da haritadan dışarıya 3 haylaz fırlat",
-      "descriptionFullComplete": "${LEVEL} da haritadan dışarıya 3 haylaz fırlatıldı",
+      "description": "Haritadan dışarıya 3 mülteci fırlat",
+      "descriptionComplete": "Haritadan dışarıya 3 mülteci fırlatıldı",
+      "descriptionFull": "${LEVEL} da haritadan dışarıya 3 mülteci fırlat",
+      "descriptionFullComplete": "${LEVEL} da haritadan dışarıya 3 mülteci fırlatıldı",
       "name": "O Halde Bas Git!"
     },
     "Onslaught God": {
@@ -180,10 +180,10 @@
       "name": "Uzman Boksör"
     },
     "Pro Football Shutout": {
-      "description": "Haylazlara puan yaptırmadan kazan",
-      "descriptionComplete": "Haylazlara puan yaptırmadan kazanıldı",
-      "descriptionFull": "Haylazlara puan yaptırmadan ${LEVEL} da kazan",
-      "descriptionFullComplete": "Haylazlara puan yaptırmadan ${LEVEL} da kazanıldı",
+      "description": "Mültecilere puan yaptırmadan kazan",
+      "descriptionComplete": "Mültecilere puan yaptırmadan kazanıldı",
+      "descriptionFull": "Mültecilere puan yaptırmadan ${LEVEL} da kazan",
+      "descriptionFullComplete": "Mültecilere puan yaptırmadan ${LEVEL} da kazanıldı",
       "name": "${LEVEL} Lokavt"
     },
     "Pro Football Victory": {
@@ -208,10 +208,10 @@
       "name": "${LEVEL} Galibiyeti"
     },
     "Rookie Football Shutout": {
-      "description": "Haylazlara puan yaptırmadan kazan",
-      "descriptionComplete": "Haylazlara puan yaptırmadan kazanıldı",
-      "descriptionFull": "${LEVEL} da haylazlara puan yaptırmadan kazan",
-      "descriptionFullComplete": "${LEVEL} da haylazlara puan yaptırmadan kazanıldı",
+      "description": "Mültecilere puan yaptırmadan kazan",
+      "descriptionComplete": "Mültecilere puan yaptırmadan kazanıldı",
+      "descriptionFull": "${LEVEL} da mültecilere puan yaptırmadan kazan",
+      "descriptionFullComplete": "${LEVEL} da mültecilere puan yaptırmadan kazanıldı",
       "name": "${LEVEL} Lokavt"
     },
     "Rookie Football Victory": {
@@ -276,10 +276,10 @@
       "name": "Süper Yumruk"
     },
     "TNT Terror": {
-      "description": "TNT ile 6 haylaz öldür",
-      "descriptionComplete": "TNT ile 6 haylaz öldürüldü",
-      "descriptionFull": "${LEVEL} da TNT ile 6 haylaz öldür",
-      "descriptionFullComplete": "${LEVEL} da TNT ile 6 haylaz öldürüldü",
+      "description": "TNT ile 6 mülteci öldür",
+      "descriptionComplete": "TNT ile 6 mülteci öldürüldü",
+      "descriptionFull": "${LEVEL} da TNT ile 6 mülteci öldür",
+      "descriptionFullComplete": "${LEVEL} da TNT ile 6 mülteci öldürüldü",
       "name": "TNT Dehşeti"
     },
     "Team Player": {
@@ -288,24 +288,24 @@
       "name": "Takım Oyuncusu"
     },
     "The Great Wall": {
-      "description": "Bütün haylazları durdur",
-      "descriptionComplete": "Bütün haylazları durdur",
-      "descriptionFull": "${LEVEL} da bütün haylazları durdur",
-      "descriptionFullComplete": "${LEVEL} da bütün haylazlar durduruldu",
+      "description": "Bütün mültecileri durdur",
+      "descriptionComplete": "Bütün mülteciler durduruldu",
+      "descriptionFull": "${LEVEL} da bütün mültecileri durdur",
+      "descriptionFullComplete": "${LEVEL} da bütün mülteciler durduruldu",
       "name": "Muhteşem Bariyer"
     },
     "The Wall": {
-      "description": "Bütün haylazları durdur",
-      "descriptionComplete": "Bütün haylazları durdur",
-      "descriptionFull": "${LEVEL} da bütün haylazları durdur",
-      "descriptionFullComplete": "${LEVEL} da bütün haylazlar durduruldu",
+      "description": "Bütün mültecileri durdur",
+      "descriptionComplete": "Bütün mülteciler durduruldu",
+      "descriptionFull": "${LEVEL} da bütün mültecileri durdur",
+      "descriptionFullComplete": "${LEVEL} da bütün mülteciler durduruldu",
       "name": "Bariyer"
     },
     "Uber Football Shutout": {
-      "description": "Haylazlara puan yaptırmadan kazan",
-      "descriptionComplete": "Haylazlara puan yaptırmadan kazanıldı",
-      "descriptionFull": "${LEVEL} da haylazlara puan yaptırmadan kazan",
-      "descriptionFullComplete": "${LEVEL} da haylazlara puan yaptırmadan kazanıldı",
+      "description": "Mültecilere puan yaptırmadan kazan",
+      "descriptionComplete": "Mültecilere puan yaptırmadan kazanıldı",
+      "descriptionFull": "${LEVEL} da mültecilere puan yaptırmadan kazan",
+      "descriptionFullComplete": "${LEVEL} da mültecilere puan yaptırmadan kazanıldı",
       "name": "${LEVEL} Lokavt"
     },
     "Uber Football Victory": {
@@ -1136,6 +1136,7 @@
   "openNowText": "Şimdi Aç",
   "openText": "Aç",
   "orText": "${A} veya ${B}",
+  "otherOptionsText": "Diğer Seçenekler",
   "otherText": "Diğer...",
   "outOfText": "(${ALL} için #${RANK})",
   "ownFlagAtYourBaseWarning": "Skor için kendi bayrağın\nkendi bölgende olmalı!",
@@ -1856,9 +1857,9 @@
       "Warning to ${NAME}:  turbo / button-spamming knocks you out.": "${NAME}: için uyarı: Hızlı/gereksiz buton tıklaması seni mahveder."
     },
     "teamNames": {
-      "Bad Guys": "Haylazlar",
+      "Bad Guys": "Mülteciler",
       "Blue": "Mavi",
-      "Good Guys": "Kankalar",
+      "Good Guys": "Türkler",
       "Red": "Kırmızı"
     },
     "tips": {
@@ -1877,25 +1878,25 @@
       "If you are short on controllers, install the '${REMOTE_APP_NAME}' app\non your mobile devices to use them as controllers.": "Eğer kontrolcü için aceleciysen; '${REMOTE_APP_NAME}'\nuygulamasını yükle ve mobil cihazını kontrolcü olarak kullan.",
       "If you get a sticky-bomb stuck to you, jump around and spin in circles. You might\nshake the bomb off, or if nothing else your last moments will be entertaining.": "Eğer yapışkan-bomba sana yapıştıysa, etrafta zıpla ve daireler çizerek dön\nbombayı üzerinden atabilirsin. Ya da hiçbir şey yapma, son anların eğlenceli geçsin.",
       "If you kill an enemy in one hit you get double points for it.": "Eğer düşmanını tek vuruşta öldürürsen, bunun için çifte puan alırsın.",
-      "If you pick up a curse, your only hope for survival is to\nfind a health powerup in the next few seconds.": "Eğer Lanetlenirsen, Uğruna savaşılacak tek umudun;\nilerleyen saniyelerde bir sağlık-paketi bulmak olur.",
-      "If you stay in one place, you're toast. Run and dodge to survive..": "Bir yerde durursan, kızarmış ekmek olursun. Hayatta kalmak için koş ve kaç..",
+      "If you pick up a curse, your only hope for survival is to\nfind a health powerup in the next few seconds.": "Eğer lanetlenirsen, uğruna savaşılacak tek umudun;\nilerleyen saniyelerde bir sağlık-paketi bulmak olur.",
+      "If you stay in one place, you're toast. Run and dodge to survive..": "Bir yerde öylece durup beklersen, sobada pişmiş ekmek olursun. Hayatta kalmak için koş ve kaç...",
       "If you've got lots of players coming and going, turn on 'auto-kick-idle-players'\nunder settings in case anyone forgets to leave the game.": "Eğer girip çıkan birçok oyuncun varsa; oyundan çıkmayı unutma ihtimallerine karşı\nayarlardaki 'Boştaki-oyuncuları-çıkar'ı aktifleştir.",
       "If your device gets too warm or you'd like to conserve battery power,\nturn down \"Visuals\" or \"Resolution\" in Settings->Graphics": "Eğer cihazın çok ısındıysa veya güç tasarrufu yapmak istiyorsan\nAyarlardan çözünürlüğe basarak ve ondan bazılarını düşürerek biraz olsada önleyebilirsin",
       "If your framerate is choppy, try turning down resolution\nor visuals in the game's graphics settings.": "Eğer FPS dengesiz ise; Oyunun grafik ayarlarından görseller\nveya çözünürlüğü düşürmeyi dene.",
-      "In Capture-the-Flag, your own flag must be at your base to score, If the other\nteam is about to score, stealing their flag can be a good way to stop them.": "Bayrak-Yakalamaca'da skor yapmak için kendi bayrağın kendi bölgende olmalı. Eğer diğer\ntakım skor yapmak üzereyse; bayraklarını çalmak, onları durdurmak için güzel bir yoldur.",
-      "In hockey, you'll maintain more speed if you turn gradually.": "Hokey de, yavaşça dönersen topu daha hızlı sürebilirsin.",
-      "It's easier to win with a friend or two helping.": "Bir arkadaşla yardımlaşarak oynamak, kolayca kazanmanı sağlar.",
+      "In Capture-the-Flag, your own flag must be at your base to score, If the other\nteam is about to score, stealing their flag can be a good way to stop them.": "Bayrak Yakalamaca'da skor yapmak için kendi bayrağın kendi bölgende olmalı. Eğer diğer\ntakım skor yapmak üzereyse; bayraklarını çalmak, onları durdurmak için güzel bir yoldur.",
+      "In hockey, you'll maintain more speed if you turn gradually.": "Hokeyde, yavaşça dönersen topu daha hızlı sürebilirsin.",
+      "It's easier to win with a friend or two helping.": "Bir arkadaşla yardımlaşarak oynamak, kolayca kazanmanı sağlar. Komşu komşunun bombasına muhtaçtır.",
       "Jump just as you're throwing to get bombs up to the highest levels.": "Zıplamak, bombaları daha yüksek seviyelere atmanı sağlar.",
       "Land-mines are a good way to stop speedy enemies.": "Kara-mayınları hızlı düşmanları durdurmak için iyidir.",
       "Many things can be picked up and thrown, including other players.  Tossing\nyour enemies off cliffs can be an effective and emotionally fulfilling strategy.": "Çoğu şey kaldırılıp atılabilir, diğer oyuncular da dahil. Düşmanlarını\nuçurumdan fırlatmak, etkili ve seni tatmin edecek bir yöntemdir.",
       "No, you can't get up on the ledge. You have to throw bombs.": "Hayır, tümseğe çıkamazsın. Atabileceğin bombaların var.",
       "Players can join and leave in the middle of most games,\nand you can also plug and unplug controllers on the fly.": "Oyuncular çoğu oyunun ortasında girip çıkabilir. Ayrıca\nhızlıca kontrolcü bağlayıp da çıkarabilirsin.",
-      "Practice using your momentum to throw bombs more accurately.": "İvmeni kullanma alıştırması yapman, bombaları daha isabetli atmanı sağlar",
+      "Practice using your momentum to throw bombs more accurately.": "İvmeni kullanma alıştırması yapman, bombaları daha isabetli atmanı sağlar.",
       "Punches do more damage the faster your fists are moving,\nso try running, jumping, and spinning like crazy.": "Hızlı hareket edersen yumrukların daha fazla hasar verir\nyani deli gibi koşmayı, zıplamayı ve dönmeyi dene.",
       "Run back and forth before throwing a bomb\nto 'whiplash' it and throw it farther.": "Daha uzağa atmak için bomba atmadan önce kırbaç gibi\ngeri-ileri hareket et.",
       "Take out a group of enemies by\nsetting off a bomb near a TNT box.": "Grupça düşman imha etmek için\nbombayı TNT kutusunun yanına at.",
       "The head is the most vulnerable area, so a sticky-bomb\nto the noggin usually means game-over.": "Kafa en zayıf bölgedir, bu yüzden yapışkan-bombayı\nkafaya atman oyun-bitirici bir hamledir.",
-      "This level never ends, but a high score here\nwill earn you eternal respect throughout the world.": "Bu bölüm hiç bitmez. Fakat yaptığın yüksek-skorlar\ndünyanın sonuna kadar mevcut kalır.",
+      "This level never ends, but a high score here\nwill earn you eternal respect throughout the world.": "Bu bölüm hiç bitmez. Fakat yaptığın yüksek skorlar\nkıyamet kopana kadar mevcut kalır.",
       "Throw strength is based on the direction you are holding.\nTo toss something gently in front of you, don't hold any direction.": "Fırlatma kuvveti senin yöneliminle alakalıdır.\nBir şeyleri nazikçe önüne bırakmak için herhangi bir yöne gitmeden bırak.",
       "Tired of the soundtrack?  Replace it with your own!\nSee Settings->Audio->Soundtrack": "Müziklerden sıkıldın mı? Kendininkiyle değiştir!\nAyarlar->Müzikler'e bak",
       "Try 'Cooking off' bombs for a second or two before throwing them.": "Bombaları, patlamasına bir ya da iki saniye kala fırlat.",
@@ -1903,9 +1904,9 @@
       "Use the pick-up button to grab the flag < ${PICKUP} >": "Bayrak tutmak için Kaldır butonunu kullan <${PICKUP}>",
       "Whip back and forth to get more distance on your throws..": "Geri-ileri gitmek daha uzağa fırlatmanı sağlar.",
       "You can 'aim' your punches by spinning left or right.\nThis is useful for knocking bad guys off edges or scoring in hockey.": "Yumruklarınla sağa veya sola dönerken hedef alabilirsin.\nBu haylazları köşelere fırlatmak ve hokeyde skor yapmak için birebirdir.",
-      "You can judge when a bomb is going to explode based on the\ncolor of sparks from its fuse:  yellow..orange..red..BOOM.": "Bombanın patlama zamanını Fitil kıvılcımlarının rengine bakarak\ntahmin edebilirsin: sarı..turuncu..kırmızı..BOOM.",
+      "You can judge when a bomb is going to explode based on the\ncolor of sparks from its fuse:  yellow..orange..red..BOOM.": "Bombanın patlama zamanını fitil kıvılcımlarının rengine bakarak\ntahmin edebilirsin: sarı..turuncu..kırmızı..GÜMM...",
       "You can throw bombs higher if you jump just before throwing.": "Bombaları atmadan önce zıplarsan, daha yükseğe fırlatabilirsin.",
-      "You take damage when you whack your head on things,\nso try to not whack your head on things.": "Kafanı bir şeylere çarparsan hasar alırsın\nkafanı bir şeylere çarpmamaya özen göster.",
+      "You take damage when you whack your head on things,\nso try to not whack your head on things.": "Kafanı bir şeylere çarparsan hasar alırsın.\nKafanı bir şeylere çarpmamaya özen göster. Gerçek hayatta da öyle.",
       "Your punches do much more damage if you are running or spinning.": "Dönüyor ve koşuyorsan, yumrukların daha fazla hasar verir."
     }
   },
@@ -1913,7 +1914,7 @@
   "trophiesText": "Kupa",
   "trophiesThisSeasonText": "Bu Sezonki Kupalar",
   "tutorial": {
-    "cpuBenchmarkText": "Öğretici aptalca çalışıyor (öncellikle CPU hızını test et)",
+    "cpuBenchmarkText": "Öğretici Bera'nın beyni gibi çalışıyor (öncellikle CPU hızını test et)",
     "phrase01Text": "Merhaba !",
     "phrase02Text": "${APP_NAME}'a Hoş Geldiniz!",
     "phrase03Text": "Karakterini kontrol etmek için birkaç ipucu:",
@@ -1943,11 +1944,11 @@
     "phrase27Text": "Eğitimini hatırla ve buraya canlı DÖN!",
     "phrase28Text": "...evet,  olabilir...",
     "phrase29Text": "İyi şanslar!",
-    "randomName1Text": "Fred",
-    "randomName2Text": "Chuck",
-    "randomName3Text": "Bill",
-    "randomName4Text": "Myth B.",
-    "randomName5Text": "Carl",
+    "randomName1Text": "Yusuf",
+    "randomName2Text": "Efdalin",
+    "randomName3Text": "Abdulrezzak",
+    "randomName4Text": "Abdussamed",
+    "randomName5Text": "Murat",
     "skipConfirmText": "Öğreticiyi gerçekten atlamak istiyor musun? Onaylamak için dokun.",
     "skipVoteCountText": "geçme oylaması ${COUNT}/${TOTAL}",
     "skippingText": "Öğretici Atlanıyor...",

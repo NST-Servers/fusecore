@@ -1134,6 +1134,7 @@
   "openNowText": "Open Now",
   "openText": "Open",
   "orText": "${A} or ${B}",
+  "otherOptionsText": "Other Options",
   "otherText": "Other...",
   "outOfText": "(#${RANK} out of ${ALL})",
   "ownFlagAtYourBaseWarning": "Your own flag must be\nat your base to score!",

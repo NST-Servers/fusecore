@@ -1028,6 +1028,7 @@
     "allTimeText": "Ukupan poredak",
     "currentSeasonText": "Trenutna sezona (${NUMBER})",
     "leagueFullText": "${NAME} liga",
+    "leaguePresidentText": "Predsjednik lige",
     "leagueRankText": "Pozicija u ligi",
     "leagueText": "Liga",
     "rankInLeagueText": "#${RANK}, ${NAME} Liga${SUFFIX}",
@@ -1148,6 +1149,7 @@
   "outOfText": "(#${RANK} od ${ALL})",
   "ownFlagAtYourBaseWarning": "Tvoja zastava mora biti\nu tvojoj bazi da bi mogao osvojiti bod!",
   "packageModsEnabledErrorText": "Mrežna igra nije dozvoljena dok su modovi iz lokalne pohrane uključeni(pogledaj pod Postavke->Napredno)",
+  "pageRefreshingTryAgainText": "Stranica se osvježava - pokušajte ponovno za trenutak.",
   "partyWindow": {
     "chatMessageText": "Poruka",
     "emptyText": "Nitko se nije priključio tvojoj partiji",
@@ -1405,6 +1407,7 @@
     "bombSquadProNameText": "${APP_NAME} Pro",
     "bombSquadProNewDescriptionText": "• Uklanja reklame u igri i nag zaslona\n• Otključava više postavki u igri\n• Također uključuje:",
     "buyText": "Kupi",
+    "charactersPremiumText": "Premium likovi",
     "charactersText": "Likovi",
     "comingSoonText": "Ubrzo...",
     "extrasText": "Extra",
@@ -1415,7 +1418,10 @@
     "howToSwitchCharactersText": "(idi pod \" ${SETTINGS} -> ${PLAYER_PROFILES}\" da dodijeliš i prilagodiš likove)",
     "howToUseIconsText": "(napravi globalni profil igrača (u \"Spremište\" prozoru) da ih koristiš)",
     "howToUseMapsText": "(koristi te mape u tvojim ekipnim/svatko protiv svakoga listama igara)",
+    "iconsFlagText": "Ikone zastavica",
+    "iconsPremiumText": "Premium ikone",
     "iconsText": "Ikone",
+    "itemsText": "Stavke",
     "loadErrorText": "Nemoguće je učitati stranicu. \nProvjeri svoju internetsku vezu.",
     "loadingText": "učitavam",
     "mapsText": "Mape",
@@ -1438,6 +1444,7 @@
     "youOwnThisText": "- ovo već imaš -",
     "yourCharactersText": "Tvoji likovi",
     "yourIconsText": "Tvoje ikone",
+    "yourItemsText": "Vaše stavke",
     "yourMapsText": "Tvoje mape",
     "yourMiniGamesText": "Tvoje mini-igre"
   },
@@ -1518,6 +1525,7 @@
       "Mel": "Mel",
       "Middle-Man": "Sredina-Man",
       "Minimus": "Minimus",
+      "OldLady": "Betty",
       "Pascal": "Paskal",
       "Pixel": "Piksel",
       "Sammy Slam": "Sammy Slam",
@@ -1549,6 +1557,7 @@
       "Uber Runaround": "Obrana (Uber)"
     },
     "displayItemNames": {
+      "${C} Purple Tickets": "${C} Ljubičaste ulaznice",
       "${C} Tickets": "${C} ulaznica",
       "${C} Tokens": "${C} žetona",
       "Chest": "Škrinja",

@@ -1010,6 +1010,7 @@
     "allTimeText": "Todo El Tiempo",
     "currentSeasonText": "Temporada Actual (${NUMBER})",
     "leagueFullText": "Liga ${NAME}",
+    "leaguePresidentText": "Presidente de Liga",
     "leagueRankText": "Rango de Liga",
     "leagueText": "Liga",
     "rankInLeagueText": "#${RANK}, ${NAME} Liga${SUFFIX}",
@@ -1126,6 +1127,7 @@
   "otherText": "Otros...",
   "outOfText": "(#${RANK} de ${ALL})",
   "ownFlagAtYourBaseWarning": "¡Su propia bandera debe estar\nen su base para anotar!",
+  "pageRefreshingTryAgainText": "La página se está actualizando - inténtalo de nuevo en un momento.",
   "partyWindow": {
     "chatMessageText": "Mensaje del Chat",
     "emptyText": "Tu partida está vacía",

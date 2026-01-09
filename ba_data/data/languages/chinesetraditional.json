@@ -1019,6 +1019,7 @@
     "allTimeText": "所有時間",
     "currentSeasonText": "當前賽季(${NUMBER})",
     "leagueFullText": "${NAME}聯賽",
+    "leaguePresidentText": "賽季總統",
     "leagueRankText": "聯賽排名",
     "leagueText": "聯賽",
     "rankInLeagueText": "#${RANK}, ${NAME} 聯賽${SUFFIX}",
@@ -1136,6 +1137,7 @@
   "outOfText": "（在${ALL}名玩家中位列#${RANK}）",
   "ownFlagAtYourBaseWarning": "你的旗幟必須在自己\n的基地上才能得分",
   "packageModsEnabledErrorText": "啟用本地程序包修改時，聯網對戰不可用（參見設置->高級設置）",
+  "pageRefreshingTryAgainText": "頁面正在更新，請稍後再試",
   "partyWindow": {
     "chatMessageText": "聊天消息",
     "emptyText": "你的派對為空",
@@ -1538,6 +1540,7 @@
       "Uber Runaround": "高級塔防戰"
     },
     "displayItemNames": {
+      "${C} Purple Tickets": "${C}紫點券",
       "${C} Tickets": "${C}點券",
       "${C} Tokens": "${C}代幣",
       "Chest": "寶箱",

@@ -1144,6 +1144,7 @@
   "outOfText": "(#${RANK} sa ${ALL})",
   "ownFlagAtYourBaseWarning": "Ang iyong sariling watawat ay dapat na\nsa lagayan nito upang makapuntos!",
   "packageModsEnabledErrorText": "Ang network-play ay hindi pinapayagan habang ang local-package-mods ay pinagana (tingnan ang Mga Setting->Advanced)",
+  "pageRefreshingTryAgainText": "Ang larawa'y pumepreskuhan - ulitin sa isang sandali.",
   "partyWindow": {
     "chatMessageText": "Mensahe",
     "emptyText": "Walang tao ang iyong party",
