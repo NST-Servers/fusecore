@@ -9,7 +9,8 @@ import logging
 import tomllib
 from pathlib import Path
 
-from ._schema import ServerTOML, parse_dict
+from ._schema import ServerTOML
+from ..utils import parse_dict
 from ..common import EXTERNAL_DATA_DIRECTORY
 
 FILE_SOURCE_DIR = Path(__file__).parent.joinpath("src")
