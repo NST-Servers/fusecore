@@ -2,15 +2,15 @@
 
 from __future__ import annotations
 
-from typing import Callable, Type, override
+from typing import Any, Callable, Type, override
 import logging
 
 import bascenev1 as bs
 
-from . import (
-    ChatIntercept,
+from fusecore.chat import ChatIntercept
+from fusecore.chat.perms import is_admin_from_client_id
+from fusecore.chat.utils import (
     broadcast_message_to_client,
-    send_custom_chatmessage,
     are_we_host,
 )
 
@@ -42,11 +42,12 @@ class CommandIntercept(ChatIntercept):
 
         Returns success.
         """
+        # FIXME: this code could benefit from a cleanup...
         message = msg.split(" ")
-        command_entry = message[0].removeprefix(command_prefix)
+        command_query = message[0].removeprefix(command_prefix)
 
         # in case got a message with nothing but a prefix, ignore
-        if not command_entry:
+        if not command_query:
             return False
 
         def run_command(call: Callable) -> bool:
@@ -55,62 +56,59 @@ class CommandIntercept(ChatIntercept):
             except Exception as e:
                 logging.error("'%s' -> '%s'", msg, e, exc_info=True)
                 broadcast_message_to_client(
-                    client_id, bs.Lstr(resource="commands.error")
+                    client_id,
+                    bs.Lstr(
+                        resource="commands.error",
+                        fallback_resource=(
+                            "An error occurred while" " executing this command."
+                        ),
+                    ),
                 )
             return True
 
-        # if we're hosting, load up our server commands
-        # these commands function exclusively when hosting
-        # as they could mess around with gmae logic and nodes
-        for command in COMMAND_ALTAS_SERVER:
-            if command_entry in command.pseudos:
-                if are_we_host():
-                    # there is a chance a command could work for both clients
-                    # and servers (such as '/help').
-                    # let's make an exception for those.
-                    return run_command(
-                        lambda: command().execute(msg, client_id)
-                    )
-                # elif not are_we_host() and command in COMMAND_ALTAS_CLIENT:
-                #     return False
-                return False
-                # NOTE: we were meant to show an error telling the user
-                # the command they asked for is server-only, but that
-                # nullifies server-side logic... maybe there's a way
-                # for servers to communicate their command list so we
-                # can do this only when it's necessary?
-                # broadcast_message_to_client(
-                #     client_id,
-                #     bs.Lstr(
-                #         resource='commands.serveronly',
-                #         subs=[('${CMD}', command_entry)],
-                #     ),
-                # )
-
+        # check for client commands first
         for command in COMMAND_ALTAS_CLIENT:
-            # afterwards, load up our client commands
-            # these ones work anywhere, including other
-            # servers that are not hosting with a modded core
             if (
-                command_entry == command.name
-                or command_entry in command.pseudos
+                command_query == command.name
+                or command_query in command.pseudos
             ):
                 return run_command(lambda: command().execute(msg, client_id))
+        # if we are not the host, immediately call it quits here
+        if not are_we_host():
+            return False
 
-        if are_we_host():
-            # we only show this as host to allow clients to
-            # perform our server commands.
-            # the server-side will catch to this anyways.
-            broadcast_message_to_client(
-                client_id,
-                bs.Lstr(
-                    resource="commands.notfound",
-                    subs=[("${CMD}", command_entry)],
-                ),
-                (1, 0.1, 0.1),
-            )
-            return True
-        return False
+        # look for server commands if we're on the
+        # hosting side of things.
+        for command in COMMAND_ALTAS_SERVER:
+            if command_query in command.pseudos:
+                if not can_run_command(command, client_id):
+                    # throw an error if we don't have
+                    # enough permissions to run this command.
+                    broadcast_message_to_client(
+                        client_id,
+                        bs.Lstr(
+                            resource="commands.notperms",
+                            fallback_resource=(
+                                "You don't have the permissions"
+                                " to run this command."
+                            ),
+                        ),
+                        color=(1, 0.2, 0.2),
+                    )
+                    return True
+                return run_command(lambda: command().execute(msg, client_id))
+
+        # if we didnt find anything, we should land here
+        broadcast_message_to_client(
+            client_id,
+            bs.Lstr(
+                resource="commands.notfound",
+                fallback_value='Command "${CMD}" not found.',
+                subs=[("${CMD}", command_query)],
+            ),
+            (1, 0.1, 0.1),
+        )
+        return True
 
 
 CommandIntercept.register()
@@ -135,6 +133,22 @@ class ChatCommand:
 
     pseudos: list[str] = []
     """Names to check for to trigger this command."""
+
+    # TODO: finish these docs
+    admin_only: bool = False
+    """Whether the command is exclusive to administrators.
+    Admins can be set via --admin_toml_path--.
+    """
+
+    # TODO: docs & permissions implementation
+    minimum_permission_level: int = -1
+    """The minimum permission level needed to use this command.
+    Check --perms_module-- to understand how permissions work.
+    """
+
+    whitelisted_roles: list[Any] = []
+
+    blacklisted_roles: list[Any] = []
 
     @classmethod
     def _pseudos_check(cls) -> None:
@@ -183,34 +197,27 @@ class ChatCommand:
         # FIXME: actually, we should pass the message split to make
         #        argument handling easier, delivering the entire
         #        message is silly and stupid!
-        raise RuntimeError("'execute' function needs to be overriden.")
+        raise NotImplementedError("'execute' needs to be overriden by class.")
 
 
-class HelpCommand(ChatCommand):
-    """Help command."""
-
-    name = "Help"
-    description = "Show all available commands."
-
-    pseudos = ["help", "?"]
-
-    @override
-    def execute(self, msg: str, client_id: int) -> None:
-        del msg  # not needed
-
-        def host_send_custom_chatmessage(t: str):
-            if are_we_host():
-                send_custom_chatmessage(t)
-
-        t_bar = "- " * 18
-        text: str = f"- {t_bar} Command List (0/0) {t_bar}-\n"
-
-        host_send_custom_chatmessage(text)
-
-        for cmd in set().union(COMMAND_ALTAS_SERVER):
-            t = f"{cmd.name}: {cmd.description}\n"
-
-            host_send_custom_chatmessage(t)
+def can_run_command(cmd_cls: Type[ChatCommand], client_id: int) -> bool:
+    if cmd_cls.admin_only and not is_admin_from_client_id(client_id):
+        return False
+    # FIXME: implement roles and permission levels
+    return True
 
 
-HelpCommand.register_server()
+def server_command(cls):
+    """Class decorator to register a command as server-side."""
+    if cls in COMMAND_ALTAS_CLIENT:
+        raise IndexError(f"{cls} already registered as a client command.")
+    COMMAND_ALTAS_SERVER.add(cls)
+    return cls
+
+
+def client_command(cls):
+    """Class decorator to register a command as client-side."""
+    if cls in COMMAND_ALTAS_SERVER:
+        raise IndexError(f"{cls} already registered as a server command.")
+    COMMAND_ALTAS_CLIENT.add(cls)
+    return cls

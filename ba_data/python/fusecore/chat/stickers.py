@@ -8,7 +8,8 @@ from typing import Type, cast, override
 import bascenev1 as bs
 from bascenev1lib.actor.spaz import Spaz
 
-from fusecore.chat import ChatIntercept, get_players_from_client_id, are_we_host
+from fusecore.chat import ChatIntercept
+from fusecore.chat.utils import are_we_host, get_players_from_client_id
 
 STICKER_ATLAS: set[Type[ChatSticker]] = set()
 STICKER_DEFAULT: Type[ChatSticker] | None = None
@@ -109,7 +110,9 @@ def run_sticker(client_id: int, sticker: Type[ChatSticker]) -> None:
 
             if spaz:
                 with activity.context:
-                    SpazStickerCallout.show_sticker_billboard(spaz, sticker)  # type: ignore
+                    SpazStickerCallout.show_sticker_billboard(
+                        spaz, sticker  # type: ignore
+                    )
     else:
         pass
 
