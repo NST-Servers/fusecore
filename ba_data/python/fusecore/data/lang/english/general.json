@@ -9,6 +9,7 @@
     "remoteCodeWarning": "Heads up! Someone tried to run remote code\nvia the \"ballistica.net/devices\" website.\n\nPress \"Allow\" if you're the one using the\nCloud Console and know what you're doing.",
     "noWayText": "No way!",
     "dontShowAgainText": "Don't show this again",
+    "modLoadedText": "'${MODNAME}' by '${AUTHORS}' loaded!",
     "killFeed": {
         "leftText": "${NAME} scared ${VICTIM} to death.",
         "leftBetrayalText": "${NAME} disappointed ${VICTIM}.",
@@ -26,14 +27,6 @@
         "bumpSuicideText": "${NAME} had a fatal concussion.",
         "shatterText": "${NAME} shattered ${VICTIM}.",
         "shatterSuicideText": "${NAME} practiced Cryonics... poorly."
-    },
-    "partyQueue": {
-        "status": {
-            "queue": "Queued",
-            "join": "Joining",
-            "joinTry": "Attempting to join in ${A}..."
-        },
-        "onPartyNotice": "You're hosting a party,\nqueueing to another party will\ndisconnect players from yours.\nDo you wish to proceed?"
     },
     "seriesLength": {
         "titleText": "Series Length...",
@@ -86,5 +79,13 @@
         "cantUseName": "Can't use that name!",
         "queueCancelSignOff": "Queueing canceled due to log off.",
         "queueUnableToJoin": "Unable to join server."
+    },
+    "partyQueue": {
+        "status": {
+            "queue": "Queued",
+            "join": "Joining",
+            "joinTry": "Attempting to join in ${A}..."
+        },
+        "onPartyNotice": "You're hosting a party,\nqueueing to another party will\ndisconnect players from yours.\nDo you wish to proceed?"
     }
 }
