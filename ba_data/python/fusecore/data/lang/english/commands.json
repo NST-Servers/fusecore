@@ -1,7 +1,8 @@
 {
     "commands": {
         "error": "An error occurred while executing this command.",
-        "serveronly": "Command \"${CMD}\" is server-sided and can only be executed while hosting.",
+        "notallowed": "You cannot run this command.",
+        "notperms": "You don't have the permissions to run this command.",
         "notfound": "Command \"${CMD}\" not found."
     }
 }
