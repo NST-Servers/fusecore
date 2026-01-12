@@ -1,6 +1,7 @@
 """Ready-up module.
 Loads multiple modules and prepares them for usage.
 """
+
 # load order is important!
 # pylint: disable=wrong-import-order
 # pylint: disable=wrong-import-position
@@ -15,6 +16,7 @@ from fusecore._tools import (
 )
 
 from ._language import ExternalLanguageSubsystem, reload_language
+
 # patch our language class and re-set our language to execute our changes.
 obj_method_override(babase.LanguageSubsystem, ExternalLanguageSubsystem)
 reload_language()
@@ -35,6 +37,7 @@ from fusecore import (
 )
 
 from .chat import commands as _
+from .chat.commands import general as _
 from .chat import (
     stickers as _,
 )

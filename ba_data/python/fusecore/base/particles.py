@@ -429,7 +429,7 @@ def do_vfx(
 
 
 def particle_vfx(name: str):
-    """A decorator for particle summon functions
+    """Function decorator for particle summon functions
     that require a position and velocity to function.
 
     *(Your function is expected to receive
