@@ -132,3 +132,4 @@ class BanEntry:
 
 class RoleEntry:
     name: str = "My Role"
+    permission_level: int = 0

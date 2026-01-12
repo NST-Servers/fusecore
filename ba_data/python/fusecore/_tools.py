@@ -55,7 +55,7 @@ def obj_method_override(obj_to_override: object, obj_source: object) -> None:
             setattr(obj_to_override, name, v)
 
 
-def is_admin() -> bool:
+def running_game_as_sudo() -> bool:
     """Check if we are running this program as administrator / with sudo.
 
     Returns:

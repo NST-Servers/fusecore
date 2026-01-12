@@ -1,7 +1,11 @@
 """Utilities library."""
 
-from dataclasses import is_dataclass
 from enum import Enum
+from dataclasses import is_dataclass
+
+import bascenev1 as bs
+
+from fusecore._tools import is_server
 
 
 class NodeAlignment(Enum):
@@ -48,3 +52,12 @@ def parse_dict(obj, data: dict):
             parse_dict(current, v)
         else:
             setattr(obj, k, v)
+
+
+def lstr_server(lstr: bs.Lstr) -> bs.Lstr | str:
+    """Transforms an Lstr line into a string if we are
+    running in a server environment.
+    """
+    if is_server():
+        return lstr.evaluate()
+    return lstr
