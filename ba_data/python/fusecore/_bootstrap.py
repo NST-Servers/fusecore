@@ -1,6 +1,9 @@
 """Ready-up module.
 Loads multiple modules and prepares them for usage.
 """
+# load order is important!
+# pylint: disable=wrong-import-order
+# pylint: disable=wrong-import-position
 
 import bascenev1 as bs
 import babase
@@ -11,7 +14,11 @@ from fusecore._tools import (
     obj_method_override,
 )
 
-# load order is important!
+from ._language import ExternalLanguageSubsystem, reload_language
+# patch our language class and re-set our language to execute our changes.
+obj_method_override(babase.LanguageSubsystem, ExternalLanguageSubsystem)
+reload_language()
+
 from fusecore import (
     common,
     _preload,
@@ -26,12 +33,12 @@ from fusecore import (
     server,
     _modloader,
 )
+
+from .chat import commands as _
 from .chat import (
-    commands as _,
     stickers as _,
 )
 
-from ._language import ExternalLanguageSubsystem, reload_language
 
 common.init_dirs()
 
@@ -43,10 +50,7 @@ DiscordRPC = bs.app.register_subsystem(
     discordrpc.DiscordRichPresenceSubsystem()
 )
 ServerManager = server.FCServerManager()
-ModLoader = bs.app.register_subsystem(_modloader.ModLoaderSubsystem())
+ModLoader = _modloader.ModLoaderInstance
 
 
 add_devconsole_tab("Core Tools", FuseToolsDevTab)
-# patch our language class and re-set our language to execute our changes.
-obj_method_override(babase.LanguageSubsystem, ExternalLanguageSubsystem)
-reload_language()

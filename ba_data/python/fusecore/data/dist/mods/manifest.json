@@ -1,0 +1,29 @@
+{
+    "id": "author.awesome_mod",
+    "fusecore": {
+        "version": "alpha-1",
+        "api": 0
+    },
+    "bombsquad": {
+        "version": "1.7.60",
+        "build": [],
+        "api": 9
+    },
+    "name":        "My Awesome Mod",
+    "description": "This is my awesome mod!",
+    "authors":     ["Awesome Author"],
+
+    "assets": {
+        "main":     "./main.py",
+        "audio":    "./audio",
+        "meshes":   "./meshes",
+        "textures": "./textures"
+    },
+    
+    "tags": [],
+    "links": {
+        "source": "",
+        "website": "",
+        "social": ""
+    }
+}
