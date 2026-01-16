@@ -238,7 +238,7 @@ class Particle(FactoryActor):
         self.mesh_scale: float = 1.0
         self.shadow_size: float = 0.3
         self.color_texture: bs.Texture = self.factory.fetch("tex")
-        self.reflection: Literal["soft", "char", "powerup"] = "soft"
+        self.reflection: Literal["soft", "char", "powerup", "sharper"] = "soft"
         self.reflection_scale: list[float] = [1.0]
         self.gravity_scale: float = 1.0
         self.materials: list[bs.Material] = [particle_material]
@@ -304,6 +304,7 @@ class Particle(FactoryActor):
         t_ls = self.t_fade_in + self.lifespan
         t_total = self.t_fade_in + self.lifespan + self.t_fade_out
 
+        assert self.node
         self._animation_node = bs.animate(
             self.node,
             "mesh_scale",
@@ -346,7 +347,7 @@ class Particle(FactoryActor):
                     self.node,
                     "mesh_scale",
                     {
-                        0: self.node.mesh_scale,
+                        0: self.node.mesh_scale, # type: ignore
                         self.t_fade_out: 0,
                     },
                 )
