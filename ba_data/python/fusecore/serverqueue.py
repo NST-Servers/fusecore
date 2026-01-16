@@ -5,7 +5,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, override
+from typing import Any, Optional, override
 from babase._appsubsystem import AppSubsystem
 
 import bascenev1 as bs
@@ -32,7 +32,7 @@ ASSET_PATH: str = f"{CORE_DIR_NAME}/serverqueue"
 
 
 @dataclass
-class NoActivityMsg: ...
+class _NoActivityMsg: ...
 
 
 @dataclass
@@ -91,7 +91,9 @@ class ServerQueueSubsystem(AppSubsystem):
         )
 
     def persistency_check(self) -> None:
-        """Check if our activity and session have changed by hashing them repeatedly."""
+        """Check if our activity and session have changed
+        by checking the latest context we've stored.
+        """
         if self.status is QueueStatus.NONE:
             return
 
@@ -99,7 +101,7 @@ class ServerQueueSubsystem(AppSubsystem):
         # performance, even if just a little...
         ui_element = self._get_ui_element()
 
-        if isinstance(ui_element, NoActivityMsg) or ui_element is not None:
+        if isinstance(ui_element, _NoActivityMsg) or ui_element is not None:
             return
 
         if self._active_queue():
@@ -189,7 +191,7 @@ class ServerQueueSubsystem(AppSubsystem):
 
         ui_element = self._get_ui_element()
 
-        if isinstance(ui_element, NoActivityMsg):
+        if isinstance(ui_element, _NoActivityMsg):
             return
 
         if ui_element is None:
@@ -213,10 +215,10 @@ class ServerQueueSubsystem(AppSubsystem):
             activity.customdata[CUSTOMDATA_UI_ENTRY].delete(silent=silent)
             activity.customdata[CUSTOMDATA_UI_ENTRY] = None
 
-    def _get_ui_element(self) -> ServerQueueUIElement | NoActivityMsg | None:
+    def _get_ui_element(self) -> ServerQueueUIElement | _NoActivityMsg | None:
         activity = bs.get_foreground_host_activity()
         if activity is None:
-            return NoActivityMsg()
+            return _NoActivityMsg()
 
         return activity.customdata.get(CUSTOMDATA_UI_ENTRY, None)
 
@@ -243,9 +245,13 @@ class ServerQueueUIElement(bs.Actor):
         self.position = position
         self.align = align
 
-        self.sound_start: bui.Sound = bui.getsound(f"{ASSET_PATH}/start_queue")
-        self.sound_join: bui.Sound = bui.getsound(f"{ASSET_PATH}/join_attempt")
-        self.sound_leave: bui.Sound = bui.getsound("shieldDown")
+        self.sound_start: Optional[bui.Sound] = bui.getsound(
+            f"{ASSET_PATH}/start_queue"
+        )
+        self.sound_join: Optional[bui.Sound] = bui.getsound(
+            f"{ASSET_PATH}/join_attempt"
+        )
+        self.sound_leave: Optional[bui.Sound] = bui.getsound("shieldDown")
         self.icon_tex: list[bs.Texture] | None = [
             bs.gettexture(f"spinner{i}") for i in range(12)
         ]
@@ -365,6 +371,7 @@ class ServerQueueUIElement(bs.Actor):
         )
 
     def _animate_intro(self) -> None:
+        assert self.sound_start
         self.sound_start.play()
         # animate a quick fade-in for all node actors we created.
         for name, actor in self.node_elements.items():
@@ -447,6 +454,7 @@ class ServerQueueUIElement(bs.Actor):
 
     def delete(self, silent: bool = False) -> None:
         """Delete the node contents of this actor."""
+        assert self.sound_leave
         if not silent:
             self.sound_leave.play()
         self.on_expire()

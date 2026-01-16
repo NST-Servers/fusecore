@@ -1,3 +1,6 @@
+[MASTER]
+ignore-paths=.*\\(libs|lib)\\.*
+
 [FORMAT]
 # PEP-8 specifies 79 chars (that's right, not 80).
 # Update: switching to 80 to reclaim that extra char. There
