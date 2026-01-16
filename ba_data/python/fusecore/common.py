@@ -10,8 +10,11 @@ import bascenev1 as bs
 CORE_DIR_NAME: str = "fusecore"
 
 ENV_DIRECTORY = Path(bs.app.env.data_directory)
+
+assert bs.app.env.python_directory_user
 MODS_DIRECTORY = Path(bs.app.env.python_directory_user)
 
+assert bs.app.env.python_directory_app
 PYTHON_CORE_DIRECTORY = Path(
     bs.app.env.python_directory_app,
     CORE_DIR_NAME,
@@ -20,6 +23,9 @@ PYTHON_CORE_DIRECTORY = Path(
 
 DATA_DIRECTORY = Path(PYTHON_CORE_DIRECTORY, "data")
 """Path to our modded core data directory."""
+
+REPLAYS_DIRECTORY = Path(DATA_DIRECTORY, "replays")
+"""Path to our modded core's replays directory."""
 
 LIBS_DIRECTORY = Path(PYTHON_CORE_DIRECTORY, "libs")
 """Path to our modded core libraries directory."""
@@ -36,24 +42,24 @@ def init_dirs():
         os.makedirs(path, exist_ok=True)
 
 
-def vector3_spread(
-    vector: tuple[float, float, float],
-    spread_min: float = 1.0,
-    spread_max: float = 1.0,
-) -> tuple[float, float, float]:
-    """Spread a Vector3 using a Fibonnaci Sphere.
-    Used for spreading multiple objects around a specific area.
-    """
-    # FIXME: implement me!
-    raise RuntimeError("not implemented.")
+# def vector3_spread(
+#     vector: tuple[float, float, float],
+#     spread_min: float = 1.0,
+#     spread_max: float = 1.0,
+# ) -> tuple[float, float, float]:
+#     """Spread a Vector3 using a Fibonnaci Sphere.
+#     Used for spreading multiple objects around a specific area.
+#     """
+#     # FIXME: implement me!
+#     raise RuntimeError("not implemented.")
 
-    import math, random
+#     import math, random
 
-    # generate fibonnaci
+#     # generate fibonnaci
 
-    # spread randomly
+#     # spread randomly
 
-    return (1, 1, 1)
+#     return (1, 1, 1)
 
 
 def vector3_multfactor(
