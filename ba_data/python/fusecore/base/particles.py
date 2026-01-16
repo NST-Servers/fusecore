@@ -347,7 +347,7 @@ class Particle(FactoryActor):
                     self.node,
                     "mesh_scale",
                     {
-                        0: self.node.mesh_scale, # type: ignore
+                        0: self.node.mesh_scale,  # type: ignore
                         self.t_fade_out: 0,
                     },
                 )
