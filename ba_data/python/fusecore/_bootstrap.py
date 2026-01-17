@@ -23,6 +23,7 @@ reload_language()
 
 from fusecore import (
     common,
+    _music,
     _preload,
     _config,
     _stats,
@@ -54,6 +55,8 @@ DiscordRPC = bs.app.register_subsystem(
 )
 ServerManager = server.FCServerManager()
 ModLoader = _modloader.ModLoaderInstance
+
+setmusic = _music.MusicActions.setmusic
 
 
 add_devconsole_tab("Core Tools", FuseToolsDevTab)
