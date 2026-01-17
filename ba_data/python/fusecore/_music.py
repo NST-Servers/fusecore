@@ -164,7 +164,7 @@ class FuseCoreMusicSubsystemPatch(MusicSubsystem):
                 self._play_internal_music(musictype)
 
 
-def register_musicentry_enum(cls: Type[FuseMusicType]) -> None:
+def register_musicentry_enum(cls: Type[Enum]) -> None:
     """Register a MusicEntry enum into the game's soundtrack dict."""
     for e in cls:
         # ignore enum entries with no set "MusicEntry"
