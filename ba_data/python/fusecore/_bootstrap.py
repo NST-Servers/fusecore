@@ -59,4 +59,4 @@ ModLoader = _modloader.ModLoaderInstance
 setmusic = _music.MusicActions.setmusic
 
 
-add_devconsole_tab("Core Tools", FuseToolsDevTab)
+add_devconsole_tab("FuseCore", FuseToolsDevTab)
