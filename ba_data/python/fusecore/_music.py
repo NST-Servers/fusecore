@@ -169,7 +169,6 @@ def register_musicentry_enum(cls: Type[Enum]) -> None:
     for e in cls:
         # ignore enum entries with no set "MusicEntry"
         if not hasattr(e, "value") or not isinstance(e.value, MusicEntry):
-            print(f"ig {e}")
             continue
         enum_entry = e
         assert isinstance(enum_entry, MusicType)
