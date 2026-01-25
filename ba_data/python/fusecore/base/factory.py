@@ -3,9 +3,8 @@ shared in multiple parts of code and/or used often in runtime.
 """
 
 from __future__ import annotations
-from abc import abstractmethod
 from dataclasses import dataclass
-from typing import Any, Dict, Callable, Self, Type
+from typing import Any, Dict, Callable, Optional, Self, Type
 
 import logging
 
@@ -178,7 +177,8 @@ class FactoryClass:
 
     my_factory: Type[Factory]
     """Factory used by this FactoryClass instance."""
-    group_set: set | None = None
+
+    group_set: Optional[set[Any]] = None
     """Set to register this FactoryClass under."""
 
     @classmethod

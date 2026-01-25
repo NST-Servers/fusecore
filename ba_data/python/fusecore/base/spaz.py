@@ -3,13 +3,13 @@
 from __future__ import annotations
 import random
 from typing import (
+    Optional,
     Type,
     cast,
     override,
     Callable,
     Any,
     TYPE_CHECKING,
-    overload,
 )
 
 import logging
@@ -18,7 +18,7 @@ import bascenev1 as bs
 
 from bascenev1lib.actor import spaz
 from bascenev1lib.actor.spaz import BombDiedMessage
-from bascenev1lib.actor.bomb import Bomb as DeprecatedBomb
+from bascenev1lib.actor.bomb import Bomb as VanillaBomb
 from bascenev1lib.actor.spazfactory import SpazFactory as VanillaSpazFactory
 
 from ..base.spazfactory import (
@@ -28,12 +28,10 @@ from ..base.spazfactory import (
 )
 from ..base.bomb import (
     Bomb,
-    IceBomb,
-    ImpactBomb,
-    StickyBomb,
     LandMine,
+    BOMB_SET
 )
-from ..base.powerupbox import PowerupBoxMessage
+from ..base.powerupbox import PowerupBoxMessage, POWERUPBOX_SET
 from ..base.shared import PowerupSlotType
 
 if TYPE_CHECKING:
@@ -101,14 +99,8 @@ class Spaz(spaz.Spaz):
         #    if callable(v) or isinstance(v, (staticmethod, classmethod)):
         #        self._callback_wrap(name)
 
-        # COMPATIBILITY STUFF - IGNORE THESE VARIABLES!
         self.default_bomb_type: str
-        """### Don't use this!
-        We keep this for the sake of retrocompat.
-        Use ``self.default_bomb_class`` instead.
-        """
-        # handle deprecated bomb types for mod compatibility sake.
-        self._deprecated_bomb_type: str = (
+        self._str_bomb_type: str = (
             self.default_bomb_type or self.bomb_type or "normal"
         )
         self._compat_bomb_update(check_default=True)
@@ -395,7 +387,7 @@ class Spaz(spaz.Spaz):
         if isinstance(msg, bs.PowerupMessage):
             # legacy powerup handling
             return powerup_signaling(
-                self._handle_powerups_legacy(msg), msg.sourcenode
+                self._handle_powerups_classic(msg), msg.sourcenode
             )
 
         return False
@@ -783,7 +775,8 @@ class Spaz(spaz.Spaz):
         """Execute this spaz's shield."""
         if not self.shield or not self.shield_hitpoints:
             logging.warning(
-                '"self.kill_shield()" called while shield doesn\'t properly exist.',
+                '"self.kill_shield()" called while shield'
+                'doesn\'t properly exist.',
                 stack_info=True,
             )
             return
@@ -1001,7 +994,7 @@ class Spaz(spaz.Spaz):
         We keep this for the sake of retrocompat.
         Use ``self.active_bomb_class`` instead.
         """
-        return self._deprecated_bomb_type
+        return self._str_bomb_type
 
     @bomb_type.setter
     def bomb_type(self, btype: str) -> None:
@@ -1009,7 +1002,7 @@ class Spaz(spaz.Spaz):
         We keep this for the sake of retrocompat.
         Use ``self.active_bomb_class`` instead.
         """
-        self._deprecated_bomb_type = btype
+        self._str_bomb_type = btype
         self._compat_bomb_update()
 
     @override
@@ -1020,7 +1013,7 @@ class Spaz(spaz.Spaz):
         """
         # NOTE: Bombs have the same methods as the vanilla ones, but it could
         # cause issues in particular circumstances... Keep that in mind!
-        return cast(DeprecatedBomb, self.drop_bomb_class())
+        return cast(VanillaBomb, self.drop_bomb_class())
 
     def _compat_bomb_update(self, check_default: bool = False) -> None:
         """transform our ``self.default_bomb_type`` into a
@@ -1029,79 +1022,41 @@ class Spaz(spaz.Spaz):
         ### This function is here for compatibility reasons, don't use this!
         """
 
-        def log_mistake() -> None:
-            logging.warning(
-                'spaz: "_compat_bomb_update" was called with'
-                ' an invalid "bomb_type".'
-                " Did you change the wrong variable?\n"
-                "If you're working with FuseCore, the"
-                ' variable name is now "self.active_bomb"!',
-                stack_info=True,
-            )
-
-        def match_bombtype(to_check: str) -> Type[Bomb]:
-            match to_check:
-                case "normal":
-                    return Bomb
-                case "ice":
-                    return IceBomb
-                case "land_mine":
-                    return LandMine
-                case "sticky":
-                    return StickyBomb
-                case "impact":
-                    return ImpactBomb
-                case _:
-                    log_mistake()
-                    return Bomb
-
-        bomb_class = match_bombtype(
+        str_type = (
             self.default_bomb_type
             if check_default
-            else self._deprecated_bomb_type
+            else self._str_bomb_type
         )
+        bomb_class: Optional[Type[Bomb]] = None
+        for bomb in BOMB_SET:
+            if str_type == bomb.bomb_type:
+                bomb_class = bomb
+        if bomb_class is None:
+            logging.warning(
+                "spaz: '_compat_bomb_update' was called with"
+                " invalid bomb_type: '%s'", str_type,
+                stack_info=True,
+            )
+            return
         self.active_bomb_class = bomb_class
 
-    def _handle_powerups_legacy(self, msg: bs.PowerupMessage) -> bool:
-        """DEPRECATED handling for 'bs.PowerupMessage'."""
+    def _handle_powerups_classic(self, msg: bs.PowerupMessage) -> bool:
+        """Old-school handling for 'bs.PowerupMessage'."""
         if not self.is_alive():
             return False
 
-        powerup: Type[SpazPowerup] | None = None
-
-        # FIXME: nested import of humilliation
-        # curse you, deprecation!
-        from fusecore.base.powerup import (
-            TripleBombsPowerup,
-            StickyBombsPowerup,
-            IceBombsPowerup,
-            ImpactBombsPowerup,
-            LandMinesPowerup,
-            PunchPowerup,
-            ShieldPowerup,
-            HealthPowerup,
-            CursePowerup,
-        )
-
-        match msg.poweruptype:
-            case "triple_bombs":
-                powerup = TripleBombsPowerup
-            case "land_mines":
-                powerup = LandMinesPowerup
-            case "impact_bombs":
-                powerup = ImpactBombsPowerup
-            case "sticky_bombs":
-                powerup = StickyBombsPowerup
-            case "punch":
-                powerup = PunchPowerup
-            case "shield":
-                powerup = ShieldPowerup
-            case "curse":
-                powerup = CursePowerup
-            case "ice_bombs":
-                powerup = IceBombsPowerup
-            case "health":
-                powerup = HealthPowerup
+        powerup: Optional[Type[SpazPowerup]] = None
+        # get the proper powerup via powerupbox name
+        for pb in POWERUPBOX_SET:
+            if msg.poweruptype == pb.name:
+                powerup = pb.powerup_to_grant
+        if powerup is None:
+            logging.warning(
+                "spaz: '_handle_powerups_classic' called"
+                "  with an invalid value: '%s'", msg.poweruptype,
+                stack_info=True
+            )
+            return False
 
         return self._handle_powerups(
             PowerupBoxMessage(
