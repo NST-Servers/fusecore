@@ -180,10 +180,12 @@ class PowerupBox(FactoryActor):
     Category: **Gameplay Classes**
     """
 
+    # keep these
     my_factory = PowerupBoxFactory
-    """Factory used by this FactoryClass instance."""
     group_set = POWERUPBOX_SET
-    """Set to register this FactoryClass under."""
+
+    name: str
+    """Name given to this powerup box. Must be unique."""
 
     texture_name: str = "bar"
     """Texture name applied to the box.
@@ -216,6 +218,11 @@ class PowerupBox(FactoryActor):
     @classmethod
     def register(cls) -> None:
         cls._register_texture()
+        for pb in POWERUPBOX_SET:
+            if cls.name == pb.name:
+                raise NameError(
+                    "can't register 2 powerups with the same name."
+                )
         return super().register()
 
     @staticmethod
@@ -393,6 +400,7 @@ PowerupBox.register_resources()
 
 
 class TripleBombsPowerupBox(PowerupBox):
+    name = "triple_bombs"
     texture_name = "powerupBomb"
     powerup_to_grant = TripleBombsPowerup
     weight = 3.0
@@ -403,6 +411,7 @@ TripleBombsPowerupBox.register()
 
 
 class StickyBombsPowerupBox(PowerupBox):
+    name = "sticky_bombs"
     texture_name = "powerupStickyBombs"
     powerup_to_grant = StickyBombsPowerup
     weight = 3.0
@@ -412,6 +421,7 @@ StickyBombsPowerupBox.register()
 
 
 class IceBombsPowerupBox(PowerupBox):
+    name = "ice_bombs"
     texture_name = "powerupIceBombs"
     powerup_to_grant = IceBombsPowerup
     weight = 3.0
@@ -421,6 +431,7 @@ IceBombsPowerupBox.register()
 
 
 class ImpactBombsPowerupBox(PowerupBox):
+    name = "impact_bombs"
     texture_name = "powerupImpactBombs"
     powerup_to_grant = ImpactBombsPowerup
     weight = 3.0
@@ -430,6 +441,7 @@ ImpactBombsPowerupBox.register()
 
 
 class LandMinesPowerupBox(PowerupBox):
+    name = "land_mines"
     texture_name = "powerupLandMines"
     powerup_to_grant = LandMinesPowerup
     weight = 2.0
@@ -439,6 +451,7 @@ LandMinesPowerupBox.register()
 
 
 class PunchPowerupBox(PowerupBox):
+    name = "punch"
     texture_name = "powerupPunch"
     powerup_to_grant = PunchPowerup
     weight = 3.0
@@ -448,6 +461,7 @@ PunchPowerupBox.register()
 
 
 class ShieldPowerupBox(PowerupBox):
+    name = "shield"
     texture_name = "powerupShield"
     powerup_to_grant = ShieldPowerup
     weight = 2.0
@@ -457,6 +471,7 @@ ShieldPowerupBox.register()
 
 
 class HealthPowerupBox(PowerupBox):
+    name = "health"
     texture_name = "powerupHealth"
     powerup_to_grant = HealthPowerup
     weight = 1.0
@@ -466,6 +481,7 @@ HealthPowerupBox.register()
 
 
 class CursePowerupBox(PowerupBox):
+    name = "curse"
     texture_name = "powerupCurse"
     powerup_to_grant = CursePowerup
     weight = 1.0

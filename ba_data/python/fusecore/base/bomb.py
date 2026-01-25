@@ -43,7 +43,7 @@ class BombFactory(Factory):
     """Library class containing shared bomb
     data to prevent gameplay hiccups."""
 
-    IDENTIFIER = "_bomb_factory"
+    IDENTIFIER: str = "_bomb_factory"
 
     def __init__(self) -> None:
         super().__init__()
@@ -163,18 +163,25 @@ class Bomb(FactoryActor):
     Category: **Gameplay Classes**
     """
 
+    # keep these
     my_factory = BombFactory
-    """Factory used by this FactoryClass instance."""
     group_set = BOMB_SET
-    """Set to register this FactoryClass under."""
 
-    bomb_type = "normal"
+    bomb_type: str = "normal"
     """Name of this bomb. Must be unique."""
+
+    @classmethod
+    def register(cls) -> None:
+        for bomb in BOMB_SET:
+            if cls.bomb_type == bomb.bomb_type:
+                raise NameError(
+                    "can't register 2 bombs with the same name."
+                )
+        return super().register()
 
     @staticmethod
     def resources() -> dict:
-        """
-        Register resources used by this bomb actor.
+        """Register resources used by this bomb actor.
         Models, sounds and textures included here are
         preloaded on game launch to prevent hiccups while
         you play!
@@ -306,7 +313,9 @@ class Bomb(FactoryActor):
                 FUSE_WARNING.add(self.bomb_type)
         elif not self.body:
             # adjust accordingly
-            self.node.fuse_length = 1.0 if self.visible_fuse else 0.0
+            self.node.fuse_length = (  # type: ignore
+                1.0 if self.visible_fuse else 0.0
+            )
             if self.fuse_time and self.fuse_time > 0:
                 bs.animate(
                     self.node, "fuse_length", {0.0: 1.0, self.fuse_time: 0.0}
@@ -468,7 +477,7 @@ class StickyBomb(Bomb):
         self.blast_class = StickyBlast
 
         # Some more attributes
-        self._last_sticky_sound_time: int = -9999
+        self._last_sticky_sound_time: float = -9999.9
 
     def _handle_dropped(self) -> None:
         """We've been dropped!"""
