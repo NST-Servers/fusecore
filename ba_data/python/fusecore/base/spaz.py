@@ -563,14 +563,6 @@ class Spaz(spaz.Spaz):
         if msg.hit_type == "impact":
             fx_impact_particles()
 
-        # If we're dead, take a look at the smoothed damage value
-        # (which gives us a smoothed average of recent damage) and shatter
-        # us if its grown high enough.
-        if self.hitpoints <= 0:
-            if damage_smoothed >= 1000:
-                self.shatter()
-            return
-
         # It's kinda crappy to die from impacts, so lets reduce
         # impact damage by a reasonable amount *if* it'll keep us alive.
         if msg.hit_type == "impact" and damage >= self.hitpoints:
@@ -587,6 +579,14 @@ class Spaz(spaz.Spaz):
             self.node.hold_node = None
 
         self.do_damage(damage, death_type=bs.DeathType.IMPACT)
+
+        # If we're dead, take a look at the smoothed damage value
+        # (which gives us a smoothed average of recent damage) and shatter
+        # us if its grown high enough.
+        if self.hitpoints <= 0:
+            if damage_smoothed >= 1000:
+                self.shatter()
+            return
 
         # If we're cursed, *any* damage blows us up.
         if self._cursed and damage > 0:
