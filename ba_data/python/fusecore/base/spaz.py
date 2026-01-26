@@ -26,11 +26,7 @@ from ..base.spazfactory import (
     SpazComponent,
     SPAZ_COMPONENTS,
 )
-from ..base.bomb import (
-    Bomb,
-    LandMine,
-    BOMB_SET
-)
+from ..base.bomb import Bomb, LandMine, BOMB_SET
 from ..base.powerupbox import PowerupBoxMessage, POWERUPBOX_SET
 from ..base.shared import PowerupSlotType
 
@@ -776,7 +772,7 @@ class Spaz(spaz.Spaz):
         if not self.shield or not self.shield_hitpoints:
             logging.warning(
                 '"self.kill_shield()" called while shield'
-                'doesn\'t properly exist.',
+                "doesn't properly exist.",
                 stack_info=True,
             )
             return
@@ -1023,9 +1019,7 @@ class Spaz(spaz.Spaz):
         """
 
         str_type = (
-            self.default_bomb_type
-            if check_default
-            else self._str_bomb_type
+            self.default_bomb_type if check_default else self._str_bomb_type
         )
         bomb_class: Optional[Type[Bomb]] = None
         for bomb in BOMB_SET:
@@ -1034,7 +1028,8 @@ class Spaz(spaz.Spaz):
         if bomb_class is None:
             logging.warning(
                 "spaz: '_compat_bomb_update' was called with"
-                " invalid bomb_type: '%s'", str_type,
+                " invalid bomb_type: '%s'",
+                str_type,
                 stack_info=True,
             )
             return
@@ -1053,8 +1048,9 @@ class Spaz(spaz.Spaz):
         if powerup is None:
             logging.warning(
                 "spaz: '_handle_powerups_classic' called"
-                "  with an invalid value: '%s'", msg.poweruptype,
-                stack_info=True
+                "  with an invalid value: '%s'",
+                msg.poweruptype,
+                stack_info=True,
             )
             return False
 

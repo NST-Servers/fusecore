@@ -1,7 +1,8 @@
 """Custom powerups that are easier to create and manage."""
 
 from __future__ import annotations
-from typing import Type, override, Any, Sequence
+import logging
+from typing import Optional, Type, Union, override, Any, Sequence
 from dataclasses import dataclass
 
 import random
@@ -36,6 +37,10 @@ from ..base.powerup import (
 )
 
 POWERUPBOX_SET: set[Type[PowerupBox]] = set()
+
+
+def _log() -> logging.Logger:
+    return logging.getLogger(__name__)
 
 
 @dataclass
@@ -106,7 +111,8 @@ class PowerupBoxFactory(Factory):
             for _i in range(int(freq)):
                 self._powerupdist.append(powerup)
 
-    def get_powerup_box_distribution(self) -> dict[Type[PowerupBox], float]:
+    @staticmethod
+    def get_powerup_box_distribution() -> dict[Type[PowerupBox], float]:
         """Return the **default** weight of all powerup boxes.
 
         To get the *active* powerup distribution, consult rulesets.
@@ -220,9 +226,7 @@ class PowerupBox(FactoryActor):
         cls._register_texture()
         for pb in POWERUPBOX_SET:
             if cls.name == pb.name:
-                raise NameError(
-                    "can't register 2 powerups with the same name."
-                )
+                raise NameError("can't register 2 powerups with the same name.")
         return super().register()
 
     @staticmethod
@@ -490,21 +494,91 @@ class CursePowerupBox(PowerupBox):
 CursePowerupBox.register()
 
 
-def _retro_translate_args(
-    position: Sequence[float] = (0.0, 1.0, 0.0),
-    poweruptype: str = "triple_bombs",
-    expire: bool = True,
-):
-    del poweruptype
-    return {"position": position, "velocity": (0, 0, 0), "expire": expire}
+def get_powerupbox_from_name(name: str) -> Optional[Type[PowerupBox]]:
+    """Get a FuseCore PowerupBox class from their name.
+    If no matching powerupbox is found, returns with None.
+    """
+    for pwp in PowerupBoxFactory.get_powerup_box_distribution():
+        if pwp.name == name:
+            return pwp
+    return None
 
 
-# NOTE: is this still not working for co-op modes or
-#       am I out of touch with this snippet?
-def _powerup_method_wrap(powerup_classtype: Type[powerupbox.PowerupBox]):
-    """Wrapper to keep old PowerupBox code working."""
+def get_random_powerupbox_class_type(
+    exclude: Union[list[Type[PowerupBox]], list[str]],
+) -> Optional[Type[PowerupBox]]:
+    """Get a random FuseCore PowerupBox class, considering powerupbox weights."""
+    pwp_dist = PowerupBoxFactory.get_powerup_box_distribution()
+    # remove excluded items
+    for pwp in pwp_dist.copy():
+        if pwp in exclude or pwp.name in exclude:
+            pwp_dist.pop(pwp)
+    # exit with nothing if we popped all available powerups
+    if not pwp_dist:
+        return None
+    # choose a powerupbox considering weights
+    choice_population = list(pwp_dist.keys())
+    choice_weights = list(pwp_dist.values())
+    choice = random.choices(
+        population=choice_population, weights=choice_weights, k=1
+    )[0]
+    return choice
 
-    def wrapper(*args, **kwargs):
+
+class RandomPowerupReplace(powerupbox.PowerupBoxFactory):
+
+    def get_random_powerup_type(
+        self: powerupbox.PowerupBoxFactory,
+        forcetype: str | None = None,
+        excludetypes: list[str] | None = None,
+    ) -> str:
+        """Returns a random powerup type (string).
+
+        See bs.Powerup.poweruptype for available type values.
+
+        There are certain non-random aspects to this; a 'curse' powerup,
+        for instance, is always followed by a 'health' powerup (to keep things
+        interesting). Passing 'forcetype' forces a given returned type while
+        still properly interacting with the non-random aspects of the system
+        (ie: forcing a 'curse' powerup will result
+        in the next powerup being health).
+        """
+        default_powerup: str = "health"
+
+        def r(t: str) -> str:
+            self._lastpoweruptype = t
+            return t
+
+        if excludetypes is None:
+            excludetypes = []
+
+        if forcetype:
+            return r(forcetype)
+
+        # If the last one was a curse, make this one a health to
+        # provide some hope.
+        if self._lastpoweruptype == "curse":
+            return r("health")
+
+        pwp_class = get_random_powerupbox_class_type(exclude=excludetypes)
+        if pwp_class is None:
+            return r(default_powerup)
+
+        ptype = pwp_class.name
+        self._lastpoweruptype = ptype
+        return r(ptype)
+
+
+def _powerup_class_wrap(powerup_classtype: Type[powerupbox.PowerupBox]):
+    """PowerupBox wrapper.
+    Converts old powerup calls into our new class.
+    """
+
+    def wrapper(
+        position: Sequence[float] = (0.0, 1.0, 0.0),
+        poweruptype: str = "triple_bombs",
+        expire: bool = True,
+    ):
         # Try getting our own powerupboxes in there.
         # If we fail, rather than crushing this innocent player's dreams...
         # ...very awkwardly return the default function instead.
@@ -515,27 +589,35 @@ def _powerup_method_wrap(powerup_classtype: Type[powerupbox.PowerupBox]):
                 getattr(activity, "_excluded_powerups", []) or []
             )
 
-            # Get the powerup type from kwargs or args
-            powerup_type = kwargs.get("poweruptype", None)
-            if powerup_type is None and args:
-                # If it's in args, it should be the second argument based on the function signature
-                if len(args) > 1:
-                    powerup_type = args[1]
-
             # If this powerup type is excluded, use the original function
-            if powerup_type is not None and powerup_type in excluded_powerups:
-                return powerup_classtype(*args, **kwargs)
+            # FIXME: this doesnt feel right... look into this?
+            if poweruptype is not None and poweruptype in excluded_powerups:
+                _log().info('poweruptype "%s" is excluded, panic!', poweruptype)
+                return powerup_classtype(position, poweruptype, expire)
 
-            pwpclass: Type[
-                PowerupBox
-            ] = PowerupBoxFactory.instance().get_random_powerup_box(
-                exclude=excluded_powerups
+            pwpclass = get_powerupbox_from_name(poweruptype)
+            # if we fail to get a fc powerup, use the original function
+            if pwpclass is None:
+                _log().info('no fc powerup "%s"', pwpclass)
+                return powerup_classtype(position, poweruptype, expire)
+        except (ValueError, AttributeError) as exc:
+            # log and awkwardly return our default box call if we fail
+            _log().warning(
+                'failed to get fc poweruptype: "%s", falling back to vanilla.',
+                exc,
+                stack_info=True,
             )
-        except (ValueError, AttributeError):
-            return powerup_classtype(*args, **kwargs)
-        return pwpclass(**_retro_translate_args(*args, **kwargs))
+            return powerup_classtype(position, poweruptype, expire)
+        _log().info('returned fc powerup "%s"', pwpclass.name)
+        return (
+            # return our own powerup class
+            pwpclass(position=position, velocity=(0, 0, 0), expire=expire)
+        )
 
     return wrapper
 
 
-powerupbox.PowerupBox = _powerup_method_wrap(powerupbox.PowerupBox)
+powerupbox.PowerupBoxFactory.get_random_powerup_type = (
+    RandomPowerupReplace.get_random_powerup_type
+)
+powerupbox.PowerupBox = _powerup_class_wrap(powerupbox.PowerupBox)

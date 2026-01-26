@@ -174,9 +174,7 @@ class Bomb(FactoryActor):
     def register(cls) -> None:
         for bomb in BOMB_SET:
             if cls.bomb_type == bomb.bomb_type:
-                raise NameError(
-                    "can't register 2 bombs with the same name."
-                )
+                raise NameError("can't register 2 bombs with the same name.")
         return super().register()
 
     @staticmethod
