@@ -38,6 +38,12 @@ class AssetLoadManager:
         self._check_file_updates()  # silent update to generate hash
         threading.Thread(target=self._watch_loop, daemon=True).start()
 
+    def force_file_update(self) -> None:
+        """Force our file list to update with no update, preventing the
+        next asset reload if the file list has changed.
+        """
+        self._check_file_updates()
+
     def _watch_loop(self):
         while True:
             if self._check_file_updates():
@@ -48,8 +54,8 @@ class AssetLoadManager:
     def _update(self):
         with self._lock:
             if self._reload_requested:
-                self._reload_requested = False
                 babase.reload_media()
+            self._reload_requested = False
 
     def _check_file_updates(self) -> bool:
         latest = 0
@@ -66,3 +72,6 @@ class AssetLoadManager:
             return True
 
         return False
+
+
+AssetLoadInstance = AssetLoadManager()
