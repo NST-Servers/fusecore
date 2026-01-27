@@ -22,6 +22,7 @@ import hashlib
 import threading
 
 import importlib
+import zipfile
 
 # import importlib.util
 # from importlib.abc import MetaPathFinder, Loader
@@ -35,7 +36,7 @@ from fusecore.utils import parse_dict
 from fusecore._preload import AssetLoadInstance
 
 from ._tools import is_server
-from .common import CORE_DIR_NAME, MODS_DIRECTORY
+from .common import CORE_DIR_NAME, MODS_DIRECTORY, EXTERNAL_DATA_DIRECTORY
 
 
 def _log() -> logging.Logger:
@@ -422,6 +423,32 @@ class ModLoaderSubsystem(AppSubsystem):
             os.makedirs(get_mods_resource_dir("textures"), exist_ok=True)
             os.makedirs(get_mods_resource_dir("audio"), exist_ok=True)
         os.makedirs(get_mods_resource_dir("meshes"), exist_ok=True)
+
+    def archive_mod(self, mod_id: str) -> None:
+        """Compress a mod by providing it's ID."""
+        # TODO: should probably move this into its own function.
+        mod_entry: Optional[ModEntry] = None
+        for mod in self._mod_entries.values():
+            if mod_id == mod.id:
+                mod_entry = mod
+                break
+        if mod_entry is None:
+            raise NameError(f'mod with id "{mod_id}" not found.')
+
+        if mod_entry.type is not ModType.DIRECTORY:
+            _log().warning('mod "%s" is not a directory mod type.', mod_id)
+            return
+        assert mod_entry.manifest
+
+        out_path = Path(EXTERNAL_DATA_DIRECTORY, ".bin")
+        os.makedirs(out_path, exist_ok=True)
+
+        with zipfile.ZipFile(
+            Path(out_path, f"{mod_entry.manifest.name}.fcmod"), "w"
+        ) as archive:
+            for file_path in mod_entry.path.rglob("*"):
+                archive.write(file_path, file_path.relative_to(mod_entry.path))
+        _log().info('compressed "%s" to "%s"', mod_id, out_path)
 
     def get_mod_entries(self) -> dict[str, ModEntry]:
         """Returns all known mod entries."""
