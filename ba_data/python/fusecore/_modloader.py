@@ -10,19 +10,17 @@ from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 from types import ModuleType
-from typing import Literal, Optional, TypedDict, Union, override
+from typing import Literal, Optional, TypedDict, override
 
-import os
+# import os
 import sys
 import time
 import json
 import shutil
 import logging
-import hashlib
-import threading
-
-import importlib
 import zipfile
+import importlib
+import threading
 
 # import importlib.util
 # from importlib.abc import MetaPathFinder, Loader
@@ -85,14 +83,12 @@ def get_mods_resource_dir(
 ) -> Path:
     """Get our BombSquad dirs for mod assets."""
     return Path(
-        os.path.join(
-            os.path.abspath(bs.app.env.data_directory),
-            "ba_data",
-            f"{resource}2",
-            CORE_DIR_NAME,
-            "mods",
-            "ext",
-        )
+        Path(bs.app.env.data_directory).absolute(),
+        "ba_data",
+        f"{resource}2",
+        CORE_DIR_NAME,
+        "mods",
+        "ext",
     )
 
 
@@ -196,10 +192,10 @@ class ModEntry:
             # walk through dirs and check if any
             # files have had their timestamps updated
             # (which usually means they changed)
-            for p, _, fl in os.walk(self.path):
+            for p, _, fl in self.path.walk():
                 for f in sorted(fl):
                     try:
-                        file = Path(os.path.join(p, f))
+                        file = Path(p, f)
                         mtime = file.stat().st_mtime_ns
                         latest = max(latest, mtime)
                     except OSError:
@@ -294,7 +290,7 @@ class ModEntry:
             if source_dir is None:
                 return None
             # dir_path from source call
-            dst_path = get_abspath(source_dir, self.path)
+            dst_path = Path(self.path, source_dir).absolute()
             # only set path if it actually exists.
             if dst_path.exists():
                 return dst_path
@@ -420,9 +416,9 @@ class ModLoaderSubsystem(AppSubsystem):
         if is_server() is False:
             # servers don't care about textures or audio assets
             # only meshes are relevant.
-            os.makedirs(get_mods_resource_dir("textures"), exist_ok=True)
-            os.makedirs(get_mods_resource_dir("audio"), exist_ok=True)
-        os.makedirs(get_mods_resource_dir("meshes"), exist_ok=True)
+            get_mods_resource_dir("textures").mkdir(exist_ok=True)
+            get_mods_resource_dir("audio").mkdir(exist_ok=True)
+        get_mods_resource_dir("meshes").mkdir(exist_ok=True)
 
     def archive_mod(self, mod_id: str) -> None:
         """Compress a mod by providing it's ID."""
@@ -441,7 +437,7 @@ class ModLoaderSubsystem(AppSubsystem):
         assert mod_entry.manifest
 
         out_path = Path(EXTERNAL_DATA_DIRECTORY, ".bin")
-        os.makedirs(out_path, exist_ok=True)
+        out_path.mkdir(exist_ok=True)
 
         with zipfile.ZipFile(
             Path(out_path, f"{mod_entry.manifest.name}.fcmod"), "w"
@@ -494,14 +490,16 @@ class ModLoaderSubsystem(AppSubsystem):
         # mod scan, as the user could've gone and gotten new mods.
         self.scan_for_mods()
 
-    def add_scan_path(self, path: str) -> None:
+    def add_scan_path(self, scan_path: str) -> None:
         """Add a path to our paths to scan our mods at."""
-        if not os.path.exists(path):
-            raise FileNotFoundError(f'"{path}" doesn\'t exist.')
-        if not os.path.isdir(path):
-            raise NotADirectoryError(f'"{path}" is not a valid path.')
+        path = Path(scan_path)
 
-        self.dirs_to_scan.append(Path(path))
+        if not path.exists():
+            raise FileNotFoundError(f'"{scan_path}" doesn\'t exist.')
+        if not path.is_dir():
+            raise NotADirectoryError(f'"{scan_path}" is not a valid path.')
+
+        self.dirs_to_scan.append(path)
 
     def _thread_scan(self) -> None:
         while True:
@@ -526,7 +524,7 @@ class ModLoaderSubsystem(AppSubsystem):
         valid_list: list[Path] = []
         # get every subpath from the provided path and filter out
         # any invalid subpaths that we might not wanna scan.
-        for subpath in os.listdir(path):
+        for subpath in path.iterdir():
             full_path = Path(path, subpath).absolute()
             if self._is_path_valid_for_scan(full_path):
                 valid_list.append(full_path)
@@ -541,7 +539,7 @@ class ModLoaderSubsystem(AppSubsystem):
         found_manifests: list[Path] = []
 
         # find and list all manifests found in a folder
-        for infile in os.listdir(dir_path):
+        for infile in dir_path.iterdir():
             file_path = Path(dir_path, infile)
             if file_path.name in VALID_MANIFESTS:
                 found_manifests.append(file_path)
@@ -708,7 +706,7 @@ class ModLoaderSubsystem(AppSubsystem):
 
     def _read_mod_manifest(self, path: Path) -> Optional[dict]:
         for fname in ["manifest", "mod", "metadata"]:
-            manifest_path = Path(os.path.join(path, f"{fname}.json"))
+            manifest_path = Path(path, f"{fname}.json")
             if not (manifest_path.exists() and manifest_path.is_file()):
                 continue
 
@@ -725,47 +723,25 @@ class ModLoaderSubsystem(AppSubsystem):
 
     def migrate_files(
         self,
-        source: Path,
-        destination: Path,
-        hashname: str,
+        src_dir: Path,
+        dst_dir: Path,
+        mod_id: str,
         allowed_filetypes: list[str] | None = None,
     ):
         """Move files of a specific type from a dir to another."""
         if allowed_filetypes is None:
             allowed_filetypes = []
 
-        if source.exists():
-            to_path = get_abspath(
-                hashname,
-                destination,
-            )
-            os.makedirs(to_path, exist_ok=True)
-            for filename in os.listdir(source):
-                filepath = get_abspath(filename, source)
+        if src_dir.exists():
+            dst_path = Path(
+                dst_dir,
+                mod_id,
+            ).absolute()
+            dst_path.mkdir(exist_ok=True)
+            for filename in src_dir.iterdir():
+                filepath = Path(src_dir, filename).absolute()
                 if filepath.suffix in allowed_filetypes:
-                    shutil.copy(filepath, to_path)
-
-    def _generate_package_name(self, manifest: dict) -> str:
-        safety_hash = hashlib.md5(f"{manifest}".encode()).hexdigest()
-
-        def built_str(text: str) -> str:
-            text = text.strip()
-            text = "".join([c for c in text if c.isascii()])
-            text = text.replace(" ", "_")
-            text = text.lower()
-            return text
-
-        mod_name: str = (
-            built_str(manifest.get("name", "")) or f"fcmod_{safety_hash}"
-        )
-        mod_author: str = built_str(manifest.get("author", "")) or "no_author"
-
-        return f"{mod_name}.{mod_author}"
-
-
-def get_abspath(rel: Union[Path, str], main: Union[Path, str]) -> Path:
-    """Get the absolute path of a mix of main and relative path."""
-    return Path(os.path.join(main, rel)).absolute()
+                    shutil.copy(filepath, dst_path)
 
 
 ModLoaderInstance = bs.app.register_subsystem(ModLoaderSubsystem())
