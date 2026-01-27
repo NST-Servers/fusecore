@@ -30,7 +30,9 @@ import bascenev1 as bs
 import bauiv1 as bui
 
 from babase._appsubsystem import AppSubsystem
+
 from fusecore.utils import parse_dict
+from fusecore._preload import AssetLoadInstance
 
 from ._tools import is_server
 from .common import CORE_DIR_NAME, MODS_DIRECTORY
@@ -349,6 +351,10 @@ class ModEntry:
                 self.id,
                 [".bob", ".cob"],
             )
+        # FIXME: we force a file update to prevent unnecessary flickering,
+        # however! we should only do this for INCOMING assets; any updated
+        # textures should trigger this, and immediately.
+        AssetLoadInstance.force_file_update()
         # load the main script.
         if not path_main:
             return False

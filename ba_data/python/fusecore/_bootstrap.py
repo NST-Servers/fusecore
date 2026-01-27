@@ -46,7 +46,7 @@ from .chat import (
 
 common.init_dirs()
 
-_PreloadManager = _preload.AssetLoadManager()
+_PreloadManager = _preload.AssetLoadInstance
 config = _config.ConfigSystem()
 stats = _stats.StatsSystem()
 ServerQueue = bs.app.register_subsystem(serverqueue.ServerQueueSubsystem())
