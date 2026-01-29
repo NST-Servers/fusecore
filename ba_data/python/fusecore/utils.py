@@ -2,6 +2,7 @@
 
 from enum import Enum
 from dataclasses import is_dataclass
+from typing import Literal
 
 import bascenev1 as bs
 
@@ -33,6 +34,7 @@ class NodeAlignment(Enum):
         """Get a proper 'v_align' value."""
         return self.value[1]
 
+RTYPES = Literal["soft", "char", "powerup", "sharper"]
 
 def parse_dict(obj, data: dict):
     """Parse dictionary items as variables to a class

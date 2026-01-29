@@ -1,7 +1,9 @@
-"""Customizable bombs from core."""
+"""Custom bomb library from FuseCore.
+Allows for easier bomb creation and customization.
+"""
 
 from __future__ import annotations
-from typing import override, Any, Sequence, Callable, Type
+from typing import override, Any, Callable, Type
 
 import random
 import logging
@@ -15,6 +17,7 @@ from bascenev1lib.actor.bomb import (
     ArmMessage,
     WarnMessage,
 )
+from fusecore.utils import RTYPES
 
 from ..base.blast import (
     Blast,
@@ -197,8 +200,8 @@ class Bomb(FactoryActor):
 
     def __init__(
         self,
-        position: Sequence[float] = (0, 0, 0),
-        velocity: Sequence[float] = (0, 0, 0),
+        position: tuple[float, float, float] = (0, 0, 0),
+        velocity: tuple[float, float, float] = (0, 0, 0),
         source_player: bs.Player | None = None,
         owner: bs.Node | None = None,
     ) -> None:
@@ -228,7 +231,7 @@ class Bomb(FactoryActor):
         self.body: str | None = None
         self.scale: float = 1.0
         self.mesh_scale: float = 1.0
-        self.rtype: str = "sharper"
+        self.rtype: RTYPES = "sharper"
         self.rscale: float = 1.8
         self.shadow_size: float = 0.3
 

@@ -14,6 +14,7 @@ from bascenev1lib.gameutils import SharedObjects
 from bascenev1lib.mainmenu import MainMenuActivity
 
 from fusecore.common import vector3_multfactor
+from fusecore.utils import RTYPES
 
 from .factory import (
     Factory,
@@ -238,7 +239,7 @@ class Particle(FactoryActor):
         self.mesh_scale: float = 1.0
         self.shadow_size: float = 0.3
         self.color_texture: bs.Texture = self.factory.fetch("tex")
-        self.reflection: Literal["soft", "char", "powerup", "sharper"] = "soft"
+        self.reflection: RTYPES = "soft"
         self.reflection_scale: list[float] = [1.0]
         self.gravity_scale: float = 1.0
         self.materials: list[bs.Material] = [particle_material]
