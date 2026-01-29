@@ -9,7 +9,9 @@ from typing import Any, Callable, Optional
 def _log() -> logging.Logger:
     return logging.getLogger(__name__)
 
+
 # TODO: better docstrings
+
 
 class _WrapperInfo:
     def __init__(self) -> None:

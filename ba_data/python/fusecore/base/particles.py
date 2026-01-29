@@ -425,7 +425,7 @@ def do_vfx(
     """
     to_call = VFX_CALL_DICT.get(name, None)
     if to_call is None:
-        raise NameError(f'"{str}" is not a registered for "do_vfx()".')
+        raise NameError(f'"{name}" is not a registered for "do_vfx()".')
     to_call(position, velocity)
 
 
