@@ -314,9 +314,7 @@ class Bomb(FactoryActor):
                 FUSE_WARNING.add(self.bomb_type)
         elif not self.body:
             # adjust accordingly
-            self.node.fuse_length = (  # type: ignore
-                1.0 if self.visible_fuse else 0.0
-            )
+            self.node.fuse_length = 1.0 if self.visible_fuse else 0.0  # type: ignore
             if self.fuse_time and self.fuse_time > 0:
                 bs.animate(
                     self.node, "fuse_length", {0.0: 1.0, self.fuse_time: 0.0}

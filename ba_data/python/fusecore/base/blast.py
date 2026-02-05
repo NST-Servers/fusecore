@@ -16,7 +16,6 @@ from ..base.factory import (
     FactorySound,
 )
 
-
 BLAST_SET = set()
 
 
