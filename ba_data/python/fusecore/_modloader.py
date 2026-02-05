@@ -731,7 +731,6 @@ class ModLoaderSubsystem(AppSubsystem):
         """Move files of a specific type from a dir to another."""
         if allowed_filetypes is None:
             allowed_filetypes = []
-
         if src_dir.exists():
             dst_path = Path(
                 dst_dir,
