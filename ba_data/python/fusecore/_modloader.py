@@ -416,9 +416,9 @@ class ModLoaderSubsystem(AppSubsystem):
         if is_server() is False:
             # servers don't care about textures or audio assets
             # only meshes are relevant.
-            get_mods_resource_dir("textures").mkdir(exist_ok=True)
-            get_mods_resource_dir("audio").mkdir(exist_ok=True)
-        get_mods_resource_dir("meshes").mkdir(exist_ok=True)
+            get_mods_resource_dir("textures").mkdir(parents=True, exist_ok=True)
+            get_mods_resource_dir("audio").mkdir(parents=True, exist_ok=True)
+        get_mods_resource_dir("meshes").mkdir(parents=True, exist_ok=True)
 
     def archive_mod(self, mod_id: str) -> None:
         """Compress a mod by providing it's ID."""
@@ -437,7 +437,7 @@ class ModLoaderSubsystem(AppSubsystem):
         assert mod_entry.manifest
 
         out_path = Path(EXTERNAL_DATA_DIRECTORY, ".bin")
-        out_path.mkdir(exist_ok=True)
+        out_path.mkdir(parents=True, exist_ok=True)
 
         with zipfile.ZipFile(
             Path(out_path, f"{mod_entry.manifest.name}.fcmod"), "w"
@@ -737,7 +737,7 @@ class ModLoaderSubsystem(AppSubsystem):
                 dst_dir,
                 mod_id,
             ).absolute()
-            dst_path.mkdir(exist_ok=True)
+            dst_path.mkdir(parents=True, exist_ok=True)
             for filename in src_dir.iterdir():
                 filepath = Path(src_dir, filename).absolute()
                 if filepath.suffix in allowed_filetypes:
