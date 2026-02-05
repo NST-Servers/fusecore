@@ -1,0 +1,9 @@
+#! /bin/bash
+
+# initialize venv
+python -m venv .venv
+# install black
+.venv/bin/pip install black > /dev/null
+# run black
+.venv/bin/black */**/fusecore/**/*.py -t py313 -l 80
+# todo: we shouldnt initialize venv nor install black after the first time :p
