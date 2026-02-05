@@ -5,6 +5,7 @@ in sync with our new core's subsystems and functions.
 """
 
 from __future__ import annotations
+import asyncio
 from dataclasses import dataclass, field
 
 from enum import Enum
@@ -25,6 +26,7 @@ import threading
 # import importlib.util
 # from importlib.abc import MetaPathFinder, Loader
 
+import babase
 import bascenev1 as bs
 import bauiv1 as bui
 
@@ -412,13 +414,22 @@ class ModLoaderSubsystem(AppSubsystem):
         self._scan_finished = False
         self._load_timer = bui.AppTimer(0.4, self._post_scan_load, repeat=True)
 
-        # make sure these exist before we start our jobs
+        self._stop_thread = threading.Event()
+        self._thread_stopped = threading.Event()
+        # make sure to kill these threads before quitting
+        babase.app.add_shutdown_task(self._shutdown())
+
         if is_server() is False:
             # servers don't care about textures or audio assets
             # only meshes are relevant.
             get_mods_resource_dir("textures").mkdir(parents=True, exist_ok=True)
             get_mods_resource_dir("audio").mkdir(parents=True, exist_ok=True)
         get_mods_resource_dir("meshes").mkdir(parents=True, exist_ok=True)
+
+    async def _shutdown(self) -> None:
+        self._stop_thread.set()
+        while not self._thread_stopped.is_set():
+            await asyncio.sleep(0.4)
 
     def archive_mod(self, mod_id: str) -> None:
         """Compress a mod by providing it's ID."""
@@ -502,9 +513,10 @@ class ModLoaderSubsystem(AppSubsystem):
         self.dirs_to_scan.append(path)
 
     def _thread_scan(self) -> None:
-        while True:
-            time.sleep(self._scan_thread_wait_time)
+        while not self._stop_thread.is_set():
+            self._stop_thread.wait(self._scan_thread_wait_time)
             self.scan_for_mods()
+        self._thread_stopped.set()
 
     def _post_scan_load(self) -> None:
         with self._lock:

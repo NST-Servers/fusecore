@@ -1,5 +1,6 @@
 """Generic script to load custom assets."""
 
+import asyncio
 import os
 from pathlib import Path
 import threading
@@ -36,7 +37,16 @@ class AssetLoadManager:
         self._update_timer = bs.AppTimer(UPDATE_TIME, self._update, repeat=True)
 
         self._check_file_updates()  # silent update to generate hash
+        
+        self._stop_thread = threading.Event()
+        self._thread_stopped = threading.Event()
         threading.Thread(target=self._watch_loop, daemon=True).start()
+        babase.app.add_shutdown_task(self._shutdown())
+
+    async def _shutdown(self) -> None:
+        self._stop_thread.set()
+        while not self._thread_stopped.is_set():
+            await asyncio.sleep(0.4)
 
     def force_file_update(self) -> None:
         """Force our file list to update with no update, preventing the
@@ -45,11 +55,12 @@ class AssetLoadManager:
         self._check_file_updates()
 
     def _watch_loop(self):
-        while True:
+        while not self._stop_thread.is_set():
             if self._check_file_updates():
                 with self._lock:
                     self._reload_requested = True
-            time.sleep(UPDATE_TIME)
+            self._stop_thread.wait(UPDATE_TIME)
+        self._thread_stopped.set()
 
     def _update(self):
         with self._lock:
