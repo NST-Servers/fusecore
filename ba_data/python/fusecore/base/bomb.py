@@ -163,7 +163,7 @@ class Bomb(FactoryActor):
     """An explosive bomb actor that blows up after 3 seconds,
     creating a blast that damages anyone nearby.
 
-    Category: **Gameplay Classes**
+    Custom FactoryActor from FuseCore.
     """
 
     # keep these
