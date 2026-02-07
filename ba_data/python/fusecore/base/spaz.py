@@ -54,7 +54,10 @@ class Spaz(spaz.Spaz):
         # NOTE: ^ still thinking about this...
         self._apply_components()
 
-        self.active_bomb_class: Type[Bomb] = self.default_bomb_class
+        self.active_bomb_ctype: Type[Bomb] = self.default_bomb_class
+        # limited bomb class for landmine-like powerups
+        self.limited_bomb_ctype: Optional[Type[Bomb]] = None
+        self.limited_bomb_count: int = 0
 
         self._powerup_wearoff_time_ms: int = 2000
         """For how long the powerup wearoff alert
@@ -68,7 +71,7 @@ class Spaz(spaz.Spaz):
             PowerupSlotType.GLOVES: SpazPowerupSlot(self),
             # ... (Append more 'PowerupSlotType' entries here!)
         }
-
+        # callback wrappers
         self._cb_wrapped_methods: set[str] = set()
         self._cb_wrap_calls: dict[str, list[Callable]] = {}
         self._cb_raw_wrap_calls: dict[str, list[Callable]] = {}
@@ -115,33 +118,35 @@ class Spaz(spaz.Spaz):
         """Return the active component object, provided by the type."""
         return self.components[component]
 
-    def assign_bomb_class(self, bomb: Type[Bomb]) -> None:
+    def assign_bomb_ctype(self, bomb: Type[Bomb]) -> None:
         """Set a bomb type for this spaz to use."""
-        self.active_bomb_class = bomb
+        self.active_bomb_ctype = bomb
 
-    def reset_bomb_class(self) -> None:
+    def reset_bomb_ctype(self) -> None:
         """Reset our bomb type back to our default type."""
-        self.active_bomb_class = self.default_bomb_class
+        self.active_bomb_ctype = self.default_bomb_class
 
-    def drop_bomb_class(self) -> Bomb | None:
+    def drop_bomb_ctype(self) -> Optional[Bomb]:
         """Tell the spaz to drop one of his bombs, and returns
         the resulting bomb object.
 
         If the spaz has no bombs or is otherwise unable to
         drop a bomb, returns None.
         """
-        # TODO: Migrate the landmine counter into
-        #       a proper class for flexible usage
         if (self.land_mine_count <= 0 and self.bomb_count <= 0) or self.frozen:
             return None
+
+        # this is getting called assuming we already made
+        # a check for our node... maybe we shouldn't do this.
         assert self.node
         pos = self.node.position_forward
         vel = self.node.velocity
 
-        bomb_type: Type[Bomb] = self.active_bomb_class
+        bomb_type: Type[Bomb] = self.active_bomb_ctype
         is_external = False
-        # TODO: Migrate the landmine counter into
-        #       a proper class for flexible usage
+        # the objective was to move the below snippet to its own function
+        # to keep our code cleaner, but then i realized it would cause
+        # compatibility issues, and otherwise would be pretty unnecessary, so..
         if self.land_mine_count > 0:
             is_external = True
             self.set_land_mine_count(self.land_mine_count - 1)
@@ -166,6 +171,86 @@ class Spaz(spaz.Spaz):
             clb(self, bomb)
 
         return bomb
+
+    def assign_limited_bomb_ctype(
+        self, bomb: Type[Bomb], amount: int, tex: Optional[bs.Texture] = None
+    ) -> None:
+        """Assign a limited amount of a specified bomb class to this spaz."""
+        self.limited_bomb_ctype = bomb
+        self.limited_bomb_count = amount
+
+        if tex:
+            self.arm_limited_bomb_indicator(tex)
+
+    def update_limited_bomb_ctype(self, amount: int) -> None:
+        """Update the amount of limited bombs this spaz has left."""
+        self.limited_bomb_count = amount
+        self.arm_limited_bomb_indicator()  # update
+
+    def arm_limited_bomb_indicator(
+        self, tex: Optional[bs.Texture] = None
+    ) -> None:
+        """Display our limited bomb counter with the provided texture."""
+        self.node.counter_text = ""
+        if not self.node or self.limited_bomb_count < 1:
+            return
+
+        self.node.counter_text = f"x{self.limited_bomb_count}"
+        if tex:
+            self.node.counter_texture = tex
+
+    def drop_limited_bomb_ctype(self) -> Optional[Bomb]:
+        """Tell the spaz to drop one of his limited bombs, and
+        returns the resulting bomb object.
+
+        If the spaz has no bombs or is otherwise unable to
+        drop a bomb, returns None.
+        """
+        if self.limited_bomb_count < 1:
+            raise RuntimeError(
+                '"drop_limit_bomb_ctype" called with a bomb count lower than 1.'
+            )
+        if self.limited_bomb_ctype is None:
+            raise RuntimeError(
+                '"drop_limited_bomb_ctype" called with no limited bomb class provided.'
+            )
+
+        # this is getting called assuming we already made
+        # a check for our node... maybe we shouldn't do this.
+        assert self.node
+        pos = self.node.position_forward
+        vel = self.node.velocity
+
+        bomb_type: Type[Bomb] = self.limited_bomb_ctype
+        bomb = bomb_type(
+            position=(pos[0], pos[1] - 0.0, pos[2]),
+            velocity=(vel[0], vel[1], vel[2]),
+            source_player=self.source_player,
+            owner=self.node,
+        ).autoretain()
+
+        # update the bomb count
+        i = self.limited_bomb_count - 1
+        self.update_limited_bomb_ctype(i)
+        # dereference the class type if we're done with limited bombs
+        if i < 1:
+            self.limited_bomb_ctype = None
+
+        self._pick_up(bomb.node)
+
+        for clb in self._dropped_bomb_callbacks:
+            clb(self, bomb)
+
+        return bomb
+
+    def do_bomb_drop(self) -> Optional[Bomb]:
+        """Situation handling for dropping a bomb."""
+        if not self.node or not self.is_alive():
+            return
+
+        if self.limited_bomb_count > 0:
+            return self.drop_limited_bomb_ctype()
+        return self.drop_bomb_ctype()
 
     def heal(self) -> None:
         """Heal our spaz."""
@@ -892,7 +977,7 @@ class Spaz(spaz.Spaz):
                     '"SpazPowerupSlot" created for %s as there was '
                     "no previous instance of one existing;"
                     " please dont do this!",
-                    type(powerup.slot),
+                    str(powerup.slot),
                     stack_info=True,
                 )
             # our powerup slot will take it from here
@@ -979,43 +1064,36 @@ class Spaz(spaz.Spaz):
         self._cb_raw_wrap_calls = {}
         self._cb_overwrite_calls = {}
 
-    ### vvv THEY'RE ONLY HERE FOR RETROCOMPATIBILITY! vvv
     ### vvv             LEGACY FUNCTIONS              vvv
-    ### vvv             DON'T USE THOSE!              vvv
-    ### vvv THEY'RE ONLY HERE FOR RETROCOMPATIBILITY! vvv
 
     @property
     def bomb_type(self) -> str:
-        """### Don't use this!
-        We keep this for the sake of retrocompat.
-        Use ``self.active_bomb_class`` instead.
-        """
+        """Spaz's bomb type as a string."""
         return self._str_bomb_type
 
     @bomb_type.setter
     def bomb_type(self, btype: str) -> None:
-        """### Don't use this!
-        We keep this for the sake of retrocompat.
-        Use ``self.active_bomb_class`` instead.
-        """
+        """Update our internal bomb class if our bomb type string changes."""
+        # for implicit bomb class changes, i suggest using
+        # `self.assign_bomb_class` instead to prevent
+        # string misbehaving and improve compatibility.
         self._str_bomb_type = btype
-        self._compat_bomb_update()
+        if self.node:
+            self._compat_bomb_update()
 
     @override
-    def drop_bomb(self):
-        """### Don't use this!
-        We keep this for the sake of retrocompat.
-        Use ``self.drop_bomb_class()`` instead.
-        """
+    def drop_bomb(self) -> Optional[VanillaBomb]:
+        """Drop a bomb."""
         # NOTE: Bombs have the same methods as the vanilla ones, but it could
         # cause issues in particular circumstances... Keep that in mind!
-        return cast(VanillaBomb, self.drop_bomb_class())
+        bomb = self.do_bomb_drop()
+        if bomb:
+            return cast(VanillaBomb, bomb)
+        return None
 
     def _compat_bomb_update(self, check_default: bool = False) -> None:
         """transform our ``self.default_bomb_type`` into a
         ``self.default_bomb`` class.
-
-        ### This function is here for compatibility reasons, don't use this!
         """
 
         str_type = (
@@ -1033,7 +1111,7 @@ class Spaz(spaz.Spaz):
                 stack_info=True,
             )
             return
-        self.active_bomb_class = bomb_class
+        self.active_bomb_ctype = bomb_class
 
     def _handle_powerups_classic(self, msg: bs.PowerupMessage) -> bool:
         """Old-school handling for 'bs.PowerupMessage'."""

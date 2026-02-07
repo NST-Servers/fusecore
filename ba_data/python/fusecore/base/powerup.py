@@ -11,6 +11,7 @@ from ..base.shared import PowerupSlotType
 from ..base.bomb import (
     Bomb,
     IceBomb,
+    # LandMine,
     StickyBomb,
     ImpactBomb,
 )
@@ -151,11 +152,11 @@ class BombPowerup(SpazPowerup):
 
     @override
     def equip(self) -> None:
-        self.spaz.assign_bomb_class(self.bomb_type)
+        self.spaz.assign_bomb_ctype(self.bomb_type)
 
     @override
     def unequip(self, overwrite: bool, clone: bool) -> None:
-        self.spaz.reset_bomb_class()
+        self.spaz.reset_bomb_ctype()
 
 
 class StickyBombsPowerup(BombPowerup):
@@ -185,8 +186,18 @@ ImpactBombsPowerup.register()
 class LandMinesPowerup(SpazPowerup):
     texture_name = "empty"
 
+    # @staticmethod
+    # def resources() -> dict:
+    #     return {
+    #         "landmine_popup_tex": FactoryTexture("powerupLandMines"),
+    #     }
+
     @override
     def equip(self) -> None:
+        # tex = self.factory.fetch("landmine_popup_tex")
+        # self.spaz.assign_limited_bomb_ctype(LandMine, 3, tex)
+
+        # we'll keep the legacy call to retain compatibility.
         self.spaz.set_land_mine_count(min(self.spaz.land_mine_count + 3, 3))
 
 
