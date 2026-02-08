@@ -105,26 +105,6 @@ class SpazPowerupSlot:
         self.timer_wearoff = None
 
 
-SPAZ_COMPONENTS: set[Type[SpazComponent]] = set()
-
-
-class SpazComponent:
-    """Components are a collection of attributes to be
-    added to our spaz class.
-    They provide an easy and compatible way of adding custom
-    behavior to characters without having to inject code into
-    functions while remaining compatible with other components.
-    """
-
-    def __init__(self, spaz: Spaz) -> None:
-        self.spaz: Spaz = spaz
-
-    @classmethod
-    def register(cls) -> None:
-        """Register this component to our spaz component set."""
-        SPAZ_COMPONENTS.add(cls)
-
-
 class SpazFactory(spazfactory.SpazFactory):
     """New SpazFactory that replaces some files."""
 
