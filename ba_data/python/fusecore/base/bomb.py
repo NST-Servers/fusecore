@@ -3,7 +3,7 @@ Allows for easier bomb creation and customization.
 """
 
 from __future__ import annotations
-from typing import override, Any, Callable, Type
+from typing import Optional, override, Any, Callable, Type
 
 import random
 import logging
@@ -17,6 +17,7 @@ from bascenev1lib.actor.bomb import (
     ArmMessage,
     WarnMessage,
 )
+from fusecore.base.component import ComponentVault, ObjectComponent
 from fusecore.utils import RTYPES
 
 from ..base.blast import (
@@ -207,6 +208,7 @@ class Bomb(FactoryActor):
     ) -> None:
         super().__init__()
         self.factory: BombFactory
+        self._components = ComponentVault()
         # Prepping stuff
         self.shared = SharedObjects.get()
         self.owner = owner
@@ -250,6 +252,35 @@ class Bomb(FactoryActor):
         self.fuse_sound: bs.Sound | None = self.factory.fetch("fuse_sound")
         self.fuse_time: float | None = 3.0
         self.blast_class: Type[Blast] = Blast
+
+    def component_get(
+        self, component: Type[ObjectComponent]
+    ) -> Optional[ObjectComponent]:
+        """Return the specified component object, if any."""
+        return self._components.get(component, None)
+
+    def component_add(
+        self, component: Type[ObjectComponent]
+    ) -> ObjectComponent:
+        """Apply a component to this object class.
+        Returns the inserted component (or existing one.)
+        """
+        ex = self._components.get(component, None)
+        if ex is not None:
+            return ex
+        n = component(self)
+        self._components[component] = n
+        return n
+
+    def component_remove(self, component: Type[ObjectComponent]) -> bool:
+        """Remove a component from this object class.
+        Returns if we removed successfully or failed (likely due
+        to this spaz not having said component.)
+        """
+        if self._components.get(component, None) is None:
+            return False
+        self._components.pop(component)
+        return True
 
     def _create_bomb(self) -> None:
         """Create our bomb and do some bomb logic."""
