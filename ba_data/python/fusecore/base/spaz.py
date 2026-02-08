@@ -20,12 +20,9 @@ from bascenev1lib.actor import spaz
 from bascenev1lib.actor.spaz import BombDiedMessage
 from bascenev1lib.actor.bomb import Bomb as VanillaBomb
 from bascenev1lib.actor.spazfactory import SpazFactory as VanillaSpazFactory
+from fusecore.base.component import ComponentVault, ObjectComponent
 
-from ..base.spazfactory import (
-    SpazPowerupSlot,
-    SpazComponent,
-    SPAZ_COMPONENTS,
-)
+from ..base.spazfactory import SpazPowerupSlot
 from ..base.bomb import Bomb, LandMine, BOMB_SET
 from ..base.powerupbox import PowerupBoxMessage, POWERUPBOX_SET
 from ..base.shared import PowerupSlotType
@@ -47,12 +44,10 @@ class Spaz(spaz.Spaz):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.hitpoints = 1000
+        self._components = ComponentVault()
+        """Object components for this object class."""
 
-        self._has_set_components: bool = False
-        self.components: dict[Type[SpazComponent], SpazComponent] = {}
-        # NOTE: ^ still thinking about this...
-        self._apply_components()
+        self.hitpoints = 1000
 
         self.active_bomb_ctype: Type[Bomb] = self.default_bomb_class
         # limited bomb class for landmine-like powerups
@@ -104,19 +99,34 @@ class Spaz(spaz.Spaz):
         )
         self._compat_bomb_update(check_default=True)
 
-    def _apply_components(self) -> None:
-        """Give this spaz all available components."""
-        if not self.node or self._has_set_components:
-            return
+    def component_get(
+        self, component: Type[ObjectComponent]
+    ) -> Optional[ObjectComponent]:
+        """Return the specified component object, if any."""
+        return self._components.get(component, None)
 
-        for component in SPAZ_COMPONENTS:
-            self.components[component] = component(self)
+    def component_add(
+        self, component: Type[ObjectComponent]
+    ) -> ObjectComponent:
+        """Apply a component to this object class.
+        Returns the inserted component (or existing one.)
+        """
+        ex = self._components.get(component, None)
+        if ex is not None:
+            return ex
+        n = component(self)
+        self._components[component] = n
+        return n
 
-        self._has_set_components = True
-
-    def get_component(self, component: Type[SpazComponent]) -> Any:
-        """Return the active component object, provided by the type."""
-        return self.components[component]
+    def component_remove(self, component: Type[ObjectComponent]) -> bool:
+        """Remove a component from this object class.
+        Returns if we removed successfully or failed (likely due
+        to this spaz not having said component.)
+        """
+        if self._components.get(component, None) is None:
+            return False
+        self._components.pop(component)
+        return True
 
     def assign_bomb_ctype(self, bomb: Type[Bomb]) -> None:
         """Set a bomb type for this spaz to use."""
@@ -212,7 +222,8 @@ class Spaz(spaz.Spaz):
             )
         if self.limited_bomb_ctype is None:
             raise RuntimeError(
-                '"drop_limited_bomb_ctype" called with no limited bomb class provided.'
+                '"drop_limited_bomb_ctype" called with no'
+                " limited bomb class provided."
             )
 
         # this is getting called assuming we already made
@@ -1055,7 +1066,7 @@ class Spaz(spaz.Spaz):
         """
         # because components and powerups depend on spaz themselves,
         # we need to remove them on expire to keep the gc happy.
-        self.components = {}
+        self._components.clear()
         self._powerup_slots = {}
         # these don't cause as many issues if left unbothered, but
         # it's still a good idea to take care of these containers.

@@ -15,7 +15,7 @@ from ..base.bomb import (
     StickyBomb,
     ImpactBomb,
 )
-from ..base.spazfactory import SpazComponent
+from ..base.component import ObjectComponent
 
 if TYPE_CHECKING:
     import bascenev1 as bs
@@ -230,8 +230,10 @@ class PunchPowerup(SpazPowerup):
 PunchPowerup.register()
 
 
-class ShieldComponent(SpazComponent):
+class ShieldComponent(ObjectComponent):
     """Spaz component to handle shields."""
+
+    parent: Spaz
 
     def activate(self) -> None:
         """Grant this spaz a shield."""
@@ -239,7 +241,8 @@ class ShieldComponent(SpazComponent):
         # to demonstrate how cool components are, but then i thought of the
         # billions of incompatibilities this would cause, so now the component
         # is a simple shield activation tunnel :p
-        self.spaz.equip_shields(decay=SpazFactory.get().shield_decay_rate > 0)
+        self.parent.equip_shields(decay=SpazFactory.get().shield_decay_rate > 0)
+        self.parent.component_remove(type(self))
 
     def on_damage(self) -> None:
         """Handle our damage function."""
@@ -247,7 +250,7 @@ class ShieldComponent(SpazComponent):
 
     def super_awesome_secret_method_that_makes_your_spaz_explode(self) -> None:
         "funny."
-        self.spaz.curse_explode()
+        self.parent.curse_explode()
 
 
 class ShieldPowerup(SpazPowerup):
@@ -255,11 +258,11 @@ class ShieldPowerup(SpazPowerup):
 
     @override
     def equip(self) -> None:
-        component: ShieldComponent = self.spaz.get_component(ShieldComponent)
+        component = self.spaz.component_add(ShieldComponent)
+        assert isinstance(component, ShieldComponent)
         component.activate()
 
 
-ShieldComponent.register()
 ShieldPowerup.register()
 
 
