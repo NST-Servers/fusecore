@@ -1140,6 +1140,7 @@
   "openNowText": "Buka Sekarang",
   "openText": "Buka",
   "orText": "${A} atau ${B}",
+  "otherOptionsText": "Pilihan Lain",
   "otherText": "Lainnya...",
   "outOfText": "(#${RANK} dari ${ALL})",
   "ownFlagAtYourBaseWarning": "Benderamu harus\nberada di basismu untuk mencetak skor!",

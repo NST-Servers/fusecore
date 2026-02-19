@@ -1145,6 +1145,7 @@
   "openNowText": "Otvori sada",
   "openText": "Otvori",
   "orText": "${A} ili ${B}",
+  "otherOptionsText": "Ostale Opcije",
   "otherText": "Drugo...",
   "outOfText": "(#${RANK} od ${ALL})",
   "ownFlagAtYourBaseWarning": "Tvoja zastava mora biti\nu tvojoj bazi da bi mogao osvojiti bod!",

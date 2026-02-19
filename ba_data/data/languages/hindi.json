@@ -1144,6 +1144,7 @@
   "openNowText": "अभी खोलें",
   "openText": "खुला",
   "orText": "${A} या ${B}",
+  "otherOptionsText": "अन्य विकल्प",
   "otherText": "अन्य",
   "outOfText": "(${ALL} में से #${RANK})",
   "ownFlagAtYourBaseWarning": "आपका अपना झंडा अंक पाने के लिए आपके अड्डे पर होना चाहिए",

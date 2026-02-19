@@ -1124,6 +1124,7 @@
   "openNowText": "立即打开",
   "openText": "打开",
   "orText": "${A}或${B}",
+  "otherOptionsText": "其他选项",
   "otherText": "其他。。。",
   "outOfText": "（在${ALL}名玩家中位列#${RANK}）",
   "ownFlagAtYourBaseWarning": "你的旗帜必须在\n你自己的基地上才能得分！",

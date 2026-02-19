@@ -1189,6 +1189,7 @@
   "openNowText": "Открыть сейчас",
   "openText": "Открыть",
   "orText": "${A} или ${B}",
+  "otherOptionsText": "Другие Варианты",
   "otherText": "Другое...",
   "outOfText": "(${RANK} из ${ALL})",
   "ownFlagAtYourBaseWarning": "Чтобы набрать очки, ваш собственный\nфлаг должен быть на вашей базе!",

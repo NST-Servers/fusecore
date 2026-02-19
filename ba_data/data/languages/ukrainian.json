@@ -1137,6 +1137,7 @@
   "openNowText": "Відчинити зараз",
   "openText": "Відчинити",
   "orText": "${A} або ${B}",
+  "otherOptionsText": "Інші варіанти",
   "otherText": "Інші...",
   "outOfText": "(${RANK} з ${ALL})",
   "ownFlagAtYourBaseWarning": "Щоб набрати очки, ваш власний\nпрапор повинен бути на вашій базі!",

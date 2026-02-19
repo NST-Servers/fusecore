@@ -53,10 +53,10 @@
   "achievementText": "Başarı",
   "achievements": {
     "Boom Goes the Dynamite": {
-      "description": "TNT ile 3 mülteci öldür",
-      "descriptionComplete": "TNT ile 3 mülteci öldürüldü",
-      "descriptionFull": "${LEVEL} da TNT ile 3 mülteci öldür",
-      "descriptionFullComplete": "${LEVEL} da TNT ile 3 mülteci öldürüldü",
+      "description": "TNT ile 3 Haylaz öldür",
+      "descriptionComplete": "TNT ile 3 Haylaz öldürüldü",
+      "descriptionFull": "${LEVEL} da TNT ile 3 Haylaz öldür",
+      "descriptionFullComplete": "${LEVEL} da TNT ile 3 Haylaz öldürüldü",
       "name": "Dinamit Gümledi"
     },
     "Boxer": {
@@ -84,10 +84,10 @@
       "name": "Otlakçı"
     },
     "Gold Miner": {
-      "description": "Yer mayınları ile 6 mülteci öldür",
-      "descriptionComplete": "Kara mayını ile 6 mülteci öldürüldü",
-      "descriptionFull": "Kara mayını ile ${LEVEL} da 6 mülteci öldür",
-      "descriptionFullComplete": "Kara mayını ile ${LEVEL} da 6 mülteci öldürüldü",
+      "description": "Yer mayınları ile 6 Haylaz öldür",
+      "descriptionComplete": "Kara mayını ile 6 Haylaz öldürüldü",
+      "descriptionFull": "Kara mayını ile ${LEVEL} da 6 Haylaz öldür",
+      "descriptionFullComplete": "Kara mayını ile ${LEVEL} da 6 Haylaz öldürüldü",
       "name": "Altın Mayıncı"
     },
     "Got the Moves": {
@@ -125,16 +125,16 @@
     },
     "Mine Games": {
       "description": "Kara mayını ile 3 haylaz öldür",
-      "descriptionComplete": "kara mayını ile 3 mülteci öldürüldü",
-      "descriptionFull": "kara mayını ile ${LEVEL} da 3 mülteci öldür",
-      "descriptionFullComplete": "kara mayını ile ${LEVEL} da 3 mülteci öldürüldü",
+      "descriptionComplete": "kara mayını ile 3 Haylaz öldürüldü",
+      "descriptionFull": "kara mayını ile ${LEVEL} da 3 Haylaz öldür",
+      "descriptionFullComplete": "kara mayını ile ${LEVEL} da 3 Haylaz öldürüldü",
       "name": "Mayın Oyunları"
     },
     "Off You Go Then": {
-      "description": "Haritadan dışarıya 3 mülteci fırlat",
-      "descriptionComplete": "Haritadan dışarıya 3 mülteci fırlatıldı",
-      "descriptionFull": "${LEVEL} da haritadan dışarıya 3 mülteci fırlat",
-      "descriptionFullComplete": "${LEVEL} da haritadan dışarıya 3 mülteci fırlatıldı",
+      "description": "Haritadan dışarıya 3 Haylaz fırlat",
+      "descriptionComplete": "Haritadan dışarıya 3 Haylaz fırlatıldı",
+      "descriptionFull": "${LEVEL} da haritadan dışarıya 3 Haylaz fırlat",
+      "descriptionFullComplete": "${LEVEL} da haritadan dışarıya 3 Haylaz fırlatıldı",
       "name": "O Halde Bas Git!"
     },
     "Onslaught God": {
@@ -180,10 +180,10 @@
       "name": "Uzman Boksör"
     },
     "Pro Football Shutout": {
-      "description": "Mültecilere puan yaptırmadan kazan",
-      "descriptionComplete": "Mültecilere puan yaptırmadan kazanıldı",
-      "descriptionFull": "Mültecilere puan yaptırmadan ${LEVEL} da kazan",
-      "descriptionFullComplete": "Mültecilere puan yaptırmadan ${LEVEL} da kazanıldı",
+      "description": "Haylazlara puan yaptırmadan kazan",
+      "descriptionComplete": "Haylazlara puan yaptırmadan kazanıldı",
+      "descriptionFull": "Haylazlara puan yaptırmadan ${LEVEL} da kazan",
+      "descriptionFullComplete": "Haylazlara puan yaptırmadan ${LEVEL} da kazanıldı",
       "name": "${LEVEL} Lokavt"
     },
     "Pro Football Victory": {
@@ -208,10 +208,10 @@
       "name": "${LEVEL} Galibiyeti"
     },
     "Rookie Football Shutout": {
-      "description": "Mültecilere puan yaptırmadan kazan",
-      "descriptionComplete": "Mültecilere puan yaptırmadan kazanıldı",
-      "descriptionFull": "${LEVEL} da mültecilere puan yaptırmadan kazan",
-      "descriptionFullComplete": "${LEVEL} da mültecilere puan yaptırmadan kazanıldı",
+      "description": "Haylazlara puan yaptırmadan kazan",
+      "descriptionComplete": "Haylazlara puan yaptırmadan kazanıldı",
+      "descriptionFull": "${LEVEL} da Haylazlara puan yaptırmadan kazan",
+      "descriptionFullComplete": "${LEVEL} da Haylazlara puan yaptırmadan kazanıldı",
       "name": "${LEVEL} Lokavt"
     },
     "Rookie Football Victory": {
@@ -276,10 +276,10 @@
       "name": "Süper Yumruk"
     },
     "TNT Terror": {
-      "description": "TNT ile 6 mülteci öldür",
-      "descriptionComplete": "TNT ile 6 mülteci öldürüldü",
-      "descriptionFull": "${LEVEL} da TNT ile 6 mülteci öldür",
-      "descriptionFullComplete": "${LEVEL} da TNT ile 6 mülteci öldürüldü",
+      "description": "TNT ile 6 Haylaz öldür",
+      "descriptionComplete": "TNT ile 6 Haylaz öldürüldü",
+      "descriptionFull": "${LEVEL} da TNT ile 6 Haylaz öldür",
+      "descriptionFullComplete": "${LEVEL} da TNT ile 6 Haylaz öldürüldü",
       "name": "TNT Dehşeti"
     },
     "Team Player": {
@@ -288,24 +288,24 @@
       "name": "Takım Oyuncusu"
     },
     "The Great Wall": {
-      "description": "Bütün mültecileri durdur",
+      "description": "Bütün Haylazları durdur",
       "descriptionComplete": "Bütün mülteciler durduruldu",
-      "descriptionFull": "${LEVEL} da bütün mültecileri durdur",
-      "descriptionFullComplete": "${LEVEL} da bütün mülteciler durduruldu",
+      "descriptionFull": "${LEVEL} da bütün Haylazları durdur",
+      "descriptionFullComplete": "${LEVEL} da bütün Haylazlar durduruldu",
       "name": "Muhteşem Bariyer"
     },
     "The Wall": {
-      "description": "Bütün mültecileri durdur",
-      "descriptionComplete": "Bütün mülteciler durduruldu",
-      "descriptionFull": "${LEVEL} da bütün mültecileri durdur",
-      "descriptionFullComplete": "${LEVEL} da bütün mülteciler durduruldu",
+      "description": "Bütün Haylazları durdur",
+      "descriptionComplete": "Bütün Haylazlar durduruldu",
+      "descriptionFull": "${LEVEL} da bütün Haylazları durdur",
+      "descriptionFullComplete": "${LEVEL} da bütün Haylazlar durduruldu",
       "name": "Bariyer"
     },
     "Uber Football Shutout": {
-      "description": "Mültecilere puan yaptırmadan kazan",
-      "descriptionComplete": "Mültecilere puan yaptırmadan kazanıldı",
-      "descriptionFull": "${LEVEL} da mültecilere puan yaptırmadan kazan",
-      "descriptionFullComplete": "${LEVEL} da mültecilere puan yaptırmadan kazanıldı",
+      "description": "Haylazlara puan yaptırmadan kazan",
+      "descriptionComplete": "Haylazlara puan yaptırmadan kazanıldı",
+      "descriptionFull": "${LEVEL} da Haylazlara puan yaptırmadan kazan",
+      "descriptionFullComplete": "${LEVEL} da Haylazlara puan yaptırmadan kazanıldı",
       "name": "${LEVEL} Lokavt"
     },
     "Uber Football Victory": {
@@ -656,7 +656,7 @@
   "enabledText": "Onaylanmış",
   "endText": "Bitir",
   "enjoyText": "Keyfini Çıkar!",
-  "epicDescriptionFilterText": "${DESCRIPTION} epik ağırçekim.",
+  "epicDescriptionFilterText": "${DESCRIPTION} epik ağır çekim.",
   "epicNameFilterText": "Epik ${NAME}",
   "errorAccessDeniedText": "erişim reddedildi",
   "errorDeviceTimeIncorrectText": "Cihazın ile sunucu arasındaki zaman farkı ${HOURS} saat.\nBu bazı sorunlara yol açabilir.\nLütfen saat ve saat dilimi ayarlarını kontrol et.",
@@ -681,13 +681,13 @@
   "finalScoreText": "Final Skoru",
   "finalScoresText": "Final Skorları",
   "finalTimeText": "Final Süresi",
-  "finishingInstallText": "Yükleme tamamlanıyor; bir dakika...",
+  "finishingInstallText": "Yükleme tamamlanıyor; azıcık bekle...",
   "fireTVRemoteWarningText": "* En iyi deneyim için, Oyun\nkontrolcüsü kullanın veya\n'${REMOTE_APP_NAME}' uygulamasını\ntablet ya da telefonunuza yükleyin.",
   "firstToFinalText": "İlk-${COUNT} Final",
   "firstToSeriesText": "İlk-${COUNT} Seri",
   "fiveKillText": "5 Öldürme!!!",
   "flawlessWaveText": "Çiziksiz Dalga!",
-  "fourKillText": "Dörtlü Öldürme!!!",
+  "fourKillText": "DÖRTLÜ ÖLÜM!!!",
   "friendScoresUnavailableText": "Arkadaş skorları mevcut değil.",
   "gameCenterText": "GameCenter",
   "gameCircleText": "GameCircle",
@@ -727,7 +727,7 @@
     "checkingText": "denetleniyor...",
     "copyCodeConfirmText": "Kod panoya kopyalandı",
     "copyCodeText": "Kodu kopyala",
-    "dedicatedServerInfoText": "En iyi sonuçlar için ozel sunucu ayarlayın. Bakınız; bombsquadgame.com/server",
+    "dedicatedServerInfoText": "En iyi sonuçlar için özel sunucu ayarlayın. Bakınız; bombsquadgame.com/server",
     "descriptionShortText": "Lobi penceresini kullanarak bir parti oluştur.",
     "disconnectClientsText": "Bu, partindeki ${COUNT} oyuncunun bağlantısını\nkesecek. Emin misin ?",
     "earnTicketsForRecommendingAmountText": "Eğer arkadaşların oyunu denerler ise ${COUNT} bilet alacak\n(Sen ise bunu her yapan için ${YOU_COUNT} tane.)",
@@ -736,8 +736,8 @@
     "favoritesSaveText": "Favori Olarak Kaydet",
     "favoritesText": "Favoriler",
     "freeCloudServerAvailableMinutesText": "Sonraki ücretsiz bulut sunucusu ${MINUTES} dakika içinde kullanılabilir olacak",
-    "freeCloudServerAvailableNowText": "Ücretsiz bulut sunucusu şuan kullanılabilir",
-    "freeCloudServerNotAvailableText": "Ücretsiz bulut sunucusu şuan mevcut değil.",
+    "freeCloudServerAvailableNowText": "Ücretsiz bulut sunucusu şu an mevcut!",
+    "freeCloudServerNotAvailableText": "Ücretsiz bulut sunucusu şu an mevcut değil.",
     "friendHasSentPromoCodeText": "${NAME} tarafından ${COUNT} ${APP_NAME} bileti",
     "friendPromoCodeAwardText": "Kullanıldığı her zaman ${COUNT} bilet alacaksın.",
     "friendPromoCodeExpireText": "Bu kodun ${EXPIRE_HOURS} saat içinde süresi dolacak ve sadece yeni oyuncularda çalışır.",
@@ -841,10 +841,10 @@
     "youHaveText": "${COUNT} biletin var"
   },
   "goldPass": {
-    "desc1InfTokensText": "Sınırsız jeton.",
-    "desc2NoAdsText": "Reklamları kaldır.",
+    "desc1InfTokensText": "Sonsuz jeton.",
+    "desc2NoAdsText": "Sıfır reklam.",
     "desc3ForeverText": "Ebediyen.",
-    "goldPassText": "Gold Pass"
+    "goldPassText": "Altın Bilet"
   },
   "googleMultiplayerDiscontinuedText": "Üzgünüz, Google'ın çok oyunculu servisi şu anda çalışmıyor.\nBir yer değişimi için olabildiğince hızlı çalışıyorum.\nO zamana kadar, lütfen başka bir bağlantı yöntemi deneyin.\n-Eric",
   "googlePlayPurchasesNotAvailableText": "Google Play satın alma işlemleri mevcut değildir.\nMağaza uygulamanızı güncellemeniz gerekebilir.",
@@ -871,25 +871,25 @@
     "visualsText": "Görseller"
   },
   "helpWindow": {
-    "bombInfoText": "- Bomba -\nYumruktan daha güçlüdür, fakat\nkendi bomban ile zarar görebilirsin.\nEn iyi sonuç için fitil bitmeden önce\ndüşmanlarına doğru fırlat.",
+    "bombInfoText": "- Bomba -\nYumruktan daha güçlüdür, ama\nkendi bomban ile zarar görebilirsin.\nEn iyi sonuç için fitil bitmeden önce\ndüşmanlarına doğru fırlat.",
     "canHelpText": "${APP_NAME} sana yardımcı olabilir.",
     "controllersInfoText": "Arkadaşlarınla birlikte ağ üzerinden veya yeterince kontrolcünüz\nvar ise tek bir cihazdan ${APP_NAME} oynayabilirsiniz.\nHatta telefonunuzu bile bedava '${REMOTE_APP_NAME}' uygulaması ile\nkontrolcü olarak  kullanabilirsiniz. ${APP_NAME} bunu destekler.\nDaha fazla bilgi için Ayarlar->Kontroller'e bakın.",
     "controllersInfoTextRemoteOnly": "${APP_NAME} 'ı internet üzerinden arkadaşlarınla, ya da telefonları kullanarak aynı cihaz\nüzerinden\n'${REMOTE_APP_NAME}' uygulamasını kullanarak oynayabilirsin.",
     "controllersText": "Kontrolcüler",
-    "controlsSubtitleText": "Dost Canlısı ${APP_NAME} karakterinin birkaç basit özelliği var:",
+    "controlsSubtitleText": "Arkadaş canlısı ${APP_NAME} karakterinin birkaç basit özelliği var:",
     "controlsText": "Kontroller",
     "devicesInfoText": "${APP_NAME}'ın VR sürümü ile normal sürümü ağ\nüzerinde oynanabilir. Yani ekstra telefon, tablet veya\nbilgisayar al ve oyunu aç, Oyunun normal sürümünü\nVR sürümüne bağlamak kullanışlıdır, başkalarının\noyunu izlemesini sağlar.",
     "devicesText": "Cihazlar",
     "friendsGoodText": "Bunların olması güzel. ${APP_NAME} birkaç oyuncu ile daha\neğlencelidir. Tek seferde 8 oyuncuya kadar destekler.",
     "friendsText": "Arkadaşlar",
-    "jumpInfoText": "- Zıpla -\nZıplamak, ufak çıkıntılardan geçmeni\nve bir şeyleri daha yukarı atmanı\nsağlar. Aşırı eğlencelidir.",
-    "orPunchingSomethingText": "Bir şeyleri patlatmak, uçurumdan fırlatmak veya yoluna çıkanlara yapışkan bomba atmak.",
+    "jumpInfoText": "- Zıpla -\nZıplamak, ufak çıkıntılardan geçmeni\nve bir şeyleri daha yukarı atmanı ve \nmutlu olduğunu ifade etmeni sağlar.",
+    "orPunchingSomethingText": "Ya da bir şeyleri patlatmak, uçurumdan fırlatmak veya yoluna çıkanlara yapışkan bomba atmak.",
     "pickUpInfoText": "- Kaldır -\nBayrakları, düşmanları veya etraftaki\nherhangi bir şeyi tutmanı sağlar.\nFırlatmak için tekrar bas.",
     "powerupBombDescriptionText": "Tek seferde bir bomba yerine \nPeş peşe üç bomba atmanı sağlar.",
     "powerupBombNameText": "Üçlü-Bomba",
     "powerupCurseDescriptionText": "Muhtemelen bundan kaçınmak isteyeceksin.\n...Ya da istemez misin?",
     "powerupCurseNameText": "Lanet",
-    "powerupHealthDescriptionText": "Sağlığının tamamını doldurur.\nTahmin etmiş olamazsın...",
+    "powerupHealthDescriptionText": "Sağlığının tamamını doldurur.\nZaten anlamış olman lazım...",
     "powerupHealthNameText": "Sağlık-Paketi",
     "powerupIceBombsDescriptionText": "Normal bombalardan güçsüzdür\nfakat düşmanlarını dondurur\nve özellikle kırılgan yapar.",
     "powerupIceBombsNameText": "Buz-Bombaları",
@@ -897,11 +897,11 @@
     "powerupImpactBombsNameText": "Tahrik-Bombaları",
     "powerupLandMinesDescriptionText": "Bu 3 paket olarak gelir. Bölgeni\nsavunmak ve hızlı düşmanları\ndurdurmak için kullanışlıdır.",
     "powerupLandMinesNameText": "Kara-Mayınları",
-    "powerupPunchDescriptionText": "Yumruklarını daha sert\nhızlı ve güçlü yapar.",
+    "powerupPunchDescriptionText": "Yumruklarını DAHA SERT,\nHIZLI, GÜZEL ve GÜÇLÜ yapar.",
     "powerupPunchNameText": "Boks-Eldivenleri",
     "powerupShieldDescriptionText": "Senin için bir parça\nhasarı absorbe eder.",
     "powerupShieldNameText": "Enerji-Kalkanı",
-    "powerupStickyBombsDescriptionText": "Değdiği herhangi bir şeye\nyapışır. Eğlence konusu olur.",
+    "powerupStickyBombsDescriptionText": "Değdiği herhangi bir şeye\nyapışır. Alay konusu olur.",
     "powerupStickyBombsNameText": "Yapışkan-Bombalar",
     "powerupsSubtitleText": "Elbette güçlendiriciler olmadan oyun tamamlanmış değildir:",
     "powerupsText": "Güçlendiriciler",
@@ -925,12 +925,12 @@
   "internal": {
     "arrowsToExitListText": "Listeden çıkmak için ${LEFT} ya da ${RIGHT} basın.",
     "buttonText": "buton",
-    "cantKickHostError": "Kurucu'yu atamazsın.",
+    "cantKickHostError": "KURUCUYU ATAMAZSIN!",
     "chatBlockedText": "${NAME}, ${TIME} saniye sohbette bloklandı.",
     "connectedToGameText": "'${NAME}' Sunucusuna girildi",
     "connectedToPartyText": "${NAME} Partisine katılındı!",
     "connectingToPartyText": "Bağlanılıyor...",
-    "connectionFailedHostAlreadyInPartyText": "Bağlantı başarısız; Kurucu başka bir partide.",
+    "connectionFailedHostAlreadyInPartyText": "Bağlantı başarısız; kurucu başka bir partide.",
     "connectionFailedPartyFullText": "Bağlantı başarısız; parti dolu",
     "connectionFailedText": "Bağlantı başarısız.",
     "connectionFailedVersionMismatchText": "Bağlantı başarısız; Kurucu oyunun başka bir sürümünü kullanıyor.\nHer iki cihazın da güncel olduğundan emin olun ve tekrar deneyin.",
@@ -956,7 +956,7 @@
     "invalidPortErrorText": "Hata: Geçersiz port",
     "invitationSentText": "Davet Göderildi.",
     "invitationsSentText": "${COUNT} davet gönderildi.",
-    "joinedPartyInstructionsText": "Biri senin partine katıldı.\nOyunu başlatmak için 'Oyna' ya git",
+    "joinedPartyInstructionsText": "Biri senin partine katıldı.\nOyunu başlatmak için 'Oyna'ya bas.",
     "keyboardText": "Klavye",
     "kickIdlePlayersKickedText": "${NAME} boşta olduğu için atıldı.",
     "kickIdlePlayersWarning1Text": "${NAME} boşta durmaya devam ederse ${COUNT} saniye içinde atılacak.",
@@ -973,7 +973,7 @@
     "signInNoConnectionText": "Giriş yapılamıyor. (internet bağlantısı yok?)",
     "telnetAccessDeniedText": "HATA: kullanıcı telnet erişim izni vermedi.",
     "timeOutText": "(${TIME} saniye içinde süre dolacak)",
-    "touchScreenJoinWarningText": "DokunmatikEkran ile katıldın.\nEğer yanlışlıkla olduysa 'Menü->Oyundan Ayrıl' ile düzelt.",
+    "touchScreenJoinWarningText": "Dokunmatik ekran ile katıldın.\nEğer yanlışlıkla olduysa 'Menü->Oyundan Ayrıl' ile düzelt.",
     "touchScreenText": "DokunmatikEkran",
     "unableToCompleteTryAgainText": "Şu anda bunu gerçekleştirmek mümkün değil.\nLütfen tekrar deneyin.",
     "unableToResolveHostText": "Hata: kurucu çözümlenemiyor.",
@@ -988,7 +988,7 @@
   "jumpBoldText": "ZIPLA",
   "jumpText": "Zıpla",
   "keepText": "Koru",
-  "keepTheseSettingsText": "Bu ayarları koru?",
+  "keepTheseSettingsText": "Bu ayarlar korunsun mu?",
   "keyboardChangeInstructionsText": "Klavyeleri değiştirmek için iki defa boşluk tuşuna basın.",
   "keyboardNoOthersAvailableText": "Başka klavye yok.",
   "keyboardSwitchText": "Klavye \"${NAME}\"'a değiştiriliyor.",
@@ -1095,7 +1095,7 @@
   "nameKilledText": "${VICTIM}, ${NAME} tarafından öldürüldü.",
   "nameNotEmptyText": "Ad boş olamaz.",
   "nameScoresText": "${NAME} Sayı Yaptı!",
-  "nameSuicideKidFriendlyText": "${NAME} kazara öldü.",
+  "nameSuicideKidFriendlyText": "${NAME} fani dünyadan ayrıldı.",
   "nameSuicideText": "${NAME} intihar etti.",
   "nameText": "İsim",
   "nativeText": "Gerçek",
@@ -1857,9 +1857,9 @@
       "Warning to ${NAME}:  turbo / button-spamming knocks you out.": "${NAME}: için uyarı: Hızlı/gereksiz buton tıklaması seni mahveder."
     },
     "teamNames": {
-      "Bad Guys": "Mülteciler",
+      "Bad Guys": "Haylazlar",
       "Blue": "Mavi",
-      "Good Guys": "Türkler",
+      "Good Guys": "Kahramanlar",
       "Red": "Kırmızı"
     },
     "tips": {
@@ -1945,10 +1945,10 @@
     "phrase28Text": "...evet,  olabilir...",
     "phrase29Text": "İyi şanslar!",
     "randomName1Text": "Yusuf",
-    "randomName2Text": "Efdalin",
-    "randomName3Text": "Abdulrezzak",
-    "randomName4Text": "Abdussamed",
-    "randomName5Text": "Murat",
+    "randomName2Text": "Mahmut",
+    "randomName3Text": "Ömer",
+    "randomName4Text": "Samed",
+    "randomName5Text": "Kerem",
     "skipConfirmText": "Öğreticiyi gerçekten atlamak istiyor musun? Onaylamak için dokun.",
     "skipVoteCountText": "geçme oylaması ${COUNT}/${TOTAL}",
     "skippingText": "Öğretici Atlanıyor...",
@@ -1978,13 +1978,13 @@
   "v2AccountLinkingInfoText": "V2 hesapları bağlamak için, 'Hesabı yönet' butonuna tıklayın.",
   "v2AccountRequiredText": "Bu bir V2 hesap gerektirir. Hesabını yükseltip tekrar dene.",
   "validatingTestBuildText": "Test Yapısı Onaylanıyor...",
-  "viaText": "Böyle de bilinir",
-  "victoryText": "Galibiyet!",
+  "viaText": "namı diğer:",
+  "victoryText": "Zafer!",
   "voteDelayText": "${NUMBER} saniye boyunca başka oylama başlatamazsın.",
   "voteInProgressText": "Oylama zaten işlemde.",
   "votedAlreadyText": "Zaten oyladın",
   "votesNeededText": "${NUMBER} oy gerekli",
-  "vsText": "vs.",
+  "vsText": "vs",
   "waitingForHostText": "(devam etmesi için ${HOST} bekleniyor)",
   "waitingForPlayersText": "Oyuncuların katılması bekleniyor...",
   "waitingInLineText": "Sırada bekleniyor (parti dolu)...",
@@ -2045,5 +2045,5 @@
   "yesAllowText": "Evet, Kabul!",
   "yourBestScoresText": "En İyi Rekorların",
   "yourBestTimesText": "En İyi Sürelerin",
-  "yourPrizeText": "Yaptığın şey karşılığında ödül:"
+  "yourPrizeText": "İşte ödülün:"
 }

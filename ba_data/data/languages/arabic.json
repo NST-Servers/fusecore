@@ -1137,6 +1137,7 @@
   "openNowText": "افتح الآن",
   "openText": "افتح",
   "orText": "${A} أو ${B}",
+  "otherOptionsText": "اشياء اخرى",
   "otherText": "آخر...",
   "outOfText": "(#${RANK} خرج من ${ALL})",
   "ownFlagAtYourBaseWarning": "يجب على العلم الخاص بك ان يكون في قاعدتك\n!لتسجل نقطة",

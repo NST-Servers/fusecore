@@ -1128,6 +1128,7 @@
   "openNowText": "今すぐ開く",
   "openText": "開ける",
   "orText": "${A} または ${B}",
+  "otherOptionsText": "その他のオプション",
   "otherText": "他の...",
   "outOfText": "(${ALL} のうち #${RANK})",
   "ownFlagAtYourBaseWarning": "得点するには、自分の旗が\n自分の基地になければなりません！",

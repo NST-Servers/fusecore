@@ -1137,6 +1137,7 @@
   "openNowText": "همین حالا باز کنید",
   "openText": "باز کنید",
   "orText": "${A} یا ${B}",
+  "otherOptionsText": "گزینه‌های دیگر",
   "otherText": "دیگر...",
   "outOfText": "(${ALL} ⁦از #${RANK})",
   "ownFlagAtYourBaseWarning": "پرچم شما باید در پایگاه \n!خودتان باشد تا امتیاز کسب کنید",

@@ -1185,6 +1185,7 @@
   "openNowText": "Apri Ora",
   "openText": "Apri",
   "orText": "${A} o ${B}",
+  "otherOptionsText": "Altre Opzioni",
   "otherText": "Altro",
   "outOfText": "(#${RANK} su ${ALL})",
   "ownFlagAtYourBaseWarning": "Per segnare un punto la tua bandiera\ndev'essere nella tua base!",

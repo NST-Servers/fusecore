@@ -1140,6 +1140,7 @@
   "openNowText": "Ibuksan Ngayon",
   "openText": "Ibuksan",
   "orText": "${A} o ${B}",
+  "otherOptionsText": "Iba Pang Opsyon",
   "otherText": "Iba Pa…",
   "outOfText": "(#${RANK} sa ${ALL})",
   "ownFlagAtYourBaseWarning": "Ang iyong sariling watawat ay dapat na\nsa lagayan nito upang makapuntos!",
@@ -1364,7 +1365,7 @@
   "singleGamePlaylistNameText": "${GAME} lang",
   "singlePlayerCountText": "1 manlalaro",
   "sizeLargeText": "Malaki",
-  "sizeMediumText": "Sakto lang",
+  "sizeMediumText": "Sakto",
   "sizeSmallText": "Maliit",
   "soloNameFilterText": "Pinag-iisang ${NAME}",
   "soundtrackTypeNames": {

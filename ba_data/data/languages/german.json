@@ -1214,6 +1214,7 @@
   "openNowText": "Jetzt öffnen",
   "openText": "Öffnen",
   "orText": "${A} oder ${B}",
+  "otherOptionsText": "Andere Optionen",
   "otherText": "Sonstiges...",
   "outOfText": "(#${RANK} von ${ALL})",
   "ownFlagAtYourBaseWarning": "Deine Flagge muss in deiner\nBasis sein um zu punkten!",

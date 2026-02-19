@@ -1124,6 +1124,7 @@
   "openNowText": "Abrir Agora",
   "openText": "Abrir",
   "orText": "${A} ou ${B}",
+  "otherOptionsText": "Outras Opções",
   "otherText": "Outro...",
   "outOfText": "(#${RANK} de ${ALL})",
   "ownFlagAtYourBaseWarning": "Sua própria bandeira deve estar\nem sua base para fazer um ponto!",

@@ -1141,6 +1141,7 @@
   "openNowText": "tearrr it open",
   "openText": "crack",
   "orText": "${A} or ${B}",
+  "otherOptionsText": "Alternate sea-route",
   "otherText": "Other...",
   "outOfText": "(#${RANK} out of ${ALL})",
   "ownFlagAtYourBaseWarning": "Yer own flag must fly high at \nyer base to tally yer score!",

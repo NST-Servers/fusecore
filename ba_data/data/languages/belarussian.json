@@ -1145,6 +1145,7 @@
   "openNowText": "Адчыніць Зараз",
   "openText": "Адчыніць",
   "orText": "${A} ці ${B}",
+  "otherOptionsText": "Іншыя варыянты",
   "otherText": "Іншае...",
   "outOfText": "(#${RANK} з ${ALL})",
   "ownFlagAtYourBaseWarning": "Каб зарабіць ачкі, ваш сцяг\nпавінен быць на вашай базе!",
