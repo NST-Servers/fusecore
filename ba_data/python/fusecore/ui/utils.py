@@ -1,6 +1,6 @@
 """UI-related utilities from FuseCore."""
 
-from typing import Any, Callable
+from typing import Any, Callable, Optional
 from babase._language import Lstr
 
 import bauiv1 as bui
@@ -25,7 +25,11 @@ class CheckBox:
     ):
         if displayname is None:
             displayname = ""
-        self._value_change_call = value_change_call
+
+        self.call: Optional[Callable] = None
+        if value_change_call:
+            self.call = bui.WeakCallPartial(value_change_call)
+
         self.widget = bui.checkboxwidget(
             parent=parent,
             id=check_box_id,
@@ -43,5 +47,5 @@ class CheckBox:
         bui.app.ui_v1.add_ui_cleanup_check(self, self.widget)
 
     def _value_changed(self, val: bool) -> None:
-        if self._value_change_call:
-            self._value_change_call(val)
+        if self.call:
+            self.call(val)

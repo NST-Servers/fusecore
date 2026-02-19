@@ -843,6 +843,7 @@ class TNT(Bomb):
         self.blast_class = TNTBlast
 
         self.fuse_time = None
+        self.fuse_sound = None
 
 
 TNT.register()
