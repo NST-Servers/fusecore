@@ -82,7 +82,7 @@ class Factory:
 
     IDENTIFIER: str = "default_factory"
     """Unique identifier for this factory.
-    
+
     Any object to use a factory will require this
     identifier to access it effectively.
     """

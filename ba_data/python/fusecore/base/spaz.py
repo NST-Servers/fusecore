@@ -1,10 +1,12 @@
 """Defines our custom Spaz class."""
 
 from __future__ import annotations
+import math
 import random
 from typing import (
     Optional,
     Type,
+    TypeVar,
     cast,
     override,
     Callable,
@@ -33,6 +35,9 @@ if TYPE_CHECKING:
 # this a chunky boy, pylint, and it's
 # not like I can do something about it.
 # pylint: disable=too-many-lines
+
+
+T = TypeVar("T", bound=ObjectComponent)
 
 
 class Spaz(spaz.Spaz):
@@ -99,15 +104,11 @@ class Spaz(spaz.Spaz):
         )
         self._compat_bomb_update(check_default=True)
 
-    def component_get(
-        self, component: Type[ObjectComponent]
-    ) -> Optional[ObjectComponent]:
+    def component_get(self, component: Type[T]) -> Optional[T]:
         """Return the specified component object, if any."""
         return self._components.get(component, None)
 
-    def component_add(
-        self, component: Type[ObjectComponent]
-    ) -> ObjectComponent:
+    def component_add(self, component: Type[T]) -> T:
         """Apply a component to this object class.
         Returns the inserted component (or existing one.)
         """
@@ -118,7 +119,7 @@ class Spaz(spaz.Spaz):
         self._components[component] = n
         return n
 
-    def component_remove(self, component: Type[ObjectComponent]) -> bool:
+    def component_remove(self, component: Type[T]) -> bool:
         """Remove a component from this object class.
         Returns if we removed successfully or failed (likely due
         to this spaz not having said component.)
@@ -1074,6 +1075,33 @@ class Spaz(spaz.Spaz):
         self._cb_wrap_calls = {}
         self._cb_raw_wrap_calls = {}
         self._cb_overwrite_calls = {}
+
+    def get_direction_facing(self, scale = 1.0) -> tuple[float, float, float]:
+        """Get direction vector based on facing direction."""
+        # took this from SoK, sorry!
+        facing_direction = (self.node.position[0] - self.node.position_forward[0],
+                            self.node.position[2] - self.node.position_forward[2])
+        facing_direction_length = math.hypot(facing_direction[0], facing_direction[1])
+        drc = (facing_direction[0] / facing_direction_length * scale,
+               0.0,
+               facing_direction[1] / facing_direction_length * scale)
+        return drc
+
+    def get_direction_velocity(self, scale = 1.0) -> tuple[float, float, float]:
+        """Get direction vector based on velocity.
+        Defaults to facing direction if no vector can be made from that.
+        """
+        # took this from SoK, sorry!
+        v = self.node.velocity
+        length = math.hypot(math.hypot(v[0], v[1]), v[2])
+
+        # If we're moving too slow, the direction is iffy.
+        # Assume facing.
+        if length < 0.2:
+            v = self.get_direction_facing(scale)
+        return (v[0] * scale,
+                v[1] * scale,
+                v[2] * scale)
 
     ### vvv             LEGACY FUNCTIONS              vvv
 

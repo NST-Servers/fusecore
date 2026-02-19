@@ -190,7 +190,7 @@ class PowerupBox(FactoryActor):
     my_factory = PowerupBoxFactory
     group_set = POWERUPBOX_SET
 
-    name: str
+    name: str  # required
     """Name given to this powerup box. Must be unique."""
 
     texture_name: str = "bar"

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from abc import abstractmethod
 from typing import Any, Callable, Type, override
 import logging
 
@@ -184,6 +185,7 @@ class ChatCommand:
         cls._pseudos_check()
         COMMAND_ALTAS_SERVER.add(cls)
 
+    @abstractmethod
     def execute(self, msg: str, client_id: int) -> None:
         """Runs the command!
 

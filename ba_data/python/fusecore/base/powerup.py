@@ -1,4 +1,4 @@
-"""Customizable powerups from core."""
+"""Customizable powerups from fusecore."""
 
 from __future__ import annotations
 from abc import abstractmethod

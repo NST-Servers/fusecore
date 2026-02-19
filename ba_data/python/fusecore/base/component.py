@@ -2,11 +2,12 @@
 to indicate various custom statuses.
 """
 
-from dataclasses import dataclass
-from typing import Any
+import time
+from typing import Any, Type, TypeVar
+
+import bascenev1 as bs
 
 
-@dataclass
 class ObjectComponent:
     """A class defining a component.
 
@@ -14,7 +15,10 @@ class ObjectComponent:
     one of them at all times.
     """
 
-    parent: Any
+    def __init__(self, parent: Any) -> None:
+        self.parent = parent
+        self.creation_time = bs.time()
+        self.creation_time_real = time.time()
 
     def dereference_parent(self) -> None:
         """Reference our parent.
@@ -23,7 +27,10 @@ class ObjectComponent:
         self.parent = None
 
 
-class ComponentVault(dict[type[ObjectComponent], ObjectComponent]):
+T = TypeVar("T", bound=ObjectComponent)
+
+
+class ComponentVault(dict[Type[T], T]):
     """A custom dict. subclass with component related functions."""
 
     def clear(self) -> None:
