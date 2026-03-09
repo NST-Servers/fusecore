@@ -108,11 +108,12 @@ def run_sticker(client_id: int, sticker: Type[ChatSticker]) -> None:
     callout = StickerCallout(sticker)
 
     client_players = get_players_from_client_id(client_id)
+    alive_players = [p for p in client_players if p.is_alive()]
 
     with activity.context:
         # Do a character sticker pop-up if we're on a game activity
         # and this client has players attached to it.
-        if isinstance(activity, bs.GameActivity) and client_players:
+        if isinstance(activity, bs.GameActivity) and alive_players:
             for player in client_players:
                 spaz: Optional[Spaz] = cast(Spaz, player.actor)
                 if spaz:
@@ -173,7 +174,7 @@ class StickerCallout:
         tex = bs.gettexture(self.sticker.texture_name)
         snd = None
         if self.sticker.sound_name:
-            snd = bui.getsound(self.sticker.sound_name)
+            snd = bs.getsound(self.sticker.sound_name)
 
         _screen_distance = sticker_time / _screen_distance
 
@@ -311,4 +312,4 @@ class StickerCallout:
         )
 
         if snd:
-            snd.play(0.77)
+            snd.play(0.8)

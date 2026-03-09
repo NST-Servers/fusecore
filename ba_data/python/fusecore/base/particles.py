@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections import OrderedDict
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Callable, Literal, Self, Type, override
+from typing import Any, Callable, Literal, Self, Sequence, Type, override
 
 import random
 
@@ -42,7 +42,7 @@ class ParticleLimitMode(Enum):
     DISABLED = -1
     """Ignore the particle limit cap and spawn
     as many particles as we please.
-    
+
     ## NOT RECOMMENDED FOR OBVIOUS REASONS.
     Don't even think about it unless you are troubleshooting!
     """
@@ -58,13 +58,13 @@ class ParticleLimitMode(Enum):
     """Allow spawn calls to go over the particle limit in
     reduced quantities and at a relaxed pace.
     Might cause performance issues on weaker devices.
-    
+
     Not implemented.
     """
     DYNAMIC = 3
     """The particle limit will change dynamically depending
     on how many nodes and effects are currently active.
-    
+
     Not implemented.
     """
 
@@ -142,8 +142,8 @@ class ParticleDirector:
     def perform(
         self,
         particle_type: Type[Particle],
-        position: tuple[float, float, float],
-        velocity: tuple[float, float, float],
+        position: Sequence[float],
+        velocity: Sequence[float],
     ) -> bool:
         """Ask the director if we can spawn this particle
         in the provided position w/ velocity.
@@ -159,7 +159,11 @@ class ParticleDirector:
                 case ParticleLimitMode.OVERWRITE:
                     # order oldest to die and remove
                     _, particle = self._particle_pool.popitem(last=False)
-                    particle.handlemessage(DirectorKillMessage())
+                    # FIXME: calling for a slow kill via director retains
+                    # the particle for longer than the game wants, which
+                    # makes it print a bunch of "warnings"...
+                    del particle
+                    # particle.handlemessage(DirectorKillMessage())
 
         self._inum += 1
 
@@ -218,6 +222,7 @@ class Particle(FactoryActor):
         """
         return {
             "mesh": FactoryMesh("bomb"),
+            "light_mesh": FactoryMesh("zero"),
             "tex": FactoryTexture("bombColor"),
         }
 
@@ -231,13 +236,13 @@ class Particle(FactoryActor):
         # friction, dampingand stiffness qualities.
 
         self.mesh: bs.Mesh = self.factory.fetch("mesh")
-        self.light_mesh: bs.Mesh = self.mesh
+        self.light_mesh: bs.Mesh = self.factory.fetch("light_mesh")
         self.body: Literal[
             "landMine", "crate", "sphere", "box", "capsule", "puck"
         ] = "landMine"
         self.body_scale: float = 1.0
         self.mesh_scale: float = 1.0
-        self.shadow_size: float = 0.3
+        self.shadow_size: float = 0.2
         self.color_texture: bs.Texture = self.factory.fetch("tex")
         self.reflection: RTYPES = "soft"
         self.reflection_scale: list[float] = [1.0]
@@ -250,14 +255,14 @@ class Particle(FactoryActor):
 
     def __init__(
         self,
-        position: tuple[float, float, float],
-        velocity: tuple[float, float, float] = (0, 0, 0),
+        position: Sequence[float],
+        velocity: Sequence[float] = (0, 0, 0),
         director_id: int | None = None,
     ) -> None:
         super().__init__()
-        self.did = director_id
+        self.director_id = director_id
 
-        self._ready_to_die: bool = False
+        self._graceful_death: bool = False
         self._dying: bool = False
 
         self._animation_node: bs.Node | None = None
@@ -269,8 +274,8 @@ class Particle(FactoryActor):
 
     def _initialize(
         self,
-        position: tuple[float, float, float],
-        velocity: tuple[float, float, float],
+        position: Sequence[float],
+        velocity: Sequence[float],
     ) -> None:
         """Create our node."""
         self.node: bs.Node | None = bs.newnode(
@@ -322,27 +327,21 @@ class Particle(FactoryActor):
         if self._dying or not self.node:
             return
 
-        self._ready_to_die = True
-        self.die()
+        self._graceful_death = True
+        self._die()
 
-    def die(self) -> None:
-        """Remove ourselves.
-
-        This function can be called directly by 'ParticleDirector' when
-        clearing up particle excess, on which we'll animate a fade-out.
-        """
+    def _die(self) -> None:
         if self._dying or not self.node:
             return
         self._dying = True
 
-        if self.did is not None:
-            ParticleDirector.instance().remove_particle(self.did)
+        if self.director_id is not None:
+            ParticleDirector.instance().remove_particle(self.director_id)
 
-        if not self._ready_to_die:
+        if not self._graceful_death:
             # if we got this function called earlier than intended, we're
             # very likely getting cleaned away!
             # make sure to pack up all our data and make a swift getaway
-            self._death_timer = None
             if self.node:
                 self._animation_node = bs.animate(
                     self.node,
@@ -352,33 +351,34 @@ class Particle(FactoryActor):
                         self.t_fade_out: 0,
                     },
                 )
-                bs.timer(self.t_fade_out, self.node.delete)
+                self._death_timer = bs.Timer(self.t_fade_out, self.node.delete)
             return
 
         self.node.delete()
 
     def _handle_oob(self) -> None:
-        self._ready_to_die = True
-        self.die()
+        self._die_gracefully()
 
     def _handle_director_kill(self) -> None:
-        self.did = None
-        self.die()
+        self.director_id = None
+        self.handlemessage(bs.DieMessage())
 
     @override
     def handlemessage(self, msg: Any) -> Any:
         if isinstance(msg, bs.DieMessage):
-            self.die()
+            self._die_gracefully()
         elif isinstance(msg, DirectorKillMessage):
-            self._handle_director_kill()
+            # FIXME: see line 162
+            ...
+            # self._handle_director_kill()
         elif isinstance(msg, bs.OutOfBoundsMessage):
             self._handle_oob()
 
     @classmethod
     def summon(
         cls,
-        position: tuple[float, float, float],
-        velocity: tuple[float, float, float] = (0, 0, 0),
+        position: Sequence[float],
+        velocity: Sequence[float] = (0, 0, 0),
     ) -> None:
         """Spawn a preset of this particle in the current activity."""
         # If you want multiple summon presets of a single
@@ -416,8 +416,8 @@ Particle.register()
 
 def do_vfx(
     name: str,
-    position: tuple[float, float, float],
-    velocity: tuple[float, float, float] = (0, 0, 0),
+    position: Sequence[float],
+    velocity: Sequence[float] = (0, 0, 0),
 ):
     """Run a named vfx call with a position and velocity.
 

@@ -11,10 +11,10 @@ import bascenev1 as bs
 
 from bascenev1lib.gameutils import SharedObjects
 from bascenev1lib.actor import powerupbox
+from fusecore.base.component import ComponentReadyCls
 
 # These classes don't require much explanation, I think...
 # pylint: disable=missing-class-docstring
-# pylint: disable=too-few-public-methods
 
 from ..base.factory import (
     Factory,
@@ -49,6 +49,8 @@ class TouchedMessage: ...
 
 @dataclass
 class PowerupBoxMessage:
+    """FuseCore's powerup box message."""
+
     grants_powerup: Type[SpazPowerup] | None
     source_node: bs.Node | None = None
 
@@ -179,7 +181,7 @@ class PowerupBoxFactory(Factory):
         raise RuntimeError("Unable to return random powerup.")
 
 
-class PowerupBox(FactoryActor):
+class PowerupBox(FactoryActor, ComponentReadyCls):
     """A box-type node which gives a specific
     powerup to whoever player picks it up.
 
@@ -223,11 +225,15 @@ class PowerupBox(FactoryActor):
 
     @classmethod
     def register(cls) -> None:
-        cls._register_texture()
         for pb in POWERUPBOX_SET:
             if cls.name == pb.name:
                 raise NameError("can't register 2 powerups with the same name.")
         return super().register()
+
+    @classmethod
+    def register_resources(cls) -> None:
+        cls._register_texture()
+        return super().register_resources()
 
     @staticmethod
     def resources() -> dict:
@@ -507,7 +513,9 @@ def get_powerupbox_from_name(name: str) -> Optional[Type[PowerupBox]]:
 def get_random_powerupbox_class_type(
     exclude: Union[list[Type[PowerupBox]], list[str]],
 ) -> Optional[Type[PowerupBox]]:
-    """Get a random FuseCore PowerupBox class, considering powerupbox weights."""
+    """Get a random FuseCore PowerupBox class,
+    considering powerupbox weights.
+    """
     pwp_dist = PowerupBoxFactory.get_powerup_box_distribution()
     # remove excluded items
     for pwp in pwp_dist.copy():

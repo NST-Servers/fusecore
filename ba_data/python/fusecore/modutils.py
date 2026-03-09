@@ -157,13 +157,51 @@ def _callwrap(wrapmain: _WrapMain) -> Callable:
 
 def wrap_callable(
     src_call: Callable,
-    wrap_call: Optional[Callable],
+    wrap_call: Callable | None,
     *,
     call_arg_type: WrapCallArgType = WrapCallArgType.DEFAULT,
-    index: Optional[int] = None,
+    index: int | None = None,
     disable_src: bool = False,
 ) -> Callable:
-    """Wrap a Callable with another function."""
+    """Wrap a Callable with another Callable function.
+
+    Args:
+
+        src_call (Callable): The source callable to wrap.
+
+        wrap_call (Callable | None):
+            The callable to wrap with.
+
+            Can be `None`, will prepare the source
+            call for additional wrapping if so.
+
+        call_arg_type (WrapCallArgType, optional):
+            The way the wrapped method gets called:
+        `NONE`: With no arguments.
+        `DEFAULT`: With the same args. passed to the source call.
+        `MAIN`: With the source call's output as an argument.
+
+            Defaults to `WrapCallArgType.DEFAULT`.
+
+        index (int | None, optional):
+            The entry index to append the wrapped call at.
+
+            If multiple calls are wrapped, this allows you to
+            insert a call at a specific point, before or after
+            a desired wrapped call.
+
+            If `None`, it will be appended at the end of the wrap table.
+
+            Defaults to `None`.
+
+        disable_src (bool, optional):
+            If `True`, prevents the wrapped call from running.
+
+            Defaults to `False`.
+
+    Returns:
+        Callable: The new source call, via a call wrapper function.
+    """
     wrap_info = WRAPPERINFO.wrapped_funcs.get(src_call, None)
 
     if wrap_info is None:

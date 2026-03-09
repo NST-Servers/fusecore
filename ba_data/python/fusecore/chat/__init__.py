@@ -5,16 +5,19 @@ from __future__ import annotations
 from abc import abstractmethod
 from typing import Type
 
-CHAT_INTERCEPTS_SET: set[Type[ChatIntercept]] = set()
+CHAT_INTERCEPTS_SET: list[Type[ChatIntercept]] = []
 
 
 class ChatIntercept:
     """Chat interception that does nifty stuff."""
 
     @classmethod
-    def register(cls) -> None:
+    def register(cls, idx: int | None = None) -> None:
         """Register this class into our intercepts set."""
-        CHAT_INTERCEPTS_SET.add(cls)
+        if idx:
+            CHAT_INTERCEPTS_SET.insert(idx, cls)
+        else:
+            CHAT_INTERCEPTS_SET.append(cls)
 
     @abstractmethod
     def intercept(self, msg: str, client_id: int) -> bool:

@@ -1,6 +1,7 @@
 """Discord Rich Presence module."""
 
 import ast
+import asyncio
 import json
 import time
 import logging
@@ -10,6 +11,7 @@ from uuid import uuid4
 from dataclasses import dataclass
 from typing import Any, Callable, Literal, Type
 
+import babase
 from baclassic._appmode import ClassicAppMode
 import bascenev1 as bs
 from bascenev1 import (
@@ -70,7 +72,6 @@ from fusecore._tools import is_server
 
 from discordrp import Presence
 from discordrp.presence import _OpCode
-
 
 # sorry pylint! big file.
 # pylint: disable=too-many-lines
@@ -256,6 +257,15 @@ MAP_THUMBNAIL_DICT: dict[Type[bs.Map], str] = {
 }
 
 
+class _GTHREAD:
+    """Global thread manager to properly shut
+    down our discordrpc threads on shutdown.
+    """
+
+    stop_thread = threading.Event()
+    thread_stopped = threading.Event()
+
+
 @ioprepped
 @dataclass
 class ActivityStatus:
@@ -357,8 +367,16 @@ class RichPresenceThread(threading.Thread):
                 while not self._stop_event.is_set():
                     time.sleep(1)
                     # self._read_for_events()
+                # force clear presence to prevent
+                # it from lingering, which is cringe!
+                try:
+                    presence.clear()
+                except Exception:
+                    pass
                 self.state = ThreadState.STOPPED
                 _log("thread").info("'RichPresenceThread' stopped.")
+                if _GTHREAD.stop_thread.is_set():
+                    _GTHREAD.thread_stopped.set()
 
         except Exception as e:
             self._handle_error(e)
@@ -482,11 +500,6 @@ class DiscordRichPresenceSubsystem(AppSubsystem):
 
     def __init__(self) -> None:
         super().__init__()
-        # FIXME: this subsystem collapses if we switch appmodes...
-        # no one in their right mind would do such a thing but it's
-        # still pretty upsetting to watch the console flood with
-        # errors as you watch the purple "Potato!" spin around the screen.
-
         self._thread: RichPresenceThread = RichPresenceThread()
         self._thread_timer: bs.AppTimer | None = None
         self._update_timer: bs.AppTimer | None = None
@@ -523,6 +536,15 @@ class DiscordRichPresenceSubsystem(AppSubsystem):
         self._last_server_data: str | None = None
         self._server_info: dict | None = None
         self._server_list_update_timer: bs.AppTimer | None = None
+
+        # make sure to kill these threads before quitting
+        babase.app.add_shutdown_task(self._shutdown())
+
+    async def _shutdown(self) -> None:
+        _GTHREAD.stop_thread.set()
+        self._thread.stop()
+        while not _GTHREAD.thread_stopped.is_set():
+            await asyncio.sleep(0.2)
 
     def get_default_activity_status(self) -> ActivityStatus:
         """Return a default presence status state."""
@@ -626,6 +648,10 @@ class DiscordRichPresenceSubsystem(AppSubsystem):
 
     def tick(self) -> None:
         """Check for any changes and update whenever it is required."""
+        if _GTHREAD.stop_thread.is_set():
+            self.stop()
+            return
+
         session: bs.Session | None = bs.get_foreground_host_session()
         # only do a session check if our session has changed.
         if not self._session_has_changed(session):
@@ -1215,9 +1241,10 @@ class DiscordRichPresenceSubsystem(AppSubsystem):
             "server list got!\npassed with %s servers", len(servers)
         )
 
-    def on_app_shutdown(self) -> None:
-        """Stop our Rich Presence once the game goes into shutdown."""
-        self.stop()
+    # def on_app_shutdown(self) -> None:
+    #    """Stop our Rich Presence once the game goes into shutdown."""
+    #    if self._thread.state is ThreadState.ACTIVE:
+    #        self.stop()
 
 
 def unpack_dataclass(dclass: Any) -> dict[str, Any]:

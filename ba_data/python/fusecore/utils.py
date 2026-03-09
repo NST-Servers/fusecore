@@ -2,7 +2,8 @@
 
 from enum import Enum
 from dataclasses import is_dataclass
-from typing import Literal
+from typing import Any, Callable, Literal, Type, TypeVar
+import weakref
 
 import bascenev1 as bs
 
@@ -65,3 +66,56 @@ def lstr_server(lstr: bs.Lstr) -> bs.Lstr | str:
     if is_server():
         return lstr.evaluate()
     return lstr
+
+
+T = TypeVar("T", bound=Any)
+
+
+def transmute_object(src: Any, transmute_to: Type[T]) -> T:
+    """Transform an object into another one."""
+    if src is None or not src.exists():
+        raise RuntimeError("'src' actor does not exist.")
+    if not hasattr(src, "node"):
+        raise RuntimeError("src has no node.")
+
+    # the rest of the code runs in hopes and dreams.
+    pos = src.node.position
+    vel = tuple(v * 0.5 for v in src.node.velocity)
+
+    transmuteer = transmute_to(position=pos, velocity=vel)
+    transmuteer.autoretain()
+
+    src.handlemessage(bs.DieMessage(immediate=True))
+    return transmuteer
+
+
+def is_spaz_bot(spaz: Any) -> bool:
+    """Returns whether a spaz is a `SpazBot` or not."""
+    from bascenev1lib.actor.spazbot import SpazBot
+
+    # from fusecore.base.spazbot import SpazBot
+    return isinstance(spaz, SpazBot)
+
+
+def weakref_function_wrap(wrapper_func: Callable, obj_to_ref: Any) -> Callable:
+    """Overwrite a function of an active class
+    by passing a weak reference as `self`.
+
+    Useful to replace default behavior on a singular class
+    without having to write additional code for handling.
+
+    Args:
+        wrapper_func (Callable): Function to call.
+        obj_to_ref (Any): Object to weak reference.
+
+    Returns:
+        Callable: The new wrapped function.
+    """
+    _wref = weakref.ref(obj_to_ref)
+
+    def _wrapped_func():
+        obj = _wref()
+        if obj is not None:
+            wrapper_func(obj)
+
+    return _wrapped_func

@@ -5,8 +5,8 @@ import math
 import random
 from typing import (
     Optional,
+    Sequence,
     Type,
-    TypeVar,
     cast,
     override,
     Callable,
@@ -22,7 +22,7 @@ from bascenev1lib.actor import spaz
 from bascenev1lib.actor.spaz import BombDiedMessage
 from bascenev1lib.actor.bomb import Bomb as VanillaBomb
 from bascenev1lib.actor.spazfactory import SpazFactory as VanillaSpazFactory
-from fusecore.base.component import ComponentVault, ObjectComponent
+from fusecore.base.component import ComponentVault, ComponentReadyCls
 
 from ..base.spazfactory import SpazPowerupSlot
 from ..base.bomb import Bomb, LandMine, BOMB_SET
@@ -37,10 +37,7 @@ if TYPE_CHECKING:
 # pylint: disable=too-many-lines
 
 
-T = TypeVar("T", bound=ObjectComponent)
-
-
-class Spaz(spaz.Spaz):
+class Spaz(spaz.Spaz, ComponentReadyCls):
     """Wrapper for our actor Spaz class."""
 
     default_bomb_class: Type[Bomb] = Bomb
@@ -103,31 +100,6 @@ class Spaz(spaz.Spaz):
             self.default_bomb_type or self.bomb_type or "normal"
         )
         self._compat_bomb_update(check_default=True)
-
-    def component_get(self, component: Type[T]) -> Optional[T]:
-        """Return the specified component object, if any."""
-        return self._components.get(component, None)
-
-    def component_add(self, component: Type[T]) -> T:
-        """Apply a component to this object class.
-        Returns the inserted component (or existing one.)
-        """
-        ex = self._components.get(component, None)
-        if ex is not None:
-            return ex
-        n = component(self)
-        self._components[component] = n
-        return n
-
-    def component_remove(self, component: Type[T]) -> bool:
-        """Remove a component from this object class.
-        Returns if we removed successfully or failed (likely due
-        to this spaz not having said component.)
-        """
-        if self._components.get(component, None) is None:
-            return False
-        self._components.pop(component)
-        return True
 
     def assign_bomb_ctype(self, bomb: Type[Bomb]) -> None:
         """Set a bomb type for this spaz to use."""
@@ -298,6 +270,10 @@ class Spaz(spaz.Spaz):
         self._max_bomb_count += count
         self.bomb_count += count
 
+    def get_max_bomb_count(self) -> int:
+        """Returns `self._max_bomb_count`."""
+        return self._max_bomb_count
+
     def add_method_callback(self, method_name: str, callback: Callable) -> None:
         """Add a callback to any function.
 
@@ -410,7 +386,7 @@ class Spaz(spaz.Spaz):
         ]:
             return
         if not isinstance(method, Callable):
-            raise ValueError(f"self.{method_name} is not a callable function.")
+            raise ValueError(f"'{method_name}' is not a callable function.")
 
         def cbwrap(func):
             def w(*args, **kwargs):
@@ -720,8 +696,8 @@ class Spaz(spaz.Spaz):
 
     def do_impulse(
         self,
-        position: tuple[float, float, float],
-        velocity: tuple[float, float, float],
+        position: Sequence[float],
+        velocity: Sequence[float],
         magnitude: float,
         velocity_magnitude: float,
         radius: float,
@@ -1065,9 +1041,6 @@ class Spaz(spaz.Spaz):
         """Prevent from hanging onto the activity
         by cleaning after ourselves.
         """
-        # because components and powerups depend on spaz themselves,
-        # we need to remove them on expire to keep the gc happy.
-        self._components.clear()
         self._powerup_slots = {}
         # these don't cause as many issues if left unbothered, but
         # it's still a good idea to take care of these containers.
@@ -1076,18 +1049,24 @@ class Spaz(spaz.Spaz):
         self._cb_raw_wrap_calls = {}
         self._cb_overwrite_calls = {}
 
-    def get_direction_facing(self, scale = 1.0) -> tuple[float, float, float]:
+    def get_direction_facing(self, scale=1.0) -> tuple[float, float, float]:
         """Get direction vector based on facing direction."""
         # took this from SoK, sorry!
-        facing_direction = (self.node.position[0] - self.node.position_forward[0],
-                            self.node.position[2] - self.node.position_forward[2])
-        facing_direction_length = math.hypot(facing_direction[0], facing_direction[1])
-        drc = (facing_direction[0] / facing_direction_length * scale,
-               0.0,
-               facing_direction[1] / facing_direction_length * scale)
+        facing_direction = (
+            self.node.position[0] - self.node.position_forward[0],
+            self.node.position[2] - self.node.position_forward[2],
+        )
+        facing_direction_length = math.hypot(
+            facing_direction[0], facing_direction[1]
+        )
+        drc = (
+            facing_direction[0] / facing_direction_length * scale,
+            0.0,
+            facing_direction[1] / facing_direction_length * scale,
+        )
         return drc
 
-    def get_direction_velocity(self, scale = 1.0) -> tuple[float, float, float]:
+    def get_direction_velocity(self, scale=1.0) -> tuple[float, float, float]:
         """Get direction vector based on velocity.
         Defaults to facing direction if no vector can be made from that.
         """
@@ -1099,9 +1078,7 @@ class Spaz(spaz.Spaz):
         # Assume facing.
         if length < 0.2:
             v = self.get_direction_facing(scale)
-        return (v[0] * scale,
-                v[1] * scale,
-                v[2] * scale)
+        return (v[0] * scale, v[1] * scale, v[2] * scale)
 
     ### vvv             LEGACY FUNCTIONS              vvv
 

@@ -241,8 +241,10 @@ class ShieldComponent(ObjectComponent):
         # to demonstrate how cool components are, but then i thought of the
         # billions of incompatibilities this would cause, so now the component
         # is a simple shield activation tunnel :p
-        self.parent.equip_shields(decay=SpazFactory.get().shield_decay_rate > 0)
-        self.parent.component_remove(type(self))
+        spaz = self.get_parent()
+        assert spaz
+        spaz.equip_shields(decay=SpazFactory.get().shield_decay_rate > 0)
+        self.remove()
 
     def on_damage(self) -> None:
         """Handle our damage function."""
@@ -258,7 +260,7 @@ class ShieldPowerup(SpazPowerup):
 
     @override
     def equip(self) -> None:
-        component = self.spaz.component_add(ShieldComponent)
+        component = self.spaz.objcom_instance(ShieldComponent)
         assert isinstance(component, ShieldComponent)
         component.activate()
 

@@ -3,7 +3,7 @@ Allows for easier bomb creation and customization.
 """
 
 from __future__ import annotations
-from typing import Optional, override, Any, Callable, Type
+from typing import Optional, Sequence, override, Any, Callable, Type
 
 import random
 import logging
@@ -17,7 +17,11 @@ from bascenev1lib.actor.bomb import (
     ArmMessage,
     WarnMessage,
 )
-from fusecore.base.component import ComponentVault, ObjectComponent
+from fusecore.base.component import (
+    ComponentReadyCls,
+    ComponentVault,
+    ObjectComponent,
+)
 from fusecore.utils import RTYPES
 
 from ..base.blast import (
@@ -160,7 +164,7 @@ class BombFactory(Factory):
         )
 
 
-class Bomb(FactoryActor):
+class Bomb(FactoryActor, ComponentReadyCls):
     """An explosive bomb actor that blows up after 3 seconds,
     creating a blast that damages anyone nearby.
 
@@ -201,8 +205,8 @@ class Bomb(FactoryActor):
 
     def __init__(
         self,
-        position: tuple[float, float, float] = (0, 0, 0),
-        velocity: tuple[float, float, float] = (0, 0, 0),
+        position: Sequence[float] = (0, 0, 0),
+        velocity: Sequence[float] = (0, 0, 0),
         source_player: bs.Player | None = None,
         owner: bs.Node | None = None,
     ) -> None:
@@ -585,6 +589,18 @@ class ImpactBomb(Bomb):
             "warn_sound": FactorySound("warnBeep"),
         }
 
+    def __init__(
+        self,
+        position: Sequence[float],
+        velocity: Sequence[float],
+        source_player: bs.Player | None = None,
+        owner: bs.Node | None = None,
+    ) -> None:
+        super().__init__(position, velocity, source_player, owner)
+        self._arm_timer: Optional[bs.Timer] = None
+        self._warn_timer: Optional[bs.Timer] = None
+        self._texture_sequence: Optional[bs.Node] = None
+
     def attributes(self) -> None:
         """Define base attributes."""
         # Load default attributes
@@ -607,11 +623,8 @@ class ImpactBomb(Bomb):
         self.fuse_sound = None
 
         self.impact_timers: bool = True
-        self.arm_timer: bs.Timer
-        self.warn_timer: bs.Timer
         self.warn_sound: bs.Sound = self.factory.fetch("warn_sound")
         self.activate_sound: bs.Sound = self.factory.fetch("activate_sound")
-        self.texture_sequence: bs.Node | None = None
 
     def _create_bomb(self) -> None:
         """Create our bomb and do some bomb logic."""
@@ -621,11 +634,11 @@ class ImpactBomb(Bomb):
 
     def create_timers(self) -> None:
         """Create some extra timers to fancify this bomb."""
-        self.arm_timer = bs.Timer(
+        self._arm_timer = bs.Timer(
             0.2, bs.WeakCallPartial(self.handlemessage, ArmMessage())
         )
         if self.fuse_time and self.fuse_time >= 0:
-            self.warn_timer = bs.Timer(
+            self._warn_timer = bs.Timer(
                 max(0, self.fuse_time - 1.7),
                 bs.WeakCallPartial(self.handlemessage, WarnMessage()),
             )
@@ -640,7 +653,7 @@ class ImpactBomb(Bomb):
             self.tex_off,
             self.tex_off,
         )
-        self.texture_sequence = bs.newnode(
+        self._texture_sequence = bs.newnode(
             "texture_sequence",
             owner=self.node,
             attrs={"rate": 100, "input_textures": intex},
@@ -653,7 +666,7 @@ class ImpactBomb(Bomb):
                 self.factory.fetch("land_mine_blast_material"),
             ),
         )
-        self.texture_sequence.connectattr(  # type: ignore
+        self._texture_sequence.connectattr(  # type: ignore
             "output_texture", self.node, "color_texture"
         )
         self.activate_sound.play(position=self.node.position)
@@ -661,8 +674,8 @@ class ImpactBomb(Bomb):
     def _handle_warn(self) -> None:
         """Warn about our imminent explosion."""
         # Speed up our tex. sequence and play a sound
-        if self.texture_sequence and self.node:
-            self.texture_sequence.rate = 30
+        if self._texture_sequence and self.node:
+            self._texture_sequence.rate = 30
             self.warn_sound.play(0.5, position=self.node.position)
 
     def _handle_impact(self) -> None:
@@ -759,7 +772,7 @@ class LandMine(ImpactBomb):
     def _handle_dropped(self) -> None:
         """We've been dropped!"""
         # Arm ourselves
-        self.arm_timer = bs.Timer(
+        self._arm_timer = bs.Timer(
             1.25, bs.WeakCallPartial(self.handlemessage, ArmMessage())
         )
 
@@ -769,13 +782,13 @@ class LandMine(ImpactBomb):
             return
         # Create a texture sequence and assign
         intex = (self.tex_on, self.tex_off)
-        self.texture_sequence = bs.newnode(
+        self._texture_sequence = bs.newnode(
             "texture_sequence",
             owner=self.node,
             attrs={"rate": 30, "input_textures": intex},
         )
-        assert self.texture_sequence
-        bs.timer(0.5, self.texture_sequence.delete)
+        assert self._texture_sequence
+        bs.timer(0.5, self._texture_sequence.delete)
 
         # Make it explodable now
         bs.timer(
@@ -785,7 +798,7 @@ class LandMine(ImpactBomb):
                 self.factory.fetch("land_mine_blast_material"),
             ),
         )
-        self.texture_sequence.connectattr(  # type: ignore # intellisense issue
+        self._texture_sequence.connectattr(  # type: ignore # intellisense issue
             "output_texture", self.node, "color_texture"
         )
         self.activate_sound.play(position=self.node.position)

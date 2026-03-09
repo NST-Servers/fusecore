@@ -7,6 +7,7 @@ import bascenev1 as bs
 from bascenev1lib.actor import spazfactory
 
 from fusecore._tools import obj_clone, obj_method_override
+from fusecore.base.factory import Factory
 
 # clone original to use functions later on
 VanillaSpazFactory: Type[spazfactory.SpazFactory] = obj_clone(
@@ -105,8 +106,10 @@ class SpazPowerupSlot:
         self.timer_wearoff = None
 
 
-class SpazFactory(spazfactory.SpazFactory):
+class SpazFactory(spazfactory.SpazFactory, Factory):
     """New SpazFactory that replaces some files."""
+
+    IDENTIFIER = "fc-spazfactory"
 
     # pylint: disable=non-parent-init-called
     # pylint: disable=super-init-not-called

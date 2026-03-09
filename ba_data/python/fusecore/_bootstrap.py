@@ -43,7 +43,6 @@ from .chat import (
     stickers as _,
 )
 
-
 common.init_dirs()
 
 _PreloadManager = _preload.AssetLoadInstance

@@ -37,7 +37,7 @@ class AssetLoadManager:
         self._update_timer = bs.AppTimer(UPDATE_TIME, self._update, repeat=True)
 
         self._check_file_updates()  # silent update to generate hash
-        
+
         self._stop_thread = threading.Event()
         self._thread_stopped = threading.Event()
         threading.Thread(target=self._watch_loop, daemon=True).start()

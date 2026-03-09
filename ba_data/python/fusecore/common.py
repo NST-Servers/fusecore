@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 import sys
+from typing import Sequence
 import bascenev1 as bs
 
 CORE_DIR_NAME: str = "fusecore"
@@ -63,10 +64,10 @@ def init_dirs():
 
 
 def vector3_multfactor(
-    vector: tuple[float, float, float],
+    vector: Sequence[float],
     factor_min: float = 1.0,
     factor_max: float = 1.0,
-) -> tuple[float, float, float]:
+) -> Sequence[float]:
     """Randomize a vector3 within a specific multiplication range."""
 
     def _randmult() -> float:

@@ -112,20 +112,20 @@ class Blast(FactoryActor):
     def attributes(self) -> None:
         """Define basic blast attributes."""
         # explosion attrs.
-        self.magnitude: int = 2000
+        self.magnitude: float = 2000.0
         self.materials: tuple[bs.Material, ...] = (
             self.factory.fetch("blast_material"),
             self.shared.attack_material,
         )
         # blast attrs.
         self.blast_radius: float = 2.0
-        self.blast_color: tuple[float, float, float] | None = None
+        self.blast_color: Sequence[float] | None = None
         # light attrs.
-        self.light_color: tuple[float, float, float] = (1, 0.3, 0.1)
+        self.light_color: Sequence[float] = (1, 0.3, 0.1)
         self.light_radius: float = self.blast_radius
         self.light_intensity: float = 1.6
         # scorch attrs.
-        self.scorch_color: tuple[float, float, float] | None = None
+        self.scorch_color: Sequence[float] | None = None
         self.scorch_radius: float = self.blast_radius
         self.scorch_duration: float = 13.0
         # light random scale mult.
