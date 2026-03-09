@@ -1,0 +1,70 @@
+#!/bin/bash
+# get the latest bombsquad linux version
+
+# just in case i miss anything-
+set -e
+
+SOURCE_PATH="."
+
+chk_pkg() {
+    command -v "$1" &>/dev/null || {
+        echo "Package '$1' not found. Install it via apt, snap, pacman..."
+        exit 1
+        }
+}
+# make sure we have the proper packages
+chk_pkg curl
+chk_pkg tar
+
+# alright, we can make our paths now that we're sure
+mkdir -p "$SOURCE_PATH"
+
+TMP_DIR=$(mktemp -d)
+# kill our tmp dir even on failure
+trap 'rm -rf "$TMP_DIR"' EXIT
+
+# download the latest bombsquad linux x86-64 release
+echo "Downloading latest 'BombSquad_Linux_x86_64' release..."
+echo "* asking \"https://ballistica.net\" for download links..."
+
+CURLD=$(curl -s "https://ballistica.net/downloads")
+DL_URL=$(echo "$CURLD" | grep -oP 'https://[^"]+BombSquad_Linux_x86_64[^"]+\.tar\.gz' | head -1)
+# make sure we actually scraped anything
+[[ -z "$DL_URL" ]] && {
+    echo "ERROR: couldn't scrape 'https://ballistica.net/downloads'."
+    echo "check your internet connection?"
+    exit 1
+}
+
+OUT_PATH="$TMP_DIR/bombsquad_linux.tar.gz"
+
+echo "* fetching from \"$DL_URL\""
+curl -L "$DL_URL" -o "$OUT_PATH" || {
+    echo
+    echo "ERROR: failure on archive download. check your internet connection?"
+    exit 1
+}
+
+# extract and nicely locate our archive at our source
+echo "Extracting archive at \"$SOURCE_PATH\"..."
+tar -xzf "$OUT_PATH" -C "$SOURCE_PATH" --strip-components=1 || {
+    echo
+    echo "ERROR: failure on archive extraction."
+    echo "this shouldn't happen unless the archive is corrupted or incomplete."
+    echo "try again. if this keeps happening:"
+    echo " * check your internet connection"
+    echo " * wait a couple of minutes before trying again"
+    echo " * check if 'ballistica.net/downloads' is up and accessible"
+    echo
+    echo "if everything is fine but the script keeps failing, contact me!"
+    echo
+    exit 1
+}
+
+chmod +w ba_data/python/bascenev1lib/__init__.py
+# make sure fusecore loads
+echo import fusecore >> ba_data/python/bascenev1lib/__init__.py
+
+# hooray! we've done it!
+echo "BombSquad update completed!"
+echo 
